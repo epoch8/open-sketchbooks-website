@@ -1,0 +1,36 @@
+---
+import Nav from "@/components/blocks/header/Nav.astro";
+import Footer from "@/components/products/vedana/footer/Footer.astro";
+import DocsSidebar from "@/components/products/vedana/DocsSidebar.astro";
+import styles from "./DocsLayout.module.css";
+import "../styles/global.css";
+
+const { currentSlug, headings, allDocs, title, description } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title ? `${title} - Vedana Docs` : "Vedana Docs"}</title>
+    {description && <meta name="description" content={description} />}
+  </head>
+
+  <body>
+    <div class="page-root">
+
+      <div class={styles.container}>
+        <aside class={styles.sidebar}>
+          <DocsSidebar allDocs={allDocs} currentSlug={currentSlug} />
+        </aside>
+
+        <main class={styles.content}>
+          <slot />
+        </main>
+      </div>
+
+      <Footer />
+    </div>
+  </body>
+</html>

@@ -1,0 +1,205 @@
+---
+import "@/styles/global.css";
+
+import { extendSEO } from "@/lib/seo/extend";
+import type { SEOConfig } from "@/lib/seo/types";
+
+import Nav from "@/components/blocks/header/Nav.astro";
+import Footer from "@/components/blocks/footer/Footer.astro";
+
+import {
+  buildMainNavSchema,
+  buildFooterNavSchema,
+} from "@/lib/seo/navigationSchema";
+
+import GithubIcon from "@/components/icons/GithubIcon.astro";
+
+import type { NavItem, IconName } from "@/lib/navigation/types";
+
+/* ================================
+   LOCAL TYPES (чтобы не тащить из content)
+================================ */
+
+type NavSection = {
+  title: string;
+  items: NavItem[];
+  enabled?: boolean;
+};
+
+type FooterMeta = {
+  tagline?: string;
+  company?: string;
+};
+
+/* ================================
+   TYPES
+================================ */
+
+interface Props {
+  baseSEO: SEOConfig;
+  pageSEO?: Partial<SEOConfig>;
+  structuredData?: object | object[];
+  lang?: string;
+
+  /* UI */
+  showNav?: boolean;
+  showFooter?: boolean;
+
+  logo?: any;
+
+  navItems?: NavItem[];
+  footerSections?: NavSection[];
+  footerMeta?: FooterMeta;
+
+  icons?: Partial<Record<IconName, any>>;
+}
+
+/* ================================
+   PROPS
+================================ */
+
+const {
+  baseSEO,
+  pageSEO,
+  structuredData,
+  lang = "en",
+
+  showNav = true,
+  showFooter = true,
+
+  logo,
+
+  navItems = [],
+  footerSections = [],
+  footerMeta = {},
+
+  icons = {
+    github: GithubIcon,
+  },
+} = Astro.props as Props;
+
+/* ================================
+   PATH
+================================ */
+
+const currentPath = Astro.url.pathname;
+
+/* ======================================================
+   SEO MERGE
+====================================================== */
+
+const seo: SEOConfig = pageSEO
+  ? extendSEO(baseSEO, pageSEO)
+  : baseSEO;
+
+const {
+  title,
+  description,
+  canonical,
+  noindex,
+  og,
+  twitter,
+} = seo;
+
+/* ======================================================
+   BASE URL
+====================================================== */
+
+const baseUrl =
+  (canonical && new URL(canonical).origin) ||
+  "";
+
+/* ======================================================
+   NAVIGATION SCHEMA
+====================================================== */
+
+const navigationSchemas = [
+  buildMainNavSchema(baseUrl, navItems),
+  buildFooterNavSchema(baseUrl, footerSections),
+];
+
+/* ======================================================
+   MERGE STRUCTURED DATA
+====================================================== */
+
+const allStructuredData = [
+  ...navigationSchemas,
+  ...(structuredData
+    ? Array.isArray(structuredData)
+      ? structuredData
+      : [structuredData]
+    : []),
+];
+---
+
+<!DOCTYPE html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+
+    {noindex && <meta name="robots" content="noindex,nofollow" />}
+    {canonical && <link rel="canonical" href={canonical} />}
+
+    {/* OG */}
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content={og?.type ?? "website"} />
+    {canonical && <meta property="og:url" content={canonical} />}
+    {og?.image && <meta property="og:image" content={og.image} />}
+    {og?.imageAlt && (
+      <meta property="og:image:alt" content={og.imageAlt} />
+    )}
+
+    {/* Twitter */}
+    <meta
+      name="twitter:card"
+      content={twitter?.card ?? "summary_large_image"}
+    />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    {(twitter?.image ?? og?.image) && (
+      <meta
+        name="twitter:image"
+        content={twitter?.image ?? og?.image}
+      />
+    )}
+
+    {/* STRUCTURED DATA */}
+    {allStructuredData.map((item) => (
+      <script
+        type="application/ld+json"
+        set:html={JSON.stringify(item)}
+      />
+    ))}
+
+    <slot name="head" />
+  </head>
+
+  <body class="page-root">
+    {showNav && navItems.length > 0 && (
+      <Nav
+        items={navItems}
+        currentPath={currentPath}
+        logo={logo}
+        icons={icons}
+      />
+    )}
+
+    <main class="page-main">
+      <slot />
+    </main>
+
+    {showFooter && footerSections.length > 0 && (
+      <Footer
+        sections={footerSections}
+        meta={footerMeta}
+        logo={logo}
+      />
+    )}
+  </body>
+</html>

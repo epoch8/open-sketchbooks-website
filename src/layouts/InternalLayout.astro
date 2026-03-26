@@ -1,0 +1,115 @@
+---
+import BaseLayout from "@/layouts/baseLayout.astro";
+
+import styles from "./InternalLayout.module.css";
+import "../styles/global.css";
+
+import type { SEOConfig } from "@/lib/seo/types";
+import type { NavItem, IconName } from "@/lib/navigation/types";
+
+/* ================================
+   TYPES
+================================ */
+
+type NavSection = {
+  title: string;
+  items: NavItem[];
+  enabled?: boolean;
+};
+
+type FooterMeta = {
+  tagline?: string;
+  company?: string;
+};
+
+interface Props {
+  baseSEO: SEOConfig;
+  pageSEO?: Partial<SEOConfig>;
+  structuredData?: object | object[];
+
+  navItems?: NavItem[];
+  footerSections?: NavSection[];
+  footerMeta?: FooterMeta;
+
+  logo?: any;
+  icons?: Partial<Record<IconName, any>>;
+
+  showNav?: boolean;
+  showFooter?: boolean;
+
+  class?: string;
+}
+
+/* ================================
+   PROPS
+================================ */
+
+const {
+  baseSEO,
+  pageSEO,
+  structuredData,
+
+  navItems = [],
+  footerSections = [],
+  footerMeta = {},
+
+  logo,
+  icons,
+
+  showNav,
+  showFooter,
+
+  class: extraClass = "",
+} = Astro.props as Props;
+
+/* ================================
+   SLOT DETECTION
+================================ */
+
+const hasAside = Astro.slots.has("aside");
+
+/* ================================
+   CLASSES
+================================ */
+
+const layoutClass = [
+  styles["internal-layout"],
+  hasAside && styles["internal-layout--with-aside"],
+  extraClass,
+]
+  .filter(Boolean)
+  .join(" ");
+---
+
+<BaseLayout
+  baseSEO={baseSEO}
+  pageSEO={pageSEO}
+  structuredData={structuredData}
+
+  navItems={navItems}
+  footerSections={footerSections}
+  footerMeta={footerMeta}
+
+  logo={logo}
+  icons={icons}
+
+  showNav={showNav}
+  showFooter={showFooter}
+>
+
+  <div class={layoutClass}>
+
+    {/* 👉 aside рендерим ТОЛЬКО если есть слот */}
+    {hasAside && (
+      <aside class={styles["aside"]}>
+        <slot name="aside" />
+      </aside>
+    )}
+
+    <main class={styles["content"]}>
+      <slot />
+    </main>
+
+  </div>
+
+</BaseLayout>

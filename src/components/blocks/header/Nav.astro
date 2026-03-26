@@ -1,0 +1,120 @@
+---
+import styles from "./Nav.module.css";
+
+import type { NavItem } from "@/lib/navigation/types";
+
+/* ================================
+   TYPES
+================================ */
+
+export interface Props {
+  items: NavItem[];
+  currentPath: string;
+
+  logo?: any;
+  icons?: Record<string, any>;
+}
+
+/* ================================
+   PROPS
+================================ */
+
+const {
+  items = [],
+  currentPath = "/",
+  logo: Logo,
+  icons = {},
+} = Astro.props as Props;
+
+/* ================================
+   PREPARE NAV
+================================ */
+
+const navItems = items
+  .filter((item) => item.enabled !== false)
+  .map((item) => {
+    const isActive =
+      currentPath === item.href ||
+      currentPath.startsWith(item.href + "/");
+
+    return {
+      ...item,
+      isActive,
+    };
+  });
+---
+
+<header
+  id="site-header"
+  class={styles["nav-header"]}
+  data-open="false"
+>
+  <div class={styles["nav-inner"]}>
+
+    {/* BRAND */}
+    {Logo && (
+      <div class={styles["nav-brand"]}>
+        <Logo href="/#home" />
+      </div>
+    )}
+
+    {/* NAV */}
+    <nav
+      id="primary-nav"
+      class={styles["nav-links"]}
+      aria-label="Primary"
+    >
+      {navItems.map((item) => {
+        const Icon = item.icon ? icons[item.icon] : null;
+
+        return (
+          <a
+            href={item.href}
+            class={[
+              styles["nav-link"],
+              item.variant === "cta" && styles["nav-cta"],
+              item.variant === "icon" && styles["nav-icon"],
+              item.isActive && styles["nav-link--active"],
+            ]
+              .filter(Boolean)
+              .join(" ")}
+            target={item.external ? "_blank" : undefined}
+            rel={item.external ? "noopener noreferrer" : undefined}
+            title={item.description}
+          >
+            {/* ICON */}
+            {item.variant === "icon" && Icon && (
+              <span class={styles["nav-icon-inner"]}>
+                <Icon />
+              </span>
+            )}
+
+            {/* LABEL */}
+            {item.variant !== "icon" && item.label && (
+              <span>{item.label}</span>
+            )}
+          </a>
+        );
+      })}
+    </nav>
+
+    {/* MOBILE */}
+    <button
+      id="menu-toggle"
+      class={styles["nav-menu-toggle"]}
+      aria-label="Toggle menu"
+      aria-controls="primary-nav"
+      aria-expanded="false"
+      type="button"
+    >
+      ☰
+    </button>
+
+  </div>
+</header>
+
+<div id="nav-overlay" class={styles["nav-overlay"]}></div>
+
+<script>
+  import "./nav.js";
+</script>

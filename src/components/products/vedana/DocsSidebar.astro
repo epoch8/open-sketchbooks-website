@@ -1,0 +1,242 @@
+---
+// DocsSidebar.astro
+function normalizeDocSlug(slug: string) {
+  return slug
+    .split("/")
+    .map((part) => part.replace(/^\d+-/, ""))
+    .join("/");
+}
+
+const { allDocs, currentSlug } = Astro.props;
+
+// Process and sort allDocs exactly as in the React component
+const sectionsMap: Record<string, { items: any[]; order: number }> = {};
+const rootItems: any[] = [];
+
+allDocs.forEach((doc: any) => {
+  const { id: slug, data } = doc;
+  const { title, section, order = 0 } = data;
+
+  const slugParts = slug.split("/");
+  let explicitSectionOrder = 0;
+  let explicitPageOrder = 0;
+
+  if (slugParts.length > 1) {
+    const sm = slugParts[0].match(/^(\d+)/);
+    if (sm) explicitSectionOrder = parseInt(sm[1], 10);
+  }
+
+  const lastPart = slugParts[slugParts.length - 1];
+  const pm = lastPart.match(/^(\d+)-(.*)/);
+  let cleanPageSlug = lastPart;
+  if (pm) {
+    explicitPageOrder = parseInt(pm[1], 10);
+    cleanPageSlug = pm[2];
+  }
+
+  const cleanTotalSlug = normalizeDocSlug(slug);
+  const finalOrder = order !== 0 ? order : explicitPageOrder;
+  const finalSectionOrder = explicitSectionOrder;
+  const finalTitle =
+    title ||
+    cleanPageSlug
+      .split("-")
+      .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+
+  const item = {
+    key: cleanTotalSlug,
+    title: finalTitle,
+    href: `/docs/${cleanTotalSlug}`,
+    order: finalOrder,
+  };
+
+  if (section) {
+    if (!sectionsMap[section]) {
+      sectionsMap[section] = { items: [], order: finalSectionOrder };
+    } else if (finalSectionOrder > 0 && sectionsMap[section].order === 0) {
+      sectionsMap[section].order = finalSectionOrder;
+    }
+    sectionsMap[section].items.push(item);
+  } else {
+    rootItems.push(item);
+  }
+});
+
+rootItems.sort((a, b) => a.order - b.order);
+Object.values(sectionsMap).forEach((sec) =>
+  sec.items.sort((a, b) => a.order - b.order),
+);
+
+const sideMenuItems: any[] = [];
+const sortedSections = Object.entries(sectionsMap).sort(
+  (a, b) => a[1].order - b[1].order,
+);
+
+sortedSections.forEach(([sectionName, secData]) => {
+  sideMenuItems.push({
+    isSection: true,
+    key: `section-${sectionName}`,
+    title: sectionName,
+    children: secData.items,
+  });
+});
+
+sideMenuItems.push(...rootItems);
+
+// Calculate default open sections
+const defaultOpenKeys = sideMenuItems
+  .filter(
+    (item) =>
+      item.children &&
+      item.children.some((child: any) => child.key === currentSlug),
+  )
+  .map((item) => item.key);
+---
+
+<nav class="docs-sidebar">
+  <ul class="sidebar-list">
+    {
+      sideMenuItems.map((item) => (
+        <li class="sidebar-item">
+          {item.isSection ? (
+            <details
+              class="sidebar-details"
+              open={defaultOpenKeys.includes(item.key)}
+            >
+              <summary class="sidebar-summary">
+                <span class="sidebar-section-title">{item.title}</span>
+                <span class="sidebar-arrow">
+                  <svg
+                    viewBox="64 64 896 896"
+                    focusable="false"
+                    data-icon="down"
+                    width="10px"
+                    height="10px"
+                    fill="currentColor"
+                    aria-hidden="true"
+                  >
+                    <path d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z" />
+                  </svg>
+                </span>
+              </summary>
+              <ul class="sidebar-sublist">
+                {item.children.map((child: any) => (
+                  <li class="sidebar-subitem">
+                    <a
+                      href={child.href}
+                      class:list={[
+                        "sidebar-link",
+                        { active: child.key === currentSlug },
+                      ]}
+                    >
+                      {child.title}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </details>
+          ) : (
+            <a
+              href={item.href}
+              class:list={[
+                "sidebar-link root-link",
+                { active: item.key === currentSlug },
+              ]}
+            >
+              {item.title}
+            </a>
+          )}
+        </li>
+      ))
+    }
+  </ul>
+</nav>
+
+<style>
+  .docs-sidebar {
+    height: 100%;
+    padding-right: 16px;
+    font-family: inherit;
+  }
+
+  .sidebar-list,
+  .sidebar-sublist {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .sidebar-item {
+    margin-bottom: 4px;
+    font-size: 14px;
+  }
+
+  .sidebar-summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 16px;
+    cursor: pointer;
+    border-radius: 8px;
+    color: rgba(0, 0, 0, 0.88);
+    transition: background-color 0.3s;
+    list-style: none;
+  }
+
+  .sidebar-summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .sidebar-summary:hover {
+    color: rgba(0, 0, 0, 0.88);
+  }
+
+  .sidebar-section-title {
+    font-weight: 600;
+  }
+
+  .sidebar-arrow {
+    display: flex;
+    align-items: center;
+    transition: transform 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+    color: rgba(0, 0, 0, 0.25);
+  }
+
+  /* Ant Design Menu details arrow rotation */
+  .sidebar-details:not([open]) .sidebar-arrow {
+    transform: rotate(-90deg);
+  }
+
+  .sidebar-subitem {
+    margin-top: 4px;
+    margin-bottom: 4px;
+  }
+
+  .sidebar-link {
+    display: block;
+    padding: 8px 16px 8px 32px; /* Indent sub items */
+    color: rgba(0, 0, 0, 0.88);
+    text-decoration: none;
+    border-radius: 8px;
+    transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+    line-height: 1.5714285714285714;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .root-link {
+    padding-left: 16px; /* Do not indent root items */
+  }
+
+  .sidebar-link:hover {
+    color: #2563eb;
+    background-color: rgba(37, 99, 235, 0.08); /* itemHoverBg */
+  }
+
+  .sidebar-link.active {
+    color: #2563eb;
+    background-color: rgba(37, 99, 235, 0.1); /* itemSelectedBg */
+  }
+</style>

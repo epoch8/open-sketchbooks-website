@@ -1,0 +1,53 @@
+---
+import { getCollection, render, type CollectionEntry } from "astro:content";
+import type { GetStaticPaths } from "astro";
+import DocsLayout from "../../layouts/DocsLayout.astro";
+
+export function cleanSlug(id: string): string {
+  const normalized = id
+    .split("/")
+    .map((part) => part.replace(/^\d+-/, ""))
+    .join("/");
+  return normalized;
+}
+
+export const getStaticPaths = (async () => {
+  const docsEntries = await getCollection("docs");
+  const paths = docsEntries.map((entry) => ({
+    params: { slug: cleanSlug(entry.id) as string | undefined },
+    props: { entry },
+  }));
+
+  const hasRootPath = paths.some((path) => path.params.slug === "");
+  if (!hasRootPath && docsEntries.length > 0) {
+    const [landingEntry] = [...docsEntries].sort((a, b) =>
+      a.id.localeCompare(b.id),
+    );
+    paths.push({
+      params: { slug: undefined },
+      props: { entry: landingEntry },
+    });
+  }
+
+  return paths;
+}) satisfies GetStaticPaths;
+
+interface Props {
+  entry: CollectionEntry<"docs">;
+}
+
+const { entry } = Astro.props;
+const { Content, headings } = await render(entry);
+
+const allDocs = await getCollection("docs");
+---
+
+<DocsLayout
+  currentSlug={cleanSlug(entry.id)}
+  headings={headings}
+  allDocs={allDocs}
+  title={entry.data.title}
+>
+  <h1>{entry.data.title}</h1>
+  <Content />
+</DocsLayout>

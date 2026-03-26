@@ -1,0 +1,88 @@
+---
+import styles from "./Footer.module.css";
+
+import type { NavItem } from "@/lib/navigation/types";
+
+/* ================================
+   TYPES
+================================ */
+
+export interface NavSection {
+  title: string;
+  items: NavItem[];
+  enabled?: boolean;
+}
+
+export interface FooterMeta {
+  tagline?: string;
+  company?: string;
+}
+
+export interface Props {
+  sections?: NavSection[];
+  meta?: FooterMeta;
+
+  logo?: any;
+}
+
+/* ================================
+   PROPS
+================================ */
+
+const {
+  sections = [],
+  meta = {},
+  logo: Logo,
+} = Astro.props as Props;
+
+const year = new Date().getFullYear();
+---
+
+<footer class={styles.footer}>
+  <div class={styles.container}>
+    <div class={styles.grid}>
+
+      {/* BRAND */}
+      <div class={styles.brand}>
+        {Logo && <Logo />}
+
+        {meta.tagline && (
+          <p class={styles.tagline}>
+            {meta.tagline}
+          </p>
+        )}
+      </div>
+
+      {/* NAV */}
+      {sections
+        .filter((section) => section.enabled !== false)
+        .map((section) => (
+          <div class={styles.column}>
+            <h4 class={styles.colTitle}>{section.title}</h4>
+
+            <ul class={styles.links}>
+              {section.items
+                .filter((item) => item.enabled !== false && item.label)
+                .map((item) => (
+                  <li>
+                    <a
+                      href={item.href}
+                      target={item.external ? "_blank" : undefined}
+                      rel={item.external ? "noopener noreferrer" : undefined}
+                    >
+                      {item.label}
+                    </a>
+                  </li>
+                ))}
+            </ul>
+          </div>
+        ))}
+
+    </div>
+  </div>
+
+  {/* BOTTOM */}
+  <div class={styles.bottom}>
+    © {year} {meta.company ?? ""}
+  </div>
+</footer>

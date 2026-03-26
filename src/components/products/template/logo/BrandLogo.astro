@@ -1,0 +1,36 @@
+---
+interface Props {
+  href?: string;
+}
+
+const { href = "/" } = Astro.props;
+---
+
+<a href={href} class="brand-logo">
+  <span class="brand-logo__mark">◆</span>
+  <span class="brand-logo__text">Template</span>
+</a>
+
+<style>
+  .brand-logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .brand-logo__mark {
+    font-size: 1.2rem;
+    line-height: 1;
+
+    color: var(--color-accent, #3b82f6);
+  }
+
+  .brand-logo__text {
+    font-weight: 600;
+    font-size: 1rem;
+    letter-spacing: -0.01em;
+  }
+</style>

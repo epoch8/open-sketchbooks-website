@@ -1,0 +1,156 @@
+---
+import InternalLayout from "@/layouts/InternalLayout.astro";
+
+import { SEOBase } from "@/content/template/seo/seo";
+import {
+  mainNav,
+  footerNav,
+  footerMeta,
+} from "@/content/template/navigation/navigation";
+
+import BrandLogo from "@/components/products/template/logo/BrandLogo.astro";
+
+import type { SEOConfig } from "@/lib/seo/types";
+
+import CardGrid from "@/components/blocks/card-grid/CardGrid.astro";
+import CardGridItem from "@/components/blocks/card-grid/CardGridItem.astro";
+
+import IconGrid from "@/components/blocks/icon-grid/IconGrid.astro";
+import IconGridItem from "@/components/blocks/icon-grid/IconGridItem.astro";
+
+import Callout from "@/components/blocks/callout/Callout.astro";
+
+import Timeline from "@/components/blocks/timeline/Timeline.astro";
+import TimelineItem from "@/components/blocks/timeline/TimelineItem.astro";
+
+import "../styles/global.css";
+
+/* ================================
+   DATA
+================================ */
+
+const crumbs = [
+  { label: "Example", href: "/example" }
+];
+
+const pageSEO: Partial<SEOConfig> = {
+  title: "Example Internal Page",
+  description:
+    "Example internal page built with the Astro template.",
+  canonical: "",
+};
+---
+
+<InternalLayout
+  baseSEO={SEOBase}
+  pageSEO={pageSEO}
+
+  navItems={mainNav}
+  footerSections={footerNav}
+  footerMeta={footerMeta}
+
+  logo={BrandLogo}
+>
+
+  {/* HERO */}
+  <section class="page-hero">
+    <div class="page-hero-inner">
+      <h1 class="page-hero-title">
+        Build structured content pages<br />
+        with reusable blocks
+      </h1>
+
+      <p class="page-hero-lead">
+        This template demonstrates how to compose internal pages using
+        reusable components, consistent layout, and structured navigation.
+      </p>
+    </div>
+  </section>
+
+  {/* GRID */}
+  <section class="section">
+    <div class="container flow">
+      <h2>Example content blocks</h2>
+
+      <CardGrid>
+        <CardGridItem
+          title="Structured content"
+          text="Organize your content into reusable components instead of writing monolithic pages."
+          href="/docs"
+          buttonLabel="Explore Docs"
+        />
+
+        <CardGridItem
+          title="Composable layout"
+          text="Layouts handle navigation, SEO, and structure — pages focus only on content."
+        />
+
+        <CardGridItem
+          title="Scalable architecture"
+          text="Decouple UI, data, and configuration to make the system reusable."
+        />
+      </CardGrid>
+    </div>
+  </section>
+
+  {/* ICON GRID */}
+  <section class="section">
+    <div class="container flow">
+      <h2>When this template works best</h2>
+
+      <IconGrid>
+        <IconGridItem
+          title="Content-heavy sites"
+          text="Documentation, knowledge bases, and structured content hubs."
+        />
+
+        <IconGridItem
+          title="Clear navigation"
+          text="When users need to move across multiple sections and pages."
+        />
+
+        <IconGridItem
+          title="SEO-first structure"
+          text="Pages designed with semantic structure and metadata in mind."
+        />
+
+        <IconGridItem
+          title="Reusable UI blocks"
+          text="When you want consistency without duplicating code."
+        />
+      </IconGrid>
+
+      <Callout>
+        This page is an example of how to compose internal pages using the template system.
+      </Callout>
+    </div>
+  </section>
+
+  {/* TIMELINE */}
+  <section class="section">
+    <div class="container flow">
+      <h2>How pages are structured</h2>
+
+      <Timeline orientation="vertical" lines={false}>
+        <TimelineItem index="1" title="Layout">
+          <p>
+            Provides navigation, SEO, and global structure.
+          </p>
+        </TimelineItem>
+
+        <TimelineItem index="2" title="Blocks">
+          <p>
+            Reusable components like grids, callouts, and timelines.
+          </p>
+        </TimelineItem>
+
+        <TimelineItem index="3" title="Content">
+          <p>
+            Page-specific content assembled from blocks.
+          </p>
+        </TimelineItem>
+      </Timeline>
+    </div>
+  </section>
+
+</InternalLayout>

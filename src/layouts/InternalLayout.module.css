@@ -1,0 +1,85 @@
+/* =========================================
+   INTERNAL LAYOUT — GENERIC GRID
+========================================= */
+
+/*
+  Концепция:
+
+  1. По умолчанию — одна колонка (без aside)
+  2. Если есть aside → включаем вторую колонку
+  3. Layout не навязывает геометрию
+*/
+
+
+/* -----------------------------------------
+   ROOT WRAPPER
+------------------------------------------ */
+
+.internal-layout {
+  display: grid;
+
+  /* 👇 по умолчанию БЕЗ aside */
+  grid-template-columns: 1fr;
+
+  gap: var(--layout-gap, 2rem);
+
+  width: 100%;
+}
+
+
+/* 👇 включаем aside только если он есть */
+.internal-layout--with-aside {
+  grid-template-columns:
+    var(--layout-aside-width, 240px)
+    1fr;
+}
+
+
+/* -----------------------------------------
+   ASIDE (SLOT)
+------------------------------------------ */
+
+.aside {
+  position: sticky;
+  top: var(--header-height);
+
+  align-self: start;
+
+  min-width: 0;
+}
+
+
+/* -----------------------------------------
+   CONTENT COLUMN
+------------------------------------------ */
+
+.content {
+  max-width: var(--container-wide);
+  margin: 0 auto;
+
+  width: 100%;
+  min-width: 0;
+
+  padding-left: var(--container-padding-x);
+  padding-right: var(--container-padding-x);
+}
+
+
+/* -----------------------------------------
+   MOBILE
+------------------------------------------ */
+
+@media (max-width: 1024px) {
+  .internal-layout--with-aside {
+    grid-template-columns: 1fr;
+  }
+
+  .aside {
+    display: none;
+  }
+
+  .content {
+    padding-left: var(--container-padding-x);
+    padding-right: var(--container-padding-x);
+  }
+}

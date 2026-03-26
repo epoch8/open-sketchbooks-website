@@ -1,0 +1,145 @@
+/* ======================================
+   FOOTER
+====================================== */
+
+.footer {
+  border-top: 1px solid var(--color-border);
+  background: var(--color-bg);
+}
+
+
+/* ======================================
+   INNER LAYOUT
+====================================== */
+
+.container {
+  max-width: var(--container-wide);
+  margin: 0 auto;
+
+  padding-top: var(--space-12);
+  padding-bottom: var(--space-12);
+
+  padding-left: var(--layout-content-offset);
+  padding-right: var(--container-padding-x);
+}
+
+
+/* ======================================
+   GRID
+====================================== */
+
+.grid {
+  display: grid;
+  gap: var(--space-10);
+}
+
+@media (min-width: 768px) {
+  .grid {
+    grid-template-columns: 1.5fr repeat(4, 1fr);
+  }
+}
+
+
+/* ======================================
+   BRAND (FIX WITHOUT ABSOLUTE)
+====================================== */
+
+.brand {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+
+  /* 👇 ключ: компенсируем offset header */
+  margin-left: calc(var(--layout-left-offset) - var(--layout-content-offset) - 18px);
+}
+
+
+/* ======================================
+   TEXT
+====================================== */
+
+.tagline {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+
+/* ======================================
+   COLUMNS
+====================================== */
+
+.column {
+  display: flex;
+  flex-direction: column;
+}
+
+.colTitle {
+  margin: 0;
+
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
+}
+
+.links {
+  margin-top: var(--space-3);
+  padding: 0;
+
+  list-style: none;
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+
+  font-size: var(--font-size-sm);
+}
+
+.links a {
+  color: var(--color-text-muted);
+  text-decoration: none;
+  transition: color var(--dur-fast) var(--ease-standard);
+}
+
+.links a:hover {
+  color: var(--color-primary);
+}
+
+
+/* ======================================
+   BOTTOM
+====================================== */
+
+.bottom {
+  border-top: 1px solid var(--color-border);
+
+  padding-top: var(--space-6);
+  padding-bottom: var(--space-6);
+
+  padding-left: var(--layout-content-offset);
+  padding-right: var(--container-padding-x);
+
+  text-align: center;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+
+/* ======================================
+   MOBILE
+====================================== */
+
+@media (max-width: 768px) {
+  .brand {
+    margin-left: 0;
+  }
+
+  .container {
+    padding-left: var(--container-padding-x);
+    padding-right: var(--container-padding-x);
+  }
+
+  .bottom {
+    padding-left: var(--container-padding-x);
+    padding-right: var(--container-padding-x);
+  }
+}

@@ -1,0 +1,124 @@
+.container {
+  display: flex;
+  max-width: var(--container-wide);
+  margin: 0 auto;
+  padding: 4rem 1.5rem;
+  align-items: flex-start;
+  gap: 3rem;
+}
+
+/* ---------- SIDEBAR ---------- */
+
+.sidebar {
+  width: 280px;
+  position: sticky;
+  top: 100px;
+  height: calc(100vh - 100px);
+  overflow-y: auto;
+  flex-shrink: 0;
+}
+
+/* ---------- CONTENT ---------- */
+
+.content {
+  flex: 1;
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* ---------- TYPOGRAPHY ---------- */
+
+.content h1 {
+  font-size: var(--font-size-3xl);
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  color: var(--color-text);
+}
+
+.content h2 {
+  font-size: var(--font-size-2xl);
+  font-weight: 600;
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+  color: var(--color-text);
+}
+
+.content h3 {
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+  color: var(--color-text);
+}
+
+.content p {
+  font-size: var(--font-size-base);
+  line-height: 1.75;
+  margin-bottom: 1.25rem;
+  color: var(--color-text-muted);
+}
+
+.content a {
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+.content a:hover {
+  text-decoration: underline;
+}
+
+.content ul,
+.content ol {
+  margin-bottom: 1.25rem;
+  padding-left: 1.5rem;
+  color: var(--color-text-muted);
+  line-height: 1.75;
+}
+
+.content li {
+  margin-bottom: 0.5rem;
+}
+
+/* ---------- CODE ---------- */
+
+.content pre {
+  background: var(--color-code-bg);
+  color: var(--color-code-text);
+  padding: 1.25rem;
+  border-radius: var(--radius-md);
+  overflow-x: auto;
+  margin-bottom: 1.5rem;
+}
+
+.content code {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+}
+
+.content p > code,
+.content li > code {
+  background: var(--color-code-inline-bg);
+  padding: 0.2rem 0.4rem;
+  border-radius: var(--radius-sm);
+}
+
+/* ---------- MOBILE ---------- */
+
+@media (max-width: 1024px) {
+  .container {
+    gap: 2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+    padding: 2rem 1rem;
+  }
+
+  .sidebar {
+    width: 100%;
+    height: auto;
+    position: static;
+  }
+}

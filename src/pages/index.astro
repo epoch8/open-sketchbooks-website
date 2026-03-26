@@ -1,0 +1,48 @@
+---
+import BaseLayout from "@/layouts/baseLayout.astro";
+
+import { SEOBase } from "@/content/template/seo/seo";
+import {
+  mainNav,
+  footerNav,
+  footerMeta,
+} from "@/content/template/navigation/navigation";
+
+import BrandLogo from "@/components/products/template/logo/BrandLogo.astro";
+
+import Button from "@/components/blocks/button/Button.astro";
+
+---
+
+<BaseLayout
+  baseSEO={SEOBase}
+  pageSEO={{
+    title: "Website Template — Build content-rich sites with Astro",
+    description:
+      "Quick template for building content-rich websites with Astro. Features SEO best practices, responsive design, and easy customization.",
+  }}
+
+  navItems={mainNav}
+  footerSections={footerNav}
+  footerMeta={footerMeta}
+
+  logo={BrandLogo}
+>
+
+<section class="section">
+  <div class="container">
+    <h1>Welcome to your new Astro website!</h1>
+    <p></p>
+    <p>
+      This is a starter template designed to help you build content-rich websites
+      with Astro. It includes SEO best practices, responsive design, and easy
+      customization options.
+    </p>
+
+    <Button href="/guidebooks/style-guide" variant="primary">
+      Explore Guidebooks
+    </Button>
+  </div>
+</section>
+
+</BaseLayout>
