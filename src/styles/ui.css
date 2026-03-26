@@ -1,124 +1,110 @@
 /* =========================
-   BASE HELPERS
+   BASE HELPERS — SKETCHBOOK
 ========================= */
-/* Explicit section wrapper */
+
+/* Section — больше воздуха, меньше “секции” */
 .section {
-  padding: clamp(2rem, 2vw, 4rem) 0;
+  padding: clamp(3rem, 6vw, 6rem) 0;
 }
 
+/* Container — НЕ центрируем идеально */
 .container {
   max-width: var(--container-wide);
   margin: 0 auto;
-/*  padding: 0 var(--container-padding-x);*/
+  padding: 0 var(--space-4);
 }
 
-/* Vertical rhythm utility */
+/* Вертикальный ритм — ок */
 .flow > * + * {
-  margin-top: var(--space-10);
+  margin-top: var(--space-8);
 }
 
-/* Horizontal rhythm utility */
+/* =========================
+   LAYOUT (убрали grid-идеальность)
+========================= */
 
 .row {
-  display: grid;
+  display: flex;
+  flex-wrap: wrap;
   gap: var(--space-6);
 
-  grid-template-columns: repeat(
-    auto-fit,
-    minmax(320px, max-content)
-  );
-
-  justify-content: center;
+  justify-content: flex-start;
 }
 
 /* =========================
-   SECTION
-======================== */
+   SECTION BG (убили градиент)
+========================= */
 
 .section-bg-gradient {
-  position: absolute;
-  inset: 0;
-
-  background: radial-gradient(
-    ellipse at top,
-    var(--section-radial-color),
-    transparent var(--section-radial-stop)
-  );
-
-  pointer-events: none;
+  display: none;
 }
 
-
-
 /* =========================
-   BUTTONS
+   BUTTONS → СТАЛИ ОБЪЕКТАМИ
 ========================= */
 
 .btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  display: inline-block;
 
   padding: var(--space-3) var(--space-5);
 
-  border-radius: var(--radius-md);
-  font-weight: var(--font-weight-medium);
-  text-decoration: none;
+  font-family: var(--font-family-accent);
+  font-size: var(--font-size-base);
+
+  color: var(--color-text);
+
+  background: var(--color-paper-white);
+
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-paper);
+
+  box-shadow: var(--shadow-cutout);
+
+  transform: rotate(var(--cutout-rotation-sm));
 
   transition:
-    background-color var(--dur-fast) var(--ease-standard),
-    color var(--dur-fast) var(--ease-standard),
-    box-shadow var(--dur-fast) var(--ease-standard);
+    transform var(--dur-fast) var(--ease-sketch),
+    box-shadow var(--dur-fast) var(--ease-sketch);
 }
 
+/* hover = “ожил” */
+.btn:hover {
+  transform: rotate(0deg) translateY(-1px);
+  box-shadow: 3px 4px 0 rgba(0, 0, 0, 0.2);
+}
 
 /* =========================
-   PRIMARY
+   ВАРИАНТЫ КАК ЦВЕТНЫЕ ВЫРЕЗКИ
 ========================= */
 
 .btn--primary {
-  background-color: var(--color-primary);
-  color: var(--color-on-primary);
-  box-shadow: var(--shadow-sm);
+  background: var(--color-red);
+  color: var(--color-paper-white);
 }
-
-.btn--primary:hover {
-  background-color: var(--color-primary-hover);
-}
-
-
-/* =========================
-   DARK
-========================= */
 
 .btn--dark {
-  background-color: var(--color-dark);
-  color: var(--color-on-dark);
-  box-shadow: var(--shadow-sm);
+  background: var(--color-blue-deep);
+  color: var(--color-paper-white);
 }
-
-.btn--dark:hover {
-  background-color: var(--color-dark-hover);
-}
-
-
-/* =========================
-   LINK
-========================= */
 
 .btn--link {
-  padding: 0;
   background: transparent;
-  color: var(--color-primary-ink);
+  border: none;
+  box-shadow: none;
+  transform: none;
+
+  color: var(--color-text);
+
+  font-family: var(--font-family-accent);
 }
 
 .btn--link:hover {
   text-decoration: underline;
 }
 
-/* ======================================================
-   HEADINGS — GLOBAL TYPOGRAPHY SYSTEM
-====================================================== */
+/* =========================
+   TYPOGRAPHY
+========================= */
 
 h1,
 h2,
@@ -127,11 +113,16 @@ h4,
 h5,
 h6 {
   margin: 0;
-  font-family: var(--font-family-base);
-  letter-spacing: var(--heading-letter);
+
+  font-family: var(--heading-font);
+
+  letter-spacing: var(--letter-tight);
   color: var(--heading-color);
+
+  transform: rotate(-0.5deg); /* микро-живость */
 }
 
+/* Центр — можно оставить */
 .text-center {
   text-align: center;
 }
@@ -168,31 +159,22 @@ h4 {
 
 h5 {
   font-size: var(--heading-5-size);
-  line-height: var(--heading-line-normal);
 }
 
 /* ------------------ H6 ------------------ */
 
 h6 {
   font-size: var(--heading-6-size);
-  line-height: var(--heading-line-normal);
   font-weight: var(--font-weight-medium);
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
+/* Вес */
+h1, h2, h3, h4, h5, h6 {
   font-weight: var(--heading-weight);
 }
 
 h1 strong,
 h2 strong,
-h3 strong,
-h4 strong,
-h5 strong,
-h6 strong {
-  font-weight: var(font-weight-heavy);
+h3 strong {
+  font-weight: var(--font-weight-bold);
 }

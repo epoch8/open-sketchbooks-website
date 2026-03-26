@@ -1,82 +1,82 @@
 /* ======================================================
-   CARD GRID
+   CARD GRID → НЕАККУРАТНАЯ РАСКЛАДКА
 ====================================================== */
 
 .card-grid__container {
-
-  display: grid;
-
-  grid-template-columns:
-    repeat(var(--card-grid-columns, auto-fit), minmax(280px, 1fr));
-
-  grid-auto-rows: 1fr;
-
-  grid-auto-flow: dense;
+  display: flex;
+  flex-wrap: wrap;
 
   gap: var(--space-8);
+
+  justify-content: flex-start;
 }
 
 
-
 /* ======================================================
-   CARD
+   CARD → КАК ОБЪЕКТ
 ====================================================== */
 
 .card {
+  position: relative;
+
+  max-width: 340px;
 
   text-decoration: none;
   color: inherit;
 
-  background: var(--card-bg, var(--color-bg-muted));
+  background: var(--color-paper-white);
 
-  /* спокойный outline */
-  border: 1px solid var(--card-outline, var(--color-border));
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-paper);
 
-  /* акцентная полоска */
-  border-left: 4px solid var(--card-border, var(--color-primary));
-
-  border-radius: var(--radius-md);
-
-  padding: var(--space-8);
-
-  box-sizing: border-box;
+  padding: var(--space-6);
 
   display: flex;
   flex-direction: column;
-
   gap: var(--space-4);
 
-  transition:
-    border-color var(--dur-fast) var(--ease-standard),
-    border-left-color var(--dur-fast) var(--ease-standard),
-    box-shadow var(--dur-fast) var(--ease-standard),
-    transform var(--dur-fast) var(--ease-standard),
-    background var(--dur-fast) var(--ease-standard);
-}
+  box-shadow: var(--shadow-paper);
 
+  /* ключ */
+  transform: rotate(var(--cutout-rotation-sm));
+
+  transition:
+    transform var(--dur-fast) var(--ease-sketch),
+    box-shadow var(--dur-fast) var(--ease-sketch);
+}
 
 
 /* ======================================================
-   CARD SPANS (Stripe / Vercel style)
+   РАЗНЫЕ УГЛЫ (чтобы не было одинаково)
 ====================================================== */
 
-.card--span-2 {
-  grid-column: span 2;
+.card:nth-child(2n) {
+  transform: rotate(var(--cutout-rotation-md));
 }
 
-.card--span-3 {
-  grid-column: span 3;
+.card:nth-child(3n) {
+  transform: rotate(-1deg);
 }
 
-.card--row-2 {
-  grid-row: span 2;
-}
 
-.card--hero {
-  grid-column: span 2;
-  grid-row: span 2;
-}
+/* ======================================================
+   ПСЕВДО-СЛОЙ (эффект бумаги)
+====================================================== */
 
+.card::before {
+  content: "";
+
+  position: absolute;
+  inset: 6px;
+
+  background: var(--color-bg-soft);
+
+  border-radius: var(--radius-paper);
+
+  z-index: -1;
+
+  transform: translate(var(--layer-offset-x), var(--layer-offset-y));
+}
 
 
 /* ======================================================
@@ -84,74 +84,41 @@
 ====================================================== */
 
 .card__body {
-
   display: flex;
   flex-direction: column;
-
-  gap: var(--space-4);
+  gap: var(--space-3);
 }
-
-
-
-/* ======================================================
-   ICON
-====================================================== */
-
-.card__icon {
-
-  width: 40px;
-  height: 40px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.card__icon img {
-
-  width: 100%;
-  height: auto;
-}
-
-
-
-/* ======================================================
-   TITLE
-====================================================== */
-
-.card__title {
-
-  margin: 0;
-
-  font-size: var(--font-size-xl);
-  font-weight: var(--font-weight-semibold);
-
-  line-height: var(--line-height-tight);
-  letter-spacing: var(--letter-tight);
-
-  color: var(--color-text-strong);
-}
-
 
 
 /* ======================================================
    IMAGE
 ====================================================== */
 
-.card__media {
-  margin: 0;
-}
-
 .card__image {
-
   width: 100%;
   height: auto;
 
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-cut);
 
   display: block;
 }
 
+
+/* ======================================================
+   TITLE → ЖИВОЙ
+====================================================== */
+
+.card__title {
+  margin: 0;
+
+  font-family: var(--heading-font);
+
+  font-size: var(--font-size-xl);
+
+  line-height: var(--line-height-tight);
+
+  transform: rotate(-0.3deg);
+}
 
 
 /* ======================================================
@@ -159,7 +126,6 @@
 ====================================================== */
 
 .card__text {
-
   font-size: var(--font-size-base);
 
   line-height: var(--line-height-base);
@@ -167,65 +133,36 @@
   color: var(--color-text-muted);
 }
 
-.card__text ul {
-
-  padding-left: var(--space-6);
-
-  margin: 0;
-}
-
-.card__text li {
-
-  margin-bottom: var(--space-3);
-}
-
-
 
 /* ======================================================
    FOOTER
 ====================================================== */
 
 .card__footer {
-
   margin-top: auto;
 }
 
 
-
 /* ======================================================
-   CARD INTERACTIVE
+   HOVER → НЕ SaaS, а “потрогали”
 ====================================================== */
 
 .card[href]:hover {
+  transform: rotate(0deg) translateY(-2px);
 
-  border-left-color: var(--card-border);
-
-  background:
-    color-mix(in srgb, var(--card-bg) 92%, var(--card-border));
-
-  box-shadow: 0 6px 24px rgba(0,0,0,0.06);
-
-  transform: translateY(-2px);
-}
-
-.card[href]:hover .card__title {
-  color: color-mix(in srgb, var(--card-border) 35%, black);
+  box-shadow: 4px 6px 0 rgba(0, 0, 0, 0.2);
 }
 
 
 /* ======================================================
-   MOBILE
+   УБИЛИ ЭТО НАВСЕГДА
 ====================================================== */
 
-@media (max-width: 720px){
+/*
+.card--span-2
+.card--span-3
+.card--row-2
+.card--hero
 
-  .card--span-2,
-  .card--span-3,
-  .card--row-2,
-  .card--hero{
-
-    grid-column: auto;
-    grid-row: auto;
-  }
-
-}
+→ больше не нужны
+*/
