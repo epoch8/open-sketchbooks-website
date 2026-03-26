@@ -9,10 +9,12 @@
 
 
 /* ======================================
-   INNER LAYOUT
+   INNER LAYOUT (AXIS CONSISTENT)
 ====================================== */
 
 .container {
+  position: relative; /* 👈 база для absolute brand */
+
   max-width: var(--container-wide);
   margin: 0 auto;
 
@@ -25,32 +27,38 @@
 
 
 /* ======================================
+   BRAND (ALIGNED WITH HEADER AXIS)
+====================================== */
+
+.brand {
+  position: absolute;
+
+  left: calc(var(--layout-left-offset) - 18px);
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+
+  max-width: 220px;
+}
+
+
+/* ======================================
    GRID
 ====================================== */
 
 .grid {
   display: grid;
   gap: var(--space-10);
+
+  /* 👇 освобождаем место под brand */
+  padding-left: 220px;
 }
 
 @media (min-width: 768px) {
   .grid {
     grid-template-columns: 1.5fr repeat(4, 1fr);
   }
-}
-
-
-/* ======================================
-   BRAND (FIX WITHOUT ABSOLUTE)
-====================================== */
-
-.brand {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-
-  /* 👇 ключ: компенсируем offset header */
-  margin-left: calc(var(--layout-left-offset) - var(--layout-content-offset) - 18px);
 }
 
 
@@ -129,8 +137,14 @@
 ====================================== */
 
 @media (max-width: 768px) {
+
   .brand {
-    margin-left: 0;
+    position: static; /* 👈 возвращаем в поток */
+    margin-bottom: var(--space-8);
+  }
+
+  .grid {
+    padding-left: 0; /* 👈 убираем резерв */
   }
 
   .container {

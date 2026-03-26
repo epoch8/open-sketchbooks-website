@@ -14,14 +14,19 @@
 
 
 /* ======================================
-   INNER LAYOUT (AXIS COMPATIBLE)
+   INNER LAYOUT (AXIS CONSISTENT)
 ====================================== */
 
 .nav-inner {
-  position: relative;
+  position: relative; /* 👈 база для absolute brand */
 
-  width: 100%;
+  max-width: var(--container-wide);
+  margin: 0 auto;
+
   height: var(--header-height);
+
+  padding-left: var(--layout-content-offset);
+  padding-right: var(--container-padding-x);
 
   display: flex;
   align-items: center;
@@ -29,12 +34,12 @@
 
 
 /* ======================================
-   BRAND — FIXED ZONE (ALIGNED WITH LAYOUT AXIS)
+   BRAND (ТОЧНО КАК В FOOTER)
 ====================================== */
 
 .nav-brand {
   position: absolute;
-  
+
   left: calc(var(--layout-left-offset) - 18px);
 
   display: flex;
@@ -43,23 +48,23 @@
 
 
 /* ======================================
-   NAV LINKS (CENTERED INDEPENDENTLY)
+   NAV LINKS (НЕЗАВИСИМЫЙ СЛОЙ)
 ====================================== */
 
 .nav-links {
-  max-width: var(--container-wide);
-  margin: 0 auto;
-
   width: 100%;
-
-  padding-left: var(--layout-content-offset);
-  padding-right: var(--container-padding-x);
 
   display: flex;
   align-items: center;
   justify-content: flex-end;
+
   gap: var(--space-6);
 }
+
+
+/* ======================================
+   LINKS
+====================================== */
 
 .nav-link {
   text-decoration: none;
@@ -104,28 +109,6 @@
 
 .nav-menu-toggle {
   display: none;
-  background: none;
-  border: none;
-  font-size: 22px;
-  cursor: pointer;
-}
-
-
-/* ======================================
-   OVERLAY
-====================================== */
-
-.nav-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 900;
-
-  background: rgba(15, 23, 42, 0.45);
-  backdrop-filter: blur(2px);
-
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.25s ease;
 }
 
 
@@ -135,8 +118,13 @@
 
 @media (max-width: 768px) {
 
-    .nav-brand {
-    left: var(--container-padding-x);
+  .nav-inner {
+    padding-left: var(--container-padding-x);
+    padding-right: var(--container-padding-x);
+  }
+
+  .nav-brand {
+    position: static; /* 👈 возвращаем в поток */
   }
 
   .nav-menu-toggle {
@@ -169,10 +157,5 @@
 
   .nav-header[data-open="true"] .nav-links {
     transform: translateX(0);
-  }
-
-  .nav-header[data-open="true"] + .nav-overlay {
-    opacity: 1;
-    pointer-events: auto;
   }
 }
