@@ -29,20 +29,48 @@ import Button from "@/components/blocks/button/Button.astro";
   logo={BrandLogo}
 >
 
-<section class="section">
-  <div class="container">
-    <h1>Open Sketchbooks</h1>
-    <p></p>
-    <p>
-      This is a starter template designed to help you build content-rich websites
-      with Astro. It includes SEO best practices, responsive design, and easy
-      customization options.
-    </p>
+<section class="hero">
 
-    <Button href="/guidebooks/style-guide" variant="primary">
-      Explore Guidebooks
-    </Button>
+  <!-- коллаж -->
+  <img src="/images/horse.png" class="heroLayer heroLayer--horse" />
+  <img src="/images/stars.png" class="heroLayer heroLayer--stars" />
+  <img src="/images/drops.png" class="heroLayer heroLayer--drops" />
+  <img src="/images/flower.png" class="heroLayer heroLayer--flower" />
+
+  <!-- карточка -->
+  <div class="paperMain">
+
+    <!-- главный заголовок как картинка 
+         <h1>Sketchbook Exhibition</h1>
+
+    -->
+
+        <img src="/images/title.png" class="heroTitleImage" alt="Sketchbook Exhibition" />
+
+    <!-- инфо -->
+    <div class="heroInfo">
+
+      <p class="heroDate">
+        Tbilisi, 11 April 2026 • Saturday<br/>
+        12:00 - 18:00
+      </p>
+
+      <p class="heroPlace">CHITI Club Saburtalo</p>
+
+      <p class="heroAddress">
+        39 Simon Kandelaki St, Tbilisi
+      </p>
+
+
+
+    </div>
+
+    <button class="heroButton">
+      Open Call for Artists
+    </button>
+
   </div>
+
 </section>
 
 </BaseLayout>
