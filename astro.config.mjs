@@ -3,7 +3,7 @@ import react from "@astrojs/react";
 import path from "node:path";
 
 export default defineConfig({
-  site: "https://vedana.tech",
+  site: "https://open-sketchbook.place",
   output: "static",
   base: "/",
 
