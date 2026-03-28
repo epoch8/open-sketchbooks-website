@@ -27,8 +27,8 @@ export type FooterMeta = {
 
 export const footerMeta: FooterMeta = {
   tagline:
-    "Template for Astro-based documentation sites.",
-  company: "Built with ❤️ by Epoch8",
+    "",
+  company: "",
 };
 
 /* ======================================================
@@ -37,10 +37,10 @@ export const footerMeta: FooterMeta = {
 
 export const mainNav: NavItem[] = [
   {
-    label: "Internal",
-    href: "/internal",
-    description: "Internal page for testing and development purposes",
-    enabled: true,
+    label: "Artists",
+    href: "/artists",
+    description: "Browse artists in Open Sketchbooks",
+    enabled: false,
   },
 
   {
@@ -63,7 +63,7 @@ export const mainNav: NavItem[] = [
     label: "Book a demo",
     href: "https://calendly.com/olga_t/60min",
     variant: "cta",
-    enabled: true,
+    enabled: false,
   },
 ];
 
@@ -74,18 +74,18 @@ export const mainNav: NavItem[] = [
 export const footerNav: NavSection[] = [
   {
     title: "Product",
-    enabled: true,
+    enabled: false,
     items: [
       {
         label: "Docs",
         href: "/docs",
-        enabled: true,
+        enabled: false,
       },
       {
         label: "GitHub",
         href: "https://github.com/epoch8/vedana",
         external: true,
-        enabled: true,
+        enabled: false,
       },
     ],
   },
@@ -138,12 +138,12 @@ export const footerNav: NavSection[] = [
 
   {
     title: "Company",
-    enabled: true,
+    enabled: false,
     items: [
       {
         label: "About",
         href: "/about",
-        enabled: true,
+        enabled: false,
       },
       {
         label: "Careers",
@@ -153,7 +153,7 @@ export const footerNav: NavSection[] = [
       {
         label: "Contact",
         href: "/contact",
-        enabled: true,
+        enabled: false,
       },
       {
         label: "Legal",

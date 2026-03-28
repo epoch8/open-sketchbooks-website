@@ -1,0 +1,68 @@
+---
+import InternalLayout from "@/layouts/InternalLayout.astro";
+import { SEOBase } from "@/content/template/seo/seo";
+import type { SEOConfig } from "@/lib/seo/types";
+
+import CardGrid from "@/components/blocks/card-grid/CardGrid.astro";
+import CardGridItem from "@/components/blocks/card-grid/CardGridItem.astro";
+
+
+import { getCollection } from "astro:content";
+
+import {
+  mainNav,
+  footerNav,
+  footerMeta,
+} from "@/content/template/navigation/navigation";
+
+import BrandLogo from "@/components/products/open-sketchbooks/logo/BrandLogo.astro";
+
+const pageSEO: Partial<SEOConfig> = {
+  title: "Artists — Open Sketchbooks",
+  description:
+    "Browse artists in Open Sketchbooks: discover portfolios, explore styles, and view original works from contemporary creators.",
+  canonical: "https://open-sketchbook.place/artists",
+
+  og: {
+    type: "website",
+    image: "/og/artists.png",
+    imageAlt: "Artists — Open Sketchbooks",
+  },
+
+  twitter: {
+    card: "summary_large_image",
+    image: "/og/artists.png",
+  },
+};
+
+const artists = await getCollection("artists");
+---
+<InternalLayout
+  baseSEO={SEOBase}
+  pageSEO={pageSEO}
+  navItems={mainNav}
+  footerSections={footerNav}
+  footerMeta={footerMeta}
+  logo={BrandLogo}
+>
+
+  <section class="section">
+    <div class="container flow">
+
+      <h1>Artists</h1>
+
+      <CardGrid>
+        {artists.map((artist) => (
+          <CardGridItem
+            title={artist.data.title}
+            href={`/artists/${artist.slug}`}
+            text=""                
+            buttonLabel=""
+          />
+        ))}
+      </CardGrid>
+
+    </div>
+  </section>
+
+</InternalLayout>

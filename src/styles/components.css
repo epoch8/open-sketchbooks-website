@@ -43,14 +43,14 @@
   position:absolute;
   inset:0;
 
-  backdrop-filter: blur(2px) saturate(0.85);
+  backdrop-filter: blur(1.5px) saturate(0.9);
 
   z-index:0;
 }
 
 
 /* ======================================
-   PAPER CARD (сломали чистоту)
+   PAPER CARD (ГЛАВНЫЙ ОБЪЕКТ)
 ====================================== */
 
 .paperMain{
@@ -59,32 +59,34 @@
   background:var(--paper-light);
 
   padding:48px 56px;
-
-  max-width:580px;
+  max-width:560px;
 
   text-align:center;
 
-  border-radius:12px;
+  border-radius:14px;
 
-  transform: rotate(-2deg) translateY(6px);
+  transform: rotate(-1.2deg) translateY(4px);
 
   box-shadow:
-    0 40px 80px rgba(0,0,0,0.55),
-    0 12px 24px rgba(0,0,0,0.25);
+    0 28px 60px rgba(0,0,0,0.55),
+    0 10px 18px rgba(0,0,0,0.25);
 
   z-index:3;
 
-  animation:floatCard 6s ease-in-out infinite;
+  animation:floatCard 7s ease-in-out infinite;
 }
 
-/* лёгкая "грязь" поверх карточки */
+
+/* бумажная текстура */
+
 .paperMain::before{
   content:"";
   position:absolute;
   inset:0;
-  border-radius:12px;
 
-  background:rgba(0,0,0,0.04);
+  border-radius:14px;
+
+  background:rgba(0,0,0,0.03);
   mix-blend-mode:multiply;
 
   pointer-events:none;
@@ -92,76 +94,99 @@
 
 
 /* ======================================
-   TITLE IMAGE (НЕ центр!)
+   TITLE
 ====================================== */
 
 .heroTitleImage{
   width:100%;
-  max-width:420px;
+  max-width:400px;
 
-  margin:0 auto 18px;
+  margin:0 auto 22px;
 
   display:block;
 
-  transform: rotate(-1deg) translateX(-10px);
+  transform: rotate(-0.4deg);
 }
 
 
 /* ======================================
-   INFO BLOCK
+   INFO BLOCK (ЧЕТКАЯ ИЕРАРХИЯ)
 ====================================== */
 
 .heroInfo{
-  margin-bottom:28px;
+  margin-bottom:34px;
 }
 
+
+/* PRIMARY */
+
 .heroPlace{
-  font-size:20px;
+  font-size:18px;
   font-weight:600;
   color:#222;
-  margin-bottom:6px;
+
+  margin:12px 0 4px;
+}
+
+
+/* SECONDARY */
+
+.heroDate{
+  font-size:13px;
+  color:#555;
+  line-height:1.4;
 }
 
 .heroAddress{
-  font-size:14px;
-  color:#555;
-  margin-bottom:10px;
+  font-size:13px;
+  color:#666;
 }
 
-.heroDate{
-  font-size:15px;
-  color:#333;
-  line-height:1.4;
+
+/* TERTIARY */
+
+.heroCurator{
+  font-size:12px;
+  color:#888;
+
+  margin-top:14px;
 }
 
 
 /* ======================================
-   BUTTON (живее)
+   BUTTON
 ====================================== */
 
 .heroButton{
+  display:inline-block;
+
   background:var(--marker-red);
   color:white;
 
-  border:none;
+  padding:14px 26px;
 
-  padding:14px 28px;
+  font-size:15px;
+  font-weight:500;
 
-  font-size:16px;
+  border-radius:8px;
 
-  border-radius:6px;
+  text-decoration:none;
 
-  transform:rotate(-3deg);
+  transform:rotate(-1deg);
 
-  cursor:pointer;
+  box-shadow:
+    0 8px 16px rgba(0,0,0,0.25);
 
-  box-shadow:0 12px 24px rgba(0,0,0,0.3);
-
-  transition:0.2s;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
 .heroButton:hover{
-  transform:rotate(2deg) scale(1.06);
+  transform:rotate(-1deg) translateY(-2px);
+
+  box-shadow:
+    0 12px 22px rgba(0,0,0,0.3);
 }
 
 
@@ -183,88 +208,102 @@
   width:100%;
   height:auto;
 
-  filter: drop-shadow(0 16px 28px rgba(0,0,0,0.35));
+  filter: drop-shadow(0 14px 24px rgba(0,0,0,0.35));
 }
 
 
 /* ======================================
-   HORSE (заходит на карточку)
+   HORSE (АКЦЕНТ)
 ====================================== */
 
 .heroLayer--horse{
-  left:78%;
-  top:78%;
+  left:80%;
+  top:82%;
 
-  width:150px;
+  width:160px;
 
-  transform:translate(-50%, -50%) rotate(-10deg);
+  transform:translate(-50%, -50%) rotate(-8deg);
 
-  z-index:4; /* 👈 важно */
+  z-index:4;
 }
 
 
 /* ======================================
-   STARS (под карточкой)
+   STARS (УВЕДЕНЫ ОТ ЦЕНТРА)
 ====================================== */
 
 .heroLayer--stars{
-  left:30%;
-  top:60%;
+  left:22%;
+  top:70%;
 
-  width:80px;
+  width:70px;
 
-  transform:translate(-50%, -50%) rotate(10deg);
+  transform:translate(-50%, -50%) rotate(8deg);
 
-  opacity:0.85;
+  opacity:0.7;
 
   z-index:2;
 }
 
 
 /* ======================================
-   DROPS (фон, не наклейка)
+   DROPS (УСИЛЕНЫ)
 ====================================== */
 
 .heroLayer--drops{
-  left:88%;
-  top:30%;
+  left:90%;
+  top:28%;
 
-  width:140px;
+  width:180px;
 
   transform:translate(-50%, -50%);
 
-  opacity:0.45;
+  opacity:0.5;
 
   z-index:1;
 }
 
 
 /* ======================================
-   FLOWER (чуть в воздухе)
+   FLOWER (СМЕЩЕН В СТОРОНУ)
 ====================================== */
 
 .heroLayer--flower{
-  left:18%;
-  top:32%;
+  left:12%;
+  top:30%;
 
   width:90px;
 
-  transform:translate(-50%, -50%) rotate(-14deg);
+  transform:translate(-50%, -50%) rotate(-12deg);
 
   z-index:2;
 }
 
 
 /* ======================================
-   FLOAT
+   FLOAT (СПОКОЙНЫЙ)
 ====================================== */
 
 @keyframes floatCard{
-  0%{ transform: translateY(6px) rotate(-2deg); }
-  50%{ transform: translateY(-6px) rotate(-1deg); }
-  100%{ transform: translateY(6px) rotate(-2deg); }
+  0%{ transform: translateY(4px) rotate(-1.2deg); }
+  50%{ transform: translateY(-4px) rotate(-0.8deg); }
+  100%{ transform: translateY(4px) rotate(-1.2deg); }
 }
 
+.heroCurator a{
+  color: var(--ink);
+
+  text-decoration: none;
+
+  border-bottom: 1px solid rgba(0,0,0,0.3);
+
+  transition: all 0.15s ease;
+}
+
+.heroCurator a:hover{
+  border-bottom: 1px solid var(--marker-red);
+  color: var(--marker-red);
+}
 
 /* ======================================
    MOBILE
@@ -277,22 +316,22 @@
   }
 
   .paperMain{
-    padding:30px 22px;
+    padding:28px 20px;
     max-width:92%;
   }
 
   .heroTitleImage{
-    max-width:260px;
-    transform: rotate(-1deg) translateX(-6px);
+    max-width:240px;
   }
 
   .heroPlace{
     font-size:16px;
   }
 
+  .heroDate,
   .heroAddress,
-  .heroDate{
-    font-size:13px;
+  .heroCurator{
+    font-size:12px;
   }
 
   .heroButton{
@@ -301,21 +340,21 @@
   }
 
   .heroLayer--horse{
-    width:100px;
-    left:82%;
-    top:85%;
+    width:110px;
+    left:84%;
+    top:86%;
   }
 
   .heroLayer--stars{
-    width:60px;
+    width:55px;
     left:18%;
-    top:65%;
+    top:72%;
   }
 
   .heroLayer--drops{
-    width:90px;
-    left:90%;
-    top:25%;
+    width:120px;
+    left:92%;
+    top:26%;
   }
 
   .heroLayer--flower{

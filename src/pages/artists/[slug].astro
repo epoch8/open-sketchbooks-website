@@ -1,0 +1,70 @@
+---
+import InternalLayout from "@/layouts/InternalLayout.astro";
+
+import { SEOBase } from "@/content/template/seo/seo";
+import type { SEOConfig } from "@/lib/seo/types";
+
+import {
+  mainNav,
+  footerNav,
+  footerMeta,
+} from "@/content/template/navigation/navigation";
+
+import BrandLogo from "@/components/products/open-sketchbooks/logo/BrandLogo.astro";
+
+import { getCollection } from "astro:content";
+
+/* ================================
+   STATIC PATHS
+================================ */
+
+export async function getStaticPaths() {
+  const artists = await getCollection("artists");
+
+  return artists.map((artist) => ({
+    params: { slug: artist.slug },
+    props: { artist }
+  }));
+}
+
+/* ================================
+   DATA
+================================ */
+
+const { artist } = Astro.props;
+const { Content } = await artist.render();
+
+/* ================================
+   SEO (динамический)
+================================ */
+
+const pageSEO: Partial<SEOConfig> = {
+  title: artist.data.title,
+  description: artist.data.title,
+};
+---
+
+<InternalLayout
+  baseSEO={SEOBase}
+  pageSEO={pageSEO}
+
+  navItems={mainNav}
+  footerSections={footerNav}
+  footerMeta={footerMeta}
+
+  logo={BrandLogo}
+>
+
+  <section class="section">
+    <div class="container flow">
+
+      <article>
+        <h1>{artist.data.title}</h1>
+
+        <Content />
+      </article>
+
+    </div>
+  </section>
+
+</InternalLayout>
