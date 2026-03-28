@@ -1,0 +1,40 @@
+{
+  "$ref": "#/definitions/works",
+  "definitions": {
+    "works": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "artist": {
+          "type": "string",
+          "pattern": "^[a-z0-9-]+$"
+        },
+        "image": {
+          "type": "string",
+          "minLength": 1
+        },
+        "year": {
+          "type": "integer"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "$schema": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "artist",
+        "image"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

@@ -1,0 +1,129 @@
+---
+interface Work {
+  title?: string;
+  image: string;
+  slug: string;
+  alt?: string;
+}
+
+interface Props {
+  works: Work[];
+}
+
+const { works } = Astro.props;
+---
+
+<div class="gallery">
+  {works.map((work) => (
+    <a class="card" href={`/works/${work.slug}`}>
+      <div class="image-wrap">
+        <img
+          src={work.image}
+          alt={work.alt ?? work.title ?? "Artwork"}
+          loading="lazy"
+        />
+
+        {/* 👉 overlay только если есть title */}
+        {work.title && (
+          <div class="overlay">
+            <span class="overlay-title">{work.title}</span>
+          </div>
+        )}
+      </div>
+    </a>
+  ))}
+</div>
+
+<style>
+/* ================================
+   MASONRY
+================================ */
+
+.gallery {
+  column-count: 3;
+  column-gap: 20px;
+}
+
+@media (max-width: 900px) {
+  .gallery {
+    column-count: 2;
+  }
+}
+
+@media (max-width: 600px) {
+  .gallery {
+    column-count: 1;
+  }
+}
+
+/* ================================
+   CARD
+================================ */
+
+.card {
+  display: block;
+  margin-bottom: 20px;
+
+  break-inside: avoid;
+
+  text-decoration: none;
+  color: inherit;
+}
+
+/* ================================
+   IMAGE
+================================ */
+
+.image-wrap {
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  background: #111;
+}
+
+.image-wrap img {
+  width: 100%;
+  height: auto;
+  display: block;
+
+  transition: transform 0.4s ease, opacity 0.3s ease;
+}
+
+/* hover image */
+.card:hover img {
+  transform: scale(1.04);
+  opacity: 0.9;
+}
+
+/* ================================
+   OVERLAY
+================================ */
+
+.overlay {
+  position: absolute;
+  inset: 0;
+
+  display: flex;
+  align-items: flex-end;
+
+  padding: 12px;
+
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.6),
+    transparent
+  );
+
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.card:hover .overlay {
+  opacity: 1;
+}
+
+.overlay-title {
+  color: #fff;
+  font-size: 14px;
+}
+</style>

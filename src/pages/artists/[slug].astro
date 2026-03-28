@@ -1,8 +1,8 @@
 ---
 import InternalLayout from "@/layouts/InternalLayout.astro";
+import Gallery from "@/components/blocks/gallery/Gallery.astro";
 
-import { SEOBase } from "@/content/template/seo/seo";
-import type { SEOConfig } from "@/lib/seo/types";
+import { getCollection } from "astro:content";
 
 import {
   mainNav,
@@ -12,7 +12,7 @@ import {
 
 import BrandLogo from "@/components/products/open-sketchbooks/logo/BrandLogo.astro";
 
-import { getCollection } from "astro:content";
+import { SEOBase } from "@/content/template/seo/seo";
 
 /* ================================
    STATIC PATHS
@@ -23,7 +23,7 @@ export async function getStaticPaths() {
 
   return artists.map((artist) => ({
     params: { slug: artist.slug },
-    props: { artist }
+    props: { artist },
   }));
 }
 
@@ -34,37 +34,145 @@ export async function getStaticPaths() {
 const { artist } = Astro.props;
 const { Content } = await artist.render();
 
+/* 👉 все работы */
+const works = await getCollection("works");
+
+/* 👉 фильтр по художнику */
+const artistWorks = works.filter(
+  (work) => work.data.artist === artist.slug
+);
+
+/* 👉 нормализация */
+const galleryWorks = artistWorks.map((w) => ({
+  title: w.data.title ?? undefined,
+  image: w.data.image,
+  slug: w.slug,
+  alt: w.data.title ?? artist.data.title ?? "Artwork",
+}));
+
 /* ================================
-   SEO (динамический)
+   SEO
 ================================ */
 
-const pageSEO: Partial<SEOConfig> = {
+const pageSEO = {
   title: artist.data.title,
-  description: artist.data.title,
+  description:
+    `Works by ${artist.data.title}`,
 };
 ---
 
 <InternalLayout
   baseSEO={SEOBase}
   pageSEO={pageSEO}
-
   navItems={mainNav}
   footerSections={footerNav}
   footerMeta={footerMeta}
-
   logo={BrandLogo}
 >
-
   <section class="section">
     <div class="container flow">
 
-      <article>
+      {/* 👉 HEADER */}
+      <header class="header flow">
+
         <h1>{artist.data.title}</h1>
 
-        <Content />
-      </article>
+        {/* 👉 meta */}
+        <div class="artist-meta">
+
+          {artist.data.style && (
+            <span class="style">
+              {artist.data.style}
+            </span>
+          )}
+
+          {artist.data.instagram && (
+            <a
+              href={`https://instagram.com/${artist.data.instagram}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="instagram"
+            >
+              @{artist.data.instagram}
+            </a>
+          )}
+
+        </div>
+
+      </header>
+
+      {/* 👉 markdown контент */}
+      <Content />
+
+      {/* 👉 галерея */}
+      {galleryWorks.length > 0 && (
+        <section class="gallery-section">
+          <Gallery works={galleryWorks} />
+        </section>
+      )}
 
     </div>
   </section>
-
 </InternalLayout>
+
+<style>
+/* ================================
+   HEADER
+================================ */
+
+.header {
+  margin-bottom: 24px;
+}
+
+.artist-meta {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+
+  font-size: 14px;
+  opacity: 0.7;
+}
+
+/* ================================
+   STYLE TAG
+================================ */
+
+.style {
+  padding: 2px 8px;
+  border-radius: 6px;
+
+  background: rgba(0, 0, 0, 0.05);
+}
+
+/* ================================
+   INSTAGRAM
+================================ */
+
+.instagram {
+  text-decoration: none;
+  color: inherit;
+
+  border-bottom: 1px solid transparent;
+}
+
+.instagram:hover {
+  border-color: currentColor;
+}
+
+/* ================================
+   BIO
+================================ */
+
+.bio {
+  opacity: 0.7;
+  max-width: 600px;
+}
+
+/* ================================
+   GALLERY
+================================ */
+
+.gallery-section {
+  margin-top: 32px;
+}
+</style>

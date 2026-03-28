@@ -5,6 +5,13 @@
       "type": "object",
       "properties": {
         "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "instagram": {
+          "type": "string"
+        },
+        "style": {
           "type": "string"
         },
         "$schema": {

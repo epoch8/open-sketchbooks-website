@@ -1,0 +1,230 @@
+---
+import InternalLayout from "@/layouts/InternalLayout.astro";
+
+import { getCollection } from "astro:content";
+
+import {
+  mainNav,
+  footerNav,
+  footerMeta,
+} from "@/content/template/navigation/navigation";
+
+import BrandLogo from "@/components/products/open-sketchbooks/logo/BrandLogo.astro";
+
+import { SEOBase } from "@/content/template/seo/seo";
+
+/* ================================
+   STATIC PATHS
+================================ */
+
+export async function getStaticPaths() {
+  const works = await getCollection("works");
+
+  return works.map((work) => ({
+    params: { slug: work.slug },
+    props: { work },
+  }));
+}
+
+/* ================================
+   DATA
+================================ */
+
+const { work } = Astro.props;
+
+/* 👉 найдём художника */
+const artists = await getCollection("artists");
+
+const artist = artists.find(
+  (a) => a.slug === work.data.artist
+);
+
+/* ================================
+   SEO
+================================ */
+
+const pageSEO = {
+  title: work.data.title ?? "Artwork",
+  description: work.data.title ?? "Artwork",
+};
+---
+
+<InternalLayout
+  baseSEO={SEOBase}
+  pageSEO={pageSEO}
+  navItems={mainNav}
+  footerSections={footerNav}
+  footerMeta={footerMeta}
+  logo={BrandLogo}
+>
+
+  <section class="section">
+    <div class="container">
+
+      {/* 👉 breadcrumbs */}
+      <div class="breadcrumbs">
+        <a href="/artists">Artists</a>
+        {artist && (
+          <>
+            <span> / </span>
+            <a href={`/artists/${artist.slug}`}>
+              {artist.data.title}
+            </a>
+          </>
+        )}
+      </div>
+
+      {/* 👉 основной layout */}
+      <div class="work-layout">
+
+        {/* IMAGE */}
+        <div class="image-col">
+          <img
+            src={work.data.image}
+            alt={work.data.title ?? "Artwork"}
+          />
+        </div>
+
+        {/* META */}
+        <div class="meta-col">
+          <div class="meta-inner">
+
+            {work.data.title && (
+              <h1>{work.data.title}</h1>
+            )}
+
+            {artist && (
+              <p class="artist">
+                by{" "}
+                <a href={`/artists/${artist.slug}`}>
+                  {artist.data.title}
+                </a>
+              </p>
+            )}
+
+            {work.data.year && (
+              <p class="year">{work.data.year}</p>
+            )}
+
+            {work.data.tags && (
+              <div class="tags">
+                {work.data.tags.map((tag) => (
+                  <span class="tag">{tag}</span>
+                ))}
+              </div>
+            )}
+
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+</InternalLayout>
+
+<style>
+/* ================================
+   LAYOUT
+================================ */
+
+.work-layout {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 32px;
+
+  min-height: calc(100vh - 120px);
+}
+
+/* ================================
+   BREADCRUMBS
+================================ */
+
+.breadcrumbs {
+  margin-bottom: 12px;
+  font-size: 14px;
+  opacity: 0.6;
+}
+
+/* ================================
+   IMAGE
+================================ */
+
+.image-col {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start; /* 👈 выравнивание по левому краю */
+}
+
+.image-col img {
+  max-width: 100%;
+  max-height: 80vh;
+  object-fit: contain;
+
+  border-radius: 16px;
+  display: block;
+}
+
+/* ================================
+   META
+================================ */
+
+.meta-col {
+  display: flex;
+  align-items: flex-start; /* 👈 ключевая фиксация к верху */
+}
+
+.meta-inner {
+  max-width: 420px;
+  margin-top: 4px;
+}
+
+.meta-inner h1 {
+  margin-bottom: 12px;
+}
+
+.artist {
+  opacity: 0.7;
+}
+
+.year {
+  opacity: 0.6;
+  margin-top: 4px;
+}
+
+/* ================================
+   TAGS
+================================ */
+
+.tags {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+.tag {
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+/* ================================
+   MOBILE
+================================ */
+
+@media (max-width: 900px) {
+  .work-layout {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .image-col img {
+    max-height: none;
+  }
+
+  .meta-col {
+    align-items: flex-start;
+  }
+}
+</style>
