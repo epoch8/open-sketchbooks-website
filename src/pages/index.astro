@@ -16,7 +16,7 @@ import BrandLogo from "@/components/products/open-sketchbooks/logo/BrandLogo.ast
 <BaseLayout
   baseSEO={SEOBase}
   pageSEO={{
-    title: "Open Sketchbooks",
+    title: "Open Sketchbook",
     description:
       "Quick template for building content-rich websites with Astro. Features SEO best practices, responsive design, and easy customization.",
   }}
@@ -40,7 +40,10 @@ import BrandLogo from "@/components/products/open-sketchbooks/logo/BrandLogo.ast
 <div class="paperMain">
 
   <!-- заголовок -->
-  <img src="/images/title.png" class="heroTitleImage" alt="Sketchbook Exhibition" />
+<picture class="heroTitleImage">
+  <source srcset="/images/title-night.png" media="(prefers-color-scheme: dark)" />
+  <img src="/images/title.png" alt="Sketchbook Exhibition" />
+</picture>
 
   <!-- инфо -->
   <div class="heroInfo">
