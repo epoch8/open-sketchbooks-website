@@ -1,0 +1,70 @@
+---
+import InternalLayout from "@/layouts/InternalLayout.astro";
+import { SEOBase } from "@/content/template/seo/seo";
+import type { SEOConfig } from "@/lib/seo/types";
+
+import CardGrid from "@/components/blocks/card-grid/CardGrid.astro";
+import CardGridItem from "@/components/blocks/card-grid/CardGridItem.astro";
+
+import { getCollection } from "astro:content";
+
+import {
+  mainNav,
+  footerNav,
+  footerMeta,
+} from "@/content/template/navigation/navigation";
+
+import BrandLogo from "@/components/products/open-sketchbooks/logo/BrandLogo.astro";
+
+const pageSEO: Partial<SEOConfig> = {
+  title: "Events — Open Sketchbooks",
+  description:
+    "Explore sketchbook exhibitions and meetups around the world — or start one in your city.",
+  canonical: "https://open-sketchbook.place/events",
+};
+
+const events = await getCollection("events");
+
+const sortedEvents = [...events].sort(
+  (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+);
+---
+
+<InternalLayout
+  baseSEO={SEOBase}
+  pageSEO={pageSEO}
+  navItems={mainNav}
+  footerSections={footerNav}
+  footerMeta={footerMeta}
+  logo={BrandLogo}
+>
+
+  <section class="section">
+    <div class="container flow">
+
+      <h1>Sketchbook events</h1>
+
+      <p>
+        Small local exhibitions and meetups made by artists around the world.
+      </p>
+
+      <p>
+        Want to start one in your city?
+        <a href="/host">Host your own event →</a>
+      </p>
+
+      <CardGrid>
+        {sortedEvents.map((event) => (
+          <CardGridItem
+            title={event.data.title}
+            href={`/events/${event.id}`}
+            text={`${event.data.date} · ${event.data.location}`}
+            buttonLabel="View"
+          />
+        ))}
+      </CardGrid>
+
+    </div>
+  </section>
+
+</InternalLayout>

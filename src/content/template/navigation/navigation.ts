@@ -40,7 +40,7 @@ export const mainNav: NavItem[] = [
     label: "Artists",
     href: "/artists",
     description: "Browse artists in Open Sketchbooks",
-    enabled: false,
+    enabled: true,
   },
 
   {
