@@ -1,10 +1,13 @@
-<!-- public/favicon.svg -->
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect width="64" height="64" rx="14" fill="#f3f4f6"/>
-  
-  <g fill="#6b7280">
-    <rect x="18" y="18" width="28" height="4" rx="2"/>
-    <rect x="18" y="28" width="20" height="4" rx="2"/>
-    <rect x="18" y="38" width="24" height="4" rx="2"/>
-  </g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <path
+    d="M33 6
+       C42 7 49 13 52 22
+       C55 32 52 44 44 52
+       C37 59 25 60 18 54
+       C11 48 9 36 11 26
+       C13 17 20 10 28 8
+       C30 7.5 31.5 6.8 33 6Z"
+    fill="#F04A2A"
+    transform="rotate(-10 32 32)"
+  />
 </svg>

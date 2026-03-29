@@ -73,13 +73,13 @@ export const mainNav: NavItem[] = [
 
 export const footerNav: NavSection[] = [
   {
-    title: "Product",
-    enabled: false,
+    title: "Sketchbooks",
+    enabled: true,
     items: [
       {
-        label: "Docs",
-        href: "/docs",
-        enabled: false,
+        label: "Artists",
+        href: "/artists",
+        enabled: true,
       },
       {
         label: "GitHub",
