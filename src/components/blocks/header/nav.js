@@ -1,50 +1,78 @@
 const header = document.getElementById("site-header");
 const toggle = document.getElementById("menu-toggle");
+const nav = document.getElementById("primary-nav");
 const overlay = document.getElementById("nav-overlay");
 
-if (!header || !toggle || !overlay) {
+if (!header || !toggle || !nav || !overlay) {
   console.warn("Nav elements not found");
 }
 
-let isOpen = false;
+/* ================================
+   STATE (через DOM, не через переменную)
+================================ */
+
+const isOpen = () => header.getAttribute("data-open") === "true";
+
+/* ================================
+   ACTIONS
+================================ */
 
 function openMenu() {
-  isOpen = true;
   header.setAttribute("data-open", "true");
   toggle.setAttribute("aria-expanded", "true");
+
+  // 👉 блокируем скролл (иначе мобильный UX говно)
+  document.body.style.overflow = "hidden";
 }
 
 function closeMenu() {
-  isOpen = false;
   header.setAttribute("data-open", "false");
   toggle.setAttribute("aria-expanded", "false");
+
+  document.body.style.overflow = "";
 }
 
 function toggleMenu() {
-  isOpen ? closeMenu() : openMenu();
+  isOpen() ? closeMenu() : openMenu();
 }
 
 /* ================================
    EVENTS
 ================================ */
 
-toggle?.addEventListener("click", (e) => {
+/* 👉 кнопка */
+toggle.addEventListener("click", (e) => {
   e.stopPropagation();
   toggleMenu();
-    console.log("CLICK");
-
 });
 
-overlay?.addEventListener("click", () => {
-  closeMenu();
+/* 👉 overlay */
+overlay.addEventListener("click", closeMenu);
+
+/* 👉 клик ВНЕ меню */
+document.addEventListener("click", (e) => {
+  if (!isOpen()) return;
+
+  const target = e.target;
+
+  if (
+    !nav.contains(target) &&
+    !toggle.contains(target)
+  ) {
+    closeMenu();
+  }
 });
 
-
-
-/* закрытие по ESC */
-
+/* 👉 ESC */
 document.addEventListener("keydown", (e) => {
-  if (e.key === "Escape") {
+  if (e.key === "Escape" && isOpen()) {
+    closeMenu();
+  }
+});
+
+/* 👉 защита от resize (если открыли на мобилке → десктоп) */
+window.addEventListener("resize", () => {
+  if (window.innerWidth > 768 && isOpen()) {
     closeMenu();
   }
 });

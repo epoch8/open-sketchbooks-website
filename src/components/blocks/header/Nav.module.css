@@ -1,4 +1,15 @@
 /* ======================================
+   Z-INDEX SYSTEM (РЕАЛЬНО РАБОТАЮЩИЙ)
+====================================== */
+
+:root {
+  --z-overlay: 1000;
+  --z-header: 1100;
+  --z-menu: 1200; /* логический, но внутри header */
+}
+
+
+/* ======================================
    HEADER
 ====================================== */
 
@@ -6,7 +17,7 @@
   width: 100%;
   position: sticky;
   top: 0;
-  z-index: 1000;
+  z-index: var(--z-header);
 
   background: var(--color-bg);
   border-bottom: 1px solid var(--color-border);
@@ -14,19 +25,14 @@
 
 
 /* ======================================
-   INNER LAYOUT (AXIS CONSISTENT)
+   INNER LAYOUT
 ====================================== */
 
 .nav-inner {
-  position: relative; /* 👈 база для absolute brand */
+  position: relative;
 
-  max-width: var(--container-wide);
-  margin: 0 auto;
-
+  width: 100%;
   height: var(--header-height);
-
-  padding-left: var(--layout-content-offset);
-  padding-right: var(--container-padding-x);
 
   display: flex;
   align-items: center;
@@ -34,12 +40,11 @@
 
 
 /* ======================================
-   BRAND (ТОЧНО КАК В FOOTER)
+   BRAND
 ====================================== */
 
 .nav-brand {
   position: absolute;
-
   left: calc(var(--layout-left-offset) - 18px);
 
   display: flex;
@@ -48,23 +53,23 @@
 
 
 /* ======================================
-   NAV LINKS (НЕЗАВИСИМЫЙ СЛОЙ)
+   NAV LINKS (DESKTOP)
 ====================================== */
 
 .nav-links {
+  max-width: var(--container-wide);
+  margin: 0 auto;
+
   width: 100%;
+
+  padding-left: var(--layout-content-offset);
+  padding-right: var(--container-padding-x);
 
   display: flex;
   align-items: center;
   justify-content: flex-end;
-
   gap: var(--space-6);
 }
-
-
-/* ======================================
-   LINKS
-====================================== */
 
 .nav-link {
   text-decoration: none;
@@ -91,7 +96,7 @@
   padding: var(--space-2) var(--space-4);
   border-radius: var(--radius-md);
 
-  background: var(--marker-red);
+  background: var(--color-primary);
   color: #fff;
 
   font-weight: var(--font-weight-semibold);
@@ -109,6 +114,28 @@
 
 .nav-menu-toggle {
   display: none;
+  background: none;
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+
+/* ======================================
+   OVERLAY
+====================================== */
+
+.nav-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-overlay);
+
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(2px);
+
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
 }
 
 
@@ -118,13 +145,8 @@
 
 @media (max-width: 768px) {
 
-  .nav-inner {
-    padding-left: var(--container-padding-x);
-    padding-right: var(--container-padding-x);
-  }
-
   .nav-brand {
-    position: static; /* 👈 возвращаем в поток */
+    left: var(--container-padding-x);
   }
 
   .nav-menu-toggle {
@@ -133,6 +155,7 @@
     right: var(--container-padding-x);
   }
 
+  /* 👉 МЕНЮ */
   .nav-links {
     position: fixed;
     top: 0;
@@ -152,10 +175,16 @@
     transform: translateX(100%);
     transition: transform 0.3s ease;
 
-    z-index: 1100;
+    z-index: var(--z-header); 
+    /* 👈 ключ: НЕ выше header, а на его уровне */
   }
 
   .nav-header[data-open="true"] .nav-links {
     transform: translateX(0);
+  }
+
+  .nav-header[data-open="true"] + .nav-overlay {
+    opacity: 1;
+    pointer-events: auto;
   }
 }
