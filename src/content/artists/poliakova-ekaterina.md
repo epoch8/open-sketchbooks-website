@@ -1,10 +1,10 @@
 ---
 title: Ekaterina Poliakova
 instagram: katherine.poliakova
-style: naive, mixed media 
+style: naïve, mixed media 
 ---
 
-> My work captures fleeting glimpses into imagined worlds – worlds that resemble our own, yet carry a subtle sense of duality and magic.
+### My work captures fleeting glimpses into imagined worlds – worlds that resemble our own, yet carry a subtle sense of duality and magic.
 
 I have two callings: psychology and art. I’ve been drawing my whole life, but I started taking it seriously about seven years ago.
 
