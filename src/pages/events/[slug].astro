@@ -1,0 +1,104 @@
+---
+import InternalLayout from "@/layouts/InternalLayout.astro";
+import { SEOBase } from "@/content/template/seo/seo";
+import type { SEOConfig } from "@/lib/seo/types";
+
+import { getCollection, getEntry } from "astro:content";
+
+import {
+  mainNav,
+  footerNav,
+  footerMeta,
+} from "@/content/template/navigation/navigation";
+
+import BrandLogo from "@/components/products/open-sketchbooks/logo/BrandLogo.astro";
+
+/* ================================
+   STATIC PATHS
+================================ */
+
+export async function getStaticPaths() {
+  const events = await getCollection("events");
+
+  return events.map((event) => ({
+    params: { slug: event.id },
+    props: { event },
+  }));
+}
+
+/* ================================
+   PROPS
+================================ */
+
+const { event } = Astro.props;
+
+/* ================================
+   SEO
+================================ */
+
+const pageSEO: Partial<SEOConfig> = {
+  title: `${event.data.title} — Open Sketchbooks`,
+  description:
+    event.data.description ||
+    "Sketchbook event from Open Sketchbooks platform.",
+  canonical: `https://open-sketchbook.place/events/${event.id}`,
+
+  og: {
+    type: "article",
+    title: event.data.title,
+    description: event.data.description,
+  },
+};
+
+/* ================================
+   DATE FORMAT
+================================ */
+
+const formattedDate = new Date(event.data.date).toLocaleDateString(
+  "en",
+  {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  }
+);
+---
+
+<InternalLayout
+  baseSEO={SEOBase}
+  pageSEO={pageSEO}
+  navItems={mainNav}
+  footerSections={footerNav}
+  footerMeta={footerMeta}
+  logo={BrandLogo}
+>
+
+  <section class="section">
+    <div class="container flow">
+
+      <a href="/events">← Back to events</a>
+
+      <header class="flow">
+        <h1>{event.data.title}</h1>
+
+        <p>
+          {formattedDate} · {event.data.location}
+        </p>
+      </header>
+
+      {event.data.cover && (
+        <img
+          src={event.data.cover}
+          alt={event.data.title}
+          style="width:100%; border-radius:12px;"
+        />
+      )}
+
+      <article class="flow">
+        {event.body}
+      </article>
+
+    </div>
+  </section>
+
+</InternalLayout>
