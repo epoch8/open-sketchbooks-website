@@ -33,6 +33,38 @@ export async function getStaticPaths() {
 const { event } = Astro.props;
 
 /* ================================
+   TYPE GUARD (ключевая штука)
+================================ */
+
+function isDefined<T>(value: T | undefined): value is T {
+  return value !== undefined;
+}
+
+/* ================================
+   RELATED DATA
+================================ */
+
+const artistEntries = (
+  await Promise.all(
+    (event.data.artists || []).map(async (slug) => {
+      const entry = await getEntry("artists", slug);
+
+      if (!entry) {
+        console.warn(`Missing artist: ${slug}`);
+      }
+
+      return entry;
+    })
+  )
+).filter(isDefined);
+
+/* ================================
+   MARKDOWN RENDER
+================================ */
+
+const { Content } = await event.render();
+
+/* ================================
    SEO
 ================================ */
 
@@ -45,8 +77,6 @@ const pageSEO: Partial<SEOConfig> = {
 
   og: {
     type: "article",
-    title: event.data.title,
-    description: event.data.description,
   },
 };
 
@@ -54,14 +84,11 @@ const pageSEO: Partial<SEOConfig> = {
    DATE FORMAT
 ================================ */
 
-const formattedDate = new Date(event.data.date).toLocaleDateString(
-  "en",
-  {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  }
-);
+const formattedDate = new Date(event.data.date).toLocaleDateString("en", {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+});
 ---
 
 <InternalLayout
@@ -95,10 +122,30 @@ const formattedDate = new Date(event.data.date).toLocaleDateString(
       )}
 
       <article class="flow">
-        {event.body}
+        <Content />
       </article>
 
     </div>
   </section>
+
+  {artistEntries.length > 0 && (
+    <section class="section">
+      <div class="container flow">
+
+        <h2>Artists</h2>
+
+        <ul>
+          {artistEntries.map((artist) => (
+            <li>
+              <a href={`/artists/${artist.id}`}>
+                {artist.data.title}
+              </a>
+            </li>
+          ))}
+        </ul>
+
+      </div>
+    </section>
+  )}
 
 </InternalLayout>

@@ -1,5 +1,6 @@
 import { defineConfig } from "astro/config";
 import react from "@astrojs/react";
+import mdx from "@astrojs/mdx";
 import path from "node:path";
 
 export default defineConfig({
@@ -7,7 +8,10 @@ export default defineConfig({
   output: "static",
   base: "/",
 
-  integrations: [react()],
+  integrations: [
+    react(),
+    mdx(), // 👈 добавили MDX
+  ],
 
   build: {
     assets: "_astro",
