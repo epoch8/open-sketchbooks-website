@@ -44,10 +44,10 @@ export const mainNav: NavItem[] = [
   },
 
   {
-    label: "Docs",
-    href: "/docs",
-    description: "Project documentation",
-    enabled: false,
+    label: "Events",
+    href: "/events",
+    description: "Browse events in Open Sketchbooks",
+    enabled: true,
   },
 
   {

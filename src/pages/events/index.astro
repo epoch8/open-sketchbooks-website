@@ -28,6 +28,14 @@ const events = await getCollection("events");
 const sortedEvents = [...events].sort(
   (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
 );
+
+function formatDate(date: Date | string) {
+  return new Intl.DateTimeFormat("en-US", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  }).format(new Date(date));
+}
 ---
 
 <InternalLayout
@@ -48,21 +56,18 @@ const sortedEvents = [...events].sort(
         Small local exhibitions and meetups made by artists around the world.
       </p>
 
-      <p>
-        Want to start one in your city?
-        <a href="/host">Host your own event →</a>
-      </p>
+<CardGrid>
+  {sortedEvents.map((event) => (
+    <CardGridItem
+      title={event.data.title}
+      href={`/events/${event.id}`}
 
-      <CardGrid>
-        {sortedEvents.map((event) => (
-          <CardGridItem
-            title={event.data.title}
-            href={`/events/${event.id}`}
-            text={`${event.data.date} · ${event.data.location}`}
-            buttonLabel="View"
-          />
-        ))}
-      </CardGrid>
+      text={`${formatDate(event.data.date)} · ${event.data.location}`}
+
+      buttonLabel="View"
+    />
+  ))}
+</CardGrid>
 
     </div>
   </section>
