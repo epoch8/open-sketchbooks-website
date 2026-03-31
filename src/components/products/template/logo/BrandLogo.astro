@@ -17,9 +17,33 @@ const { href = "/" } = Astro.props;
     align-items: center;
     gap: 0.5rem;
 
-    text-decoration: none;
     color: inherit;
+
+    /* ❗ убираем ВСЁ, что делает ссылку ссылкой */
+    text-decoration: none;
+    border-bottom: none;
   }
+
+  /* убираем глобальный underline (если через ::after вдруг появится в будущем) */
+  .brand-logo::after {
+    content: none;
+  }
+
+  /* hover тоже не должен ничего менять */
+  .brand-logo:hover {
+    color: inherit;
+    border-bottom: none;
+  }
+
+  /* focus без подчеркивания */
+  .brand-logo:focus-visible {
+    outline: none;
+    border-bottom: none;
+  }
+
+  /* ======================================================
+     INTERNAL
+  ====================================================== */
 
   .brand-logo__mark {
     font-size: 1.2rem;

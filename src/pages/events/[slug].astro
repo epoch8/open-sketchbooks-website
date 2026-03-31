@@ -72,11 +72,18 @@ const pageSEO: Partial<SEOConfig> = {
   title: `${event.data.title} — Open Sketchbooks`,
   description:
     event.data.description ||
-    "Sketchbook event from Open Sketchbooks platform.",
+    "Sketchbook event from Open Sketchbook community.",
   canonical: `https://open-sketchbook.place/events/${event.id}`,
 
   og: {
     type: "article",
+    image: "/og/events.jpg",
+    imageAlt: "Events – Open Sketchbooks",
+  },
+
+  twitter: {
+    card: "summary_large_image",
+    image: "/og/events.jpg",
   },
 };
 
@@ -125,24 +132,36 @@ const formattedDate = new Date(event.data.date).toLocaleDateString("en", {
     </div>
   </section>
 
-  {artistEntries.length > 0 && (
-    <section class="section">
-      <div class="container flow">
+{artistEntries.length > 0 && (
+  <div class="container flow">
 
-        <h2>Artists</h2>
+    <h2>Artists</h2>
+    <p>Featuring works by:</p>
 
-        <ul>
-          {artistEntries.map((artist) => (
-            <li>
-              <a href={`/artists/${artist.id}`}>
-                {artist.data.title}
-              </a>
-            </li>
-          ))}
-        </ul>
+<ul
+  style="
+    columns: 220px;
+    column-gap: 24px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  "
+>
+  {artistEntries.map((artist) => (
+    <li style="break-inside: avoid; margin-bottom: 8px;">
+      <a href={`/artists/${artist.slug}`}>
+        {artist.data.title}
+      </a>
+    </li>
+  ))}
+</ul>
 
-      </div>
-    </section>
-  )}
+  </div>
+)}
 
+ <section class="section">
+    <div class="container flow">
+    <h2>Can't wait to see you there!</h2>
+
+</div></section>
 </InternalLayout>
