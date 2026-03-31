@@ -21,8 +21,12 @@ export async function getStaticPaths() {
   const events = await getCollection("events");
 
   return events.map((event) => ({
-    params: { slug: event.id },
-    props: { event },
+    params: {
+      slug: event.slug, // 👈 filesystem slug
+    },
+    props: {
+      event,
+    },
   }));
 }
 
@@ -33,7 +37,7 @@ export async function getStaticPaths() {
 const { event } = Astro.props;
 
 /* ================================
-   TYPE GUARD (ключевая штука)
+   TYPE GUARD
 ================================ */
 
 function isDefined<T>(value: T | undefined): value is T {
@@ -41,7 +45,7 @@ function isDefined<T>(value: T | undefined): value is T {
 }
 
 /* ================================
-   RELATED DATA
+   RELATED ARTISTS
 ================================ */
 
 const artistEntries = (
@@ -59,7 +63,7 @@ const artistEntries = (
 ).filter(isDefined);
 
 /* ================================
-   MARKDOWN RENDER
+   MARKDOWN
 ================================ */
 
 const { Content } = await event.render();
@@ -73,7 +77,8 @@ const pageSEO: Partial<SEOConfig> = {
   description:
     event.data.description ||
     "Sketchbook event from Open Sketchbook community.",
-  canonical: `https://open-sketchbook.place/events/${event.id}`,
+
+  canonical: `https://open-sketchbook.place/events/${event.slug}`,
 
   og: {
     type: "article",
@@ -88,7 +93,7 @@ const pageSEO: Partial<SEOConfig> = {
 };
 
 /* ================================
-   DATE FORMAT
+   DATE
 ================================ */
 
 const formattedDate = new Date(event.data.date).toLocaleDateString("en", {
@@ -109,6 +114,8 @@ const formattedDate = new Date(event.data.date).toLocaleDateString("en", {
 
   <section class="section">
     <div class="container flow">
+
+      {/* HEADER */}
       <header class="flow">
         <h1>{event.data.title}</h1>
 
@@ -117,6 +124,7 @@ const formattedDate = new Date(event.data.date).toLocaleDateString("en", {
         </p>
       </header>
 
+      {/* COVER */}
       {event.data.cover && (
         <img
           src={event.data.cover}
@@ -125,6 +133,7 @@ const formattedDate = new Date(event.data.date).toLocaleDateString("en", {
         />
       )}
 
+      {/* CONTENT */}
       <article class="flow">
         <Content />
       </article>
@@ -132,36 +141,47 @@ const formattedDate = new Date(event.data.date).toLocaleDateString("en", {
     </div>
   </section>
 
-{artistEntries.length > 0 && (
-  <div class="container flow">
+  {/* ================================
+     ARTISTS
+  ================================= */}
 
-    <h2>Artists</h2>
-    <p>Featuring works by:</p>
+  {artistEntries.length > 0 && (
+    <section class="section">
+      <div class="container flow">
 
-<ul
-  style="
-    columns: 220px;
-    column-gap: 24px;
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  "
->
-  {artistEntries.map((artist) => (
-    <li style="break-inside: avoid; margin-bottom: 8px;">
-      <a href={`/artists/${artist.slug}`}>
-        {artist.data.title}
-      </a>
-    </li>
-  ))}
-</ul>
+        <h2>Artists</h2>
+        <p>Featuring works by:</p>
 
-  </div>
-)}
+        <ul
+          style="
+            columns: 220px;
+            column-gap: 24px;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+          "
+        >
+          {artistEntries.map((artist) => (
+            <li style="break-inside: avoid; margin-bottom: 8px;">
+              <a href={`/artists/${artist.id}`}>
+                {artist.data.title}
+              </a>
+            </li>
+          ))}
+        </ul>
 
- <section class="section">
+      </div>
+    </section>
+  )}
+
+  {/* ================================
+     CTA
+  ================================= */}
+
+  <section class="section">
     <div class="container flow">
-    <h2>Can't wait to see you there!</h2>
+      <h2>Can't wait to see you there!</h2>
+    </div>
+  </section>
 
-</div></section>
 </InternalLayout>

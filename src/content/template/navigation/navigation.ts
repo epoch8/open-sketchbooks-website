@@ -82,10 +82,9 @@ export const footerNav: NavSection[] = [
         enabled: true,
       },
       {
-        label: "GitHub",
-        href: "https://github.com/epoch8/vedana",
-        external: true,
-        enabled: false,
+        label: "Events",
+        href: "/events",
+        enabled: true,
       },
     ],
   },

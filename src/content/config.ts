@@ -43,19 +43,17 @@ const events = defineCollection({
   schema: z.object({
     title: z.string().min(1),
 
-    date: z.coerce.date(), // 👈 важно
+    date: z.coerce.date(),
 
     location: z.string().min(1),
 
     description: z.string().optional(),
 
-    /* 🔗 связь с artists */
     artists: z.array(slug).default([]),
 
     cover: z.string().optional(),
   }),
 });
-
 
 /* ================================
    EXPORT
