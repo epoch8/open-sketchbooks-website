@@ -1,8 +1,5 @@
 ---
-
-
-
-title: Sketchbook Art Exhibition in Tbilisi
+title: Sketchbook Art Exhibition – Tbilisi, April 12, 2026
 date: 2026-04-12
 location: Tbilisi, CHITI Club Saburtalo, Simon Kandelaki St, 39
 
@@ -30,123 +27,41 @@ import IconGridItem from "@/components/blocks/icon-grid/IconGridItem.astro";
 import CardGrid from "@/components/blocks/card-grid/CardGrid.astro";
 import CardGridItem from "@/components/blocks/card-grid/CardGridItem.astro";
 
+import Callout from "@/components/blocks/callout/Callout.astro";
+
+
+import SketchbookStack from "@/components/products/open-sketchbooks/sketchbook-stack/SketchbookStack.astro";
+
+<div class="stack-section">
+
+<SketchbookStack
+  images={[
+    { src: "/images/events/2026-04-12/1.png" },
+    { src: "/images/events/2026-04-12/5.png" },
+    { src: "/images/events/2026-04-12/2.png" },
+    { src: "/images/events/2026-04-12/3.png" },
+
+  ]}
+/>
+</div>
+
+
 ## About the event
 
-This is the first open sketchbook exhibition in Tbilisi.
+<div class="lead">
+*Flip through sketchbooks. See how ideas actually take shape.*
 
-Not paintings.  
-Not “final works”.  
-Actual sketchbooks — the place where things start, break, and take shape.
+The first open sketchbook exhibition in Tbilisi presents sketchbooks as complete works in their own right.
 
-You won’t just look at art on a wall.  
-You’ll flip through it.
+Visitors can follow how ideas take shape through sketches, experiments, and visual thinking – revealed page by page.
 
-Page by page, you’ll see how ideas evolve — messy, precise, unfinished, alive.
+Each sketchbook carries its own style, rhythm, and narrative.
 
-Some sketchbooks feel like diaries.  
-Some — like experiments.  
-Some — like complete worlds.
-
----
-
-## What happens there
-
-<Timeline>
-  <TimelineItem index="1" title="Explore sketchbooks">
-    Pick them up, flip through pages, follow the thinking behind the work.
-  </TimelineItem>
-
-  <TimelineItem index="2" title="Talk to artists">
-    Ask questions, hear how they work, and what sketchbooks mean to them.
-  </TimelineItem>
-
-  <TimelineItem index="3" title="Make something yourself">
-    Join workshops and leave with your own sketchbook.
-  </TimelineItem>
-
-  <TimelineItem index="4" title="Stay and hang out">
-    No rush. This is a space to spend time, not just pass through.
-  </TimelineItem>
-</Timeline>
-
----
-
-## What you can do
-
-<section class="section">
-  <div class="container">
-    <IconGrid>
-
-      <IconGridItem
-        title="Exhibition"
-        text="Original sketchbooks you can actually browse — not behind glass."
-      />
-
-      <IconGridItem
-        title="Artist Talk"
-        text="A conversation about process, not just results."
-      />
-
-      <IconGridItem
-        title="Workshops"
-        text="Make your own sketchbook and fill it during the event."
-      />
-
-      <IconGridItem
-        title="Art Market"
-        text="Buy prints, works, and sometimes sketchbooks themselves."
-      />
-
-      <IconGridItem
-        title="Open Space"
-        text="Sit, look, talk, stay as long as you want."
-      />
-
-    </IconGrid>
-  </div>
-</section>
-
----
-
-## Workshops
-
-<section class="section">
-  <div class="container">
-
-    <CardGrid>
-
-      <CardGridItem
-        position={1}
-        title="Mini Sketchbook Binding"
-        image="/images/workshop-binding.png"
-        imageAlt="Handmade sketchbook"
-        text={`
-          <p>by Ekaterina Poliakova</p>
-          <p>Create your own small sketchbook from scratch.</p>
-        `}
-      />
-
-      <CardGridItem
-        position={2}
-        title="Collage in Your Sketchbook"
-        image="/images/workshop-collage.png"
-        imageAlt="Collage sketchbook"
-        text={`
-          <p>by Katerina Stepanova</p>
-          <p>Fill your sketchbook with collage compositions.</p>
-        `}
-      />
-
-    </CardGrid>
-
-  </div>
-</section>
-
----
+**Come to explore, flip through real sketchbooks, meet the artists, and spend time in a space centered on process and creative exchange.**
+</div>
 
 ## Why sketchbooks?
 
-<section class="section">
   <div class="container">
     <IconGrid>
 
@@ -166,9 +81,98 @@ Some — like complete worlds.
       />
 
     </IconGrid>
-  </div>
-</section>
 
+  </div>
 This exhibition turns that inside out.
 
-It brings sketchbooks into the open — as real, complete artistic objects.
+It brings sketchbooks into the open – as real, complete artistic objects.
+
+
+## What you can do
+
+  <div class="container">
+    <IconGrid>
+
+      <IconGridItem
+        title="Explore sketchbooks"
+        text="Pick them up, flip through pages, follow the thinking behind the work."
+      />
+
+      <IconGridItem
+        title="Talk to artists"
+        text="Ask questions, hear how they work, and what sketchbooks mean to them."
+      />
+
+      <IconGridItem
+        title="Make something yourself"
+        text="Make your own sketchbook and fill it during the event."
+      />
+
+      <IconGridItem
+        title="Buy something at Art Market"
+        text="Buy prints, works, and maybe sketchbooks themselves."
+      />
+
+      <IconGridItem
+        title="Stay and hang out"
+        text="Sit, look, talk, stay as long as you want."
+      />
+
+    </IconGrid>
+  </div>
+
+
+## Timeline – April 12, 2026
+
+<div class="container">
+
+<Timeline orientation="vertical" lines={false}>
+  <TimelineItem index="12:00" title="Doors open">
+    Come in, take your time. Flip through sketchbooks, get a coffee, look around.
+  </TimelineItem>
+
+  <TimelineItem index="13:00" title="Artist talk">
+    Listen, ask questions, hear how these sketchbooks actually come to life.
+  </TimelineItem>
+
+  <TimelineItem index="15:00" title="Workshops">
+    Sit down and make something. Start your own sketchbook, even if it’s just one page.
+  </TimelineItem>
+
+  <TimelineItem index="18:00" title="Closing">
+    The day winds down. You leave with something – maybe a sketchbook, maybe a feeling.
+  </TimelineItem>
+</Timeline>
+
+</div>
+
+
+## Workshops
+
+  <div class="container">
+
+    <CardGrid>
+
+      <CardGridItem
+        position={1}
+        title="Mini Sketchbook Binding"
+        text={`
+          <p>by <a href="/artists/poliakova-ekaterina">Ekaterina Poliakova</a></p>
+          <p>Create your own small sketchbook from scratch.</p>
+        `}
+      />
+
+      <CardGridItem
+        position={2}
+        title="Collage in Your Sketchbook"
+        text={`
+          <p>by <a href="/artists/stepanova-katerina">Katerina Stepanova</a></p>
+          <p>Fill your sketchbook with collage compositions.</p>
+        `}
+      />
+
+    </CardGrid>
+
+  </div>
+
+

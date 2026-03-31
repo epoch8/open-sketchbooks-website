@@ -1,168 +1,123 @@
 /* ======================================================
-   TIMELINE — CLEAN ONE-SIDED ARCHITECTURE
-====================================================== */
-
-/* ======================================================
-   ROOT
+   TIMELINE — SKETCHBOOK VERTICAL (TUNED)
 ====================================================== */
 
 .timeline {
-  --timeline-color: var(--color-primary);
-  --timeline-line-color: var(--color-border);
-  --timeline-marker-bg: #fff;
-  --timeline-marker-size: 40px;
-  --timeline-connector-length: var(--space-6);
+  --marker-size: 52px; /* 👈 больше, держит композицию */
 
-  width: 100%;
   position: relative;
-  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* 👈 плотнее, меньше "воздуха" */
 
-  /* единый вертикальный ритм */
-  padding-block: var(--space-16);
-  padding-inline: var(--container-padding-x);
-
-  margin: 0 auto;
-  list-style: none;
-}
-
-.timeline > * {
-  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
 }
 
 /* ======================================================
-   MARKER
+   LINE — почти незаметная, но живая
+====================================================== */
+
+.timeline--with-lines.timeline--vertical::before {
+  content: "";
+
+  position: absolute;
+  left: calc(var(--marker-size) / 2);
+  top: 8px;
+  bottom: 8px;
+
+  width: 2px;
+
+  background: linear-gradient(
+    to bottom,
+    rgba(0,0,0,0.12),
+    rgba(0,0,0,0.04)
+  );
+}
+
+/* ======================================================
+   ITEM
+====================================================== */
+
+.timeline--vertical .timeline__item {
+  position: relative;
+
+  display: flex;
+  gap: 14px; /* 👈 tighter */
+  align-items: flex-start;
+
+  margin: 0;
+}
+
+/* ======================================================
+   MARKER — бумажный кружок (центр внимания)
 ====================================================== */
 
 .timeline__marker {
-  width: var(--timeline-marker-size);
-  height: var(--timeline-marker-size);
+  width: var(--marker-size);
+  height: var(--marker-size);
+
+  flex-shrink: 0;
 
   border-radius: 50%;
-  border: 2px solid var(--timeline-color);
-  background: var(--timeline-marker-bg);
-  color: var(--timeline-color);
+
+  background: #fffdfa;
+
+  border: 1px solid rgba(0,0,0,0.06);
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  font-weight: var(--font-weight-semibold);
+  font-size: 14px;
+  font-weight: 600;
+
+  box-shadow:
+    0 4px 10px rgba(0,0,0,0.06),
+    0 14px 30px rgba(0,0,0,0.12); /* 👈 сильнее глубина */
+
+  position: relative;
   z-index: 2;
+
+  transform: rotate(-0.6deg);
+}
+
+/* вариативность (очень лёгкая) */
+.timeline__item:nth-child(2n) .timeline__marker {
+  transform: rotate(0.7deg);
+}
+
+.timeline__item:nth-child(3n) .timeline__marker {
+  transform: rotate(-1deg);
 }
 
 /* ======================================================
-   HORIZONTAL (ONE-SIDED)
+   CONNECTOR (горизонтальный)
 ====================================================== */
 
-.timeline--horizontal {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: var(--space-12);
-
-  max-width: var(--container-wide);
-  position: relative;
-}
-
-/* horizontal spine */
-.timeline--with-lines.timeline--horizontal::before {
-  content: "";
-  position: absolute;
-  top: calc(var(--timeline-marker-size) / 2);
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: var(--timeline-line-color);
-  z-index: 0;
-}
-
-.timeline--horizontal .timeline__item {
-  position: relative;
-  text-align: center;
-  padding-top: calc(var(--timeline-marker-size) / 2 + var(--space-12));
-}
-
-/* marker centered on spine */
-.timeline--horizontal .timeline__marker {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-/* vertical connector down */
-.timeline--with-lines.timeline--horizontal .timeline__item::after {
-  content: "";
-  position: absolute;
-  top: var(--timeline-marker-size);
-  left: 50%;
-  transform: translateX(-50%);
-  width: 2px;
-  height: var(--timeline-connector-length);
-  background: var(--timeline-line-color);
-}
-
-/* content */
-.timeline--horizontal .timeline__content {
-  max-width: 340px;
-  margin: 0 auto;
-}
-
-/* ======================================================
-   VERTICAL (ONE-SIDED)
-====================================================== */
-
-.timeline--vertical {
-  max-width: var(--container-wide);
-  margin: 0 auto;
-  position: relative;
-}
-
-/* vertical spine */
-.timeline--with-lines.timeline--vertical::before {
-  content: "";
-  position: absolute;
-  left: calc(var(--timeline-marker-size) / 2);
-  top: var(--space-2);      /* не упирается в padding */
-  bottom: var(--space-2);   /* симметрия */
-  width: 2px;
-  background: var(--timeline-line-color);
-  z-index: 0;
-}
-
-.timeline--vertical .timeline__item {
-  position: relative;
-  margin: var(--space-8) 0;
-
-  padding-left: calc(
-    var(--timeline-marker-size) +
-    var(--timeline-connector-length) +
-    var(--space-6)
-  );
-}
-
-/* horizontal connector from spine */
 .timeline--with-lines.timeline--vertical .timeline__item::before {
   content: "";
+
   position: absolute;
-  top: calc(var(--timeline-marker-size) / 2);
-  left: calc(var(--timeline-marker-size) / 2);
-  width: var(--timeline-connector-length);
+  top: calc(var(--marker-size) / 2);
+  left: calc(var(--marker-size) / 2);
+
+  width: 14px;
   height: 2px;
-  background: var(--timeline-line-color);
+
+  background: rgba(0,0,0,0.1);
 }
 
-/* marker position */
-.timeline--vertical .timeline__marker {
-  position: absolute;
-  top: 0;
-  left: calc(
-    var(--timeline-marker-size) / 2 + var(--timeline-connector-length)
-  );
-}
+/* ======================================================
+   CONTENT
+====================================================== */
 
-/* content full width */
-.timeline--vertical .timeline__content {
-  width: 100%;
+.timeline__content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px; /* 👈 компактнее */
+
+  max-width: 520px;
 }
 
 /* ======================================================
@@ -170,29 +125,45 @@
 ====================================================== */
 
 .timeline__title {
-  margin: 0 0 var(--space-2);
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-text-strong);
+  margin: 0;
+
+  font-size: 18px;
+  font-weight: 600;
+
+  color: #1a1a1a;
 }
 
 .timeline__body {
   margin: 0;
-  color: var(--color-text-muted);
-  line-height: var(--line-height-base);
+
+  font-size: 15px;
+  line-height: 1.5; /* 👈 плотнее */
+
+  color: rgba(0,0,0,0.65);
+}
+
+/* ======================================================
+   MICRO CHAOS (очень аккуратно)
+====================================================== */
+
+.timeline__item:nth-child(2n) {
+  margin-left: 3px;
+}
+
+.timeline__item:nth-child(3n) {
+  margin-left: -2px;
 }
 
 /* ======================================================
    RESPONSIVE
 ====================================================== */
 
-@media (max-width: 900px) {
-
-  .timeline--horizontal {
-    grid-template-columns: 1fr;
+@media (max-width: 768px) {
+  .timeline {
+    gap: 18px;
   }
 
-  .timeline--horizontal .timeline__content {
+  .timeline__content {
     max-width: none;
   }
-
 }

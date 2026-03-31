@@ -330,6 +330,19 @@
   100%{ transform: translateY(4px) rotate(-1.2deg); }
 }
 
+.stack-section {
+  margin-bottom: 64px;
+}
+
+.lead {
+  margin-top: 32px;
+  margin-bottom: 40px;
+
+  font-size: 18px;
+  line-height: 1.6;
+
+  color: var(--color-text-secondary);
+}
 
 /* ======================================
    MOBILE

@@ -1,0 +1,113 @@
+---
+interface ImageItem {
+  src: string;
+  alt?: string;
+}
+
+interface Props {
+  images: ImageItem[];
+}
+
+const { images } = Astro.props;
+
+/* стабильный псевдо-рандом */
+function rand(i: number) {
+  const x = Math.sin(i * 999) * 10000;
+  return x - Math.floor(x);
+}
+
+function getStyle(i: number) {
+  const r1 = rand(i);
+  const r2 = rand(i + 1);
+
+  /* 👇 чередуем наклон */
+  const direction = i % 2 === 0 ? -1 : 1;
+  const rotation = direction * (3 + r1 * 4);
+
+  /* 👇 небольшой offset вниз */
+  const translateY = r2 * 16;
+
+  /* 👇 слой */
+  const z = i;
+
+  /* 👇 глубина */
+  const shadowY = 6 + i * 2;
+  const shadowBlur = 14 + i * 4;
+  const shadowOpacity = 0.08 + i * 0.02;
+
+  return `
+    transform: translateY(${translateY}px) rotate(${rotation}deg);
+    z-index: ${z};
+    box-shadow: 0 ${shadowY}px ${shadowBlur}px rgba(0,0,0,${shadowOpacity});
+  `;
+}
+---
+
+<div class="stack-row">
+  {images.map((img, i) => (
+    <img
+      src={img.src}
+      alt={img.alt || ""}
+      class="img"
+      style={getStyle(i)}
+    />
+  ))}
+</div>
+
+<style>
+.stack-row {
+  display: flex;
+  align-items: center; /* 👈 центр по высоте */
+  gap: 24px;
+}
+
+/* ================================
+   CARD
+================================ */
+
+.img {
+  width: 220px;
+  flex-shrink: 0;
+
+  border-radius: 12px;
+
+  /* fallback тень */
+  box-shadow:
+    0 4px 10px rgba(0,0,0,0.06);
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+/* ================================
+   INTERACTION
+================================ */
+
+.img:hover {
+  transform: scale(1.05) rotate(0deg) translateY(-6px) !important;
+  z-index: 999;
+
+  box-shadow:
+    0 24px 60px rgba(0,0,0,0.25),
+    0 10px 25px rgba(0,0,0,0.15);
+}
+
+
+
+/* ================================
+   MOBILE
+================================ */
+
+@media (max-width: 768px) {
+  .stack-row {
+    overflow-x: auto;
+    gap: 16px;
+  }
+
+  .img {
+    transform: none !important;
+  }
+}
+
+</style>

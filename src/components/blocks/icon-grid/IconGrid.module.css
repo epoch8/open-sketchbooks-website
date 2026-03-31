@@ -1,68 +1,131 @@
 /* ======================================================
-   ICON GRID
-   (layout-agnostic: no max-width, no outer padding)
+   ICON GRID — "loose paper layout"
 ====================================================== */
 
 .icon-grid__container {
-  /* removed:
-     max-width
-     margin: 0 auto
-     padding-x
-  */
-
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: var(--space-8);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 28px;
 }
 
 /* ======================================================
-   CARD
+   CARD — paper / sticky note
 ====================================================== */
 
 .icon-grid__item {
-  background: var(--color-bg-muted);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  padding: var(--space-8);
+  width: 280px;
+
+  background: #fffdfc;
+
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 10px;
+
+  padding: 20px;
 
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
+  gap: 12px;
+
+  /* 👇 бумажная глубина */
+  box-shadow:
+    0 1px 2px rgba(0,0,0,0.04),
+    0 6px 18px rgba(0,0,0,0.06);
+
+  /* 👇 лёгкая "неровность" */
+  transform: rotate(-0.3deg);
 
   transition:
-    border-color var(--dur-fast) var(--ease-standard),
-    box-shadow var(--dur-fast) var(--ease-standard);
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
-.icon-grid__item:hover {
-  border-color: var(--color-divider);
-  box-shadow: var(--shadow-sm);
+/* 👇 чуть хаоса */
+.icon-grid__item:nth-child(2n) {
+  transform: rotate(0.6deg);
+}
+
+.icon-grid__item:nth-child(3n) {
+  transform: rotate(-0.8deg);
+}
+
+.icon-grid__item:nth-child(5n) {
+  transform: rotate(0.4deg);
 }
 
 /* ======================================================
-   ICON CIRCLE
+   WORKSHOP LINKS — HAND-DRAWN STYLE
+====================================================== */
+
+/* ======================================================
+   WORKSHOP LINKS — RED INK STYLE
+====================================================== */
+
+.icon-grid__item a {
+  position: relative;
+
+  color: #b23a2b; /* 👈 тёплый красный (чернила, не UI) */
+  text-decoration: none;
+
+  font-weight: 500;
+
+  transition: color 0.2s ease;
+}
+
+/* underline как маркер */
+.icon-grid__item a::after {
+  content: "";
+
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+
+  width: 100%;
+  height: 2px;
+
+  background: currentColor;
+
+  opacity: 0.75;
+
+  transform: rotate(-0.6deg) scaleX(1);
+  transform-origin: left;
+
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease;
+}
+
+/* hover — "оживает" */
+.icon-grid__item a:hover {
+  color: #8f2d22; /* 👈 глубже, как нажали сильнее */
+}
+
+.icon-grid__item a:hover::after {
+  transform: rotate(0.6deg) scaleX(1.05);
+  opacity: 1;
+}
+
+/* active — прижали рукой */
+.icon-grid__item a:active::after {
+  transform: rotate(0deg) scaleX(0.98);
+}
+/* ======================================================
+   HOVER — "picked up from table"
+====================================================== */
+
+.icon-grid__item:hover {
+  transform: translateY(-6px) rotate(0deg) scale(1.02);
+
+  box-shadow:
+    0 20px 40px rgba(0,0,0,0.12),
+    0 8px 16px rgba(0,0,0,0.08);
+}
+
+/* ======================================================
+   ICON — убираем "ui-иконку"
 ====================================================== */
 
 .icon-grid__icon-wrapper {
-  width: var(--space-10);
-  height: var(--space-10);
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  border-radius: 50%;
-
-  background: var(--color-primary); /* was danger */
-  color: var(--color-bg);
-}
-
-/* SVG inherits currentColor */
-
-.icon-grid__icon-wrapper svg {
-  width: var(--space-5);
-  height: var(--space-5);
-  stroke: currentColor;
+  display: none; /* 💥 ключевой момент */
 }
 
 /* ======================================================
@@ -72,11 +135,11 @@
 .icon-grid__title {
   margin: 0;
 
-  font-size: var(--font-size-lg);
-  font-weight: var(--font-weight-semibold);
-  line-height: var(--line-height-tight);
-  letter-spacing: var(--letter-tight);
-  color: var(--color-text-strong);
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.3;
+
+  color: #1a1a1a;
 }
 
 /* ======================================================
@@ -86,7 +149,22 @@
 .icon-grid__text {
   margin: 0;
 
-  font-size: var(--font-size-base);
-  line-height: var(--line-height-base);
-  color: var(--color-text-muted);
+  font-size: 15px;
+  line-height: 1.6;
+
+  color: rgba(0,0,0,0.65);
+}
+
+/* ======================================================
+   MOBILE
+====================================================== */
+
+@media (max-width: 768px) {
+  .icon-grid__container {
+    gap: 16px;
+  }
+
+  .icon-grid__item {
+    width: 240px;
+  }
 }
