@@ -3,6 +3,7 @@ import InternalLayout from "@/layouts/InternalLayout.astro";
 import { SEOBase } from "@/content/template/seo/seo";
 import type { SEOConfig } from "@/lib/seo/types";
 
+
 import { getCollection, getEntry } from "astro:content";
 
 import {
@@ -178,10 +179,96 @@ const formattedDate = new Date(event.data.date).toLocaleDateString("en", {
      CTA
   ================================= */}
 
-  <section class="section">
-    <div class="container flow">
-      <h2>Can't wait to see you there!</h2>
+<section class="section">
+  <div class="container">
+
+    <div class="rsvp">
+
+      <div class="rsvp__header">
+        <h2 class="rsvp__title">
+          Can't wait to see you there!
+        </h2>
+      </div>
+
+      <div class="rsvp__body">
+
+                <!-- NOTE -->
+        <p class="rsvp__note">
+          Leave your email and we’ll remind you before the event. No spam.
+        </p>
+
+        <!-- FORM -->
+        <form 
+            id="rsvp-form" 
+            class="rsvp__form"
+            data-event="tbilisi-sketchbook-exhibition-spring-2026"
+            data-group="183455938539161323">
+          <input 
+            type="email" 
+            name="email" 
+            placeholder="your email"
+            required
+            class="rsvp__input"
+          />
+
+          <button type="submit" class="rsvp__button">
+            Remind me
+          </button>
+        </form>
+
+
+
+        <!-- SUCCESS -->
+        <div id="rsvp-success" class="rsvp__success" style="display:none;">
+          <h4 class="rsvp__success-title">
+            You're on the list ✨
+          </h4>
+          <p class="rsvp__success-text">
+            We’ll remind you before the event
+          </p>
+        </div>
+
+      </div>
+
     </div>
-  </section>
+
+  </div>
+</section>
+
+
 
 </InternalLayout>
+
+<script>
+  const form = document.getElementById('rsvp-form');
+  const success = document.getElementById('rsvp-success');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const email = form.email.value;
+    const group = form.dataset.group;
+    const artist = form.dataset.artist;
+    const event = form.dataset.event;
+
+    const payload = {
+      email,
+      ...(group ? { group } : {}),
+      ...(artist ? { artist } : {}),
+      ...(event ? { event } : {}),
+    };
+
+    const res = await fetch('/api/subscribe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    if (res.ok) {
+      form.style.display = 'none';
+      success.style.display = 'block';
+    } else {
+      alert('Something went wrong');
+    }
+  });
+</script>
