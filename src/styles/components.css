@@ -534,6 +534,47 @@ a:focus-visible {
   width: 100%;
 }
 
+.hero-cta {
+  padding: 16px 24px; /* 👈 увеличили */
+  border-radius: 999px;
+
+  background: var(--ink);
+  color: white;
+
+  font-size: 16px; /* 👈 больше */
+  font-weight: 600;
+
+  border: none;
+  cursor: pointer;
+
+  transition: all 0.2s ease;
+}
+
+.hero-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(0,0,0,0.18);
+}
+
+.hero-header {
+  display: flex;
+  align-items: flex-start; /* 👈 было flex-end */
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.hero-header__left {
+  max-width: 720px;
+}
+
+.hero-header__meta {
+  margin-top: 12px;
+  color: rgba(0,0,0,0.6);
+}
+
+.hero-header__right {
+  flex-shrink: 0;
+}
+
 /* ======================================
    MOBILE
 ====================================== */

@@ -117,12 +117,22 @@ const formattedDate = new Date(event.data.date).toLocaleDateString("en", {
     <div class="container flow">
 
       {/* HEADER */}
-      <header class="flow">
-        <h1>{event.data.title}</h1>
+      <header class="hero-header">
 
-        <p>
-          {formattedDate} · {event.data.location}
-        </p>
+        <div class="hero-header__left">
+          <h1>{event.data.title}</h1>
+
+          <p class="hero-header__meta">
+            {formattedDate} · {event.data.location}
+          </p>
+        </div>
+
+        <div class="hero-header__right">
+          <button class="hero-cta" data-scroll-to-rsvp>
+            Save me a spot
+          </button>
+        </div>
+
       </header>
 
       {/* COVER */}
@@ -179,7 +189,7 @@ const formattedDate = new Date(event.data.date).toLocaleDateString("en", {
      CTA
   ================================= */}
 
-<section class="section">
+<section class="section" id="rsvp">
   <div class="container">
     <div class="rsvp">
 
@@ -253,3 +263,14 @@ const formattedDate = new Date(event.data.date).toLocaleDateString("en", {
   is:inline
   src="https://groot.mailerlite.com/js/w/webforms.min.js"
 ></script>
+
+<script is:inline>
+  document.querySelectorAll('[data-scroll-to-rsvp]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const el = document.getElementById('rsvp');
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    });
+  });
+</script>
