@@ -409,6 +409,12 @@ a:focus-visible {
   max-width: 520px;
 }
 
+.row-form form {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
 .rsvp__title {
   font-size: 40px;
   line-height: 1.1;
@@ -418,11 +424,7 @@ a:focus-visible {
 }
 
 .rsvp__form {
-  display: flex;
-  align-items: center;
-
-  gap: 6px;
-
+  position: relative;
   padding: 6px;
 
   border-radius: 999px;
@@ -430,17 +432,16 @@ a:focus-visible {
 
   background: rgba(255,255,255,0.6);
   backdrop-filter: blur(4px);
-
-  transition: all 0.2s ease;
 }
 
 .rsvp__input {
   flex: 1;
+  min-width: 0;
 
   border: none;
   background: transparent;
 
-  padding: 10px 12px;
+  padding: 10px 14px;
 
   font-size: 14px;
 }
@@ -455,6 +456,7 @@ a:focus-visible {
 
 .rsvp__button {
   border: none;
+  margin-left: 8px;
 
   padding: 10px 14px;
   border-radius: 999px;
@@ -483,26 +485,53 @@ a:focus-visible {
 }
 
 .rsvp__success {
-  margin-top: 16px;
+  position: absolute;
+  inset: 0;
 
-  padding: 16px;
-  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 
-  background: rgba(0,0,0,0.04);
+  padding: 8px 20px 0; /* 👈 ключевой сдвиг вниз */
+
+  border-radius: 999px;
+  background: rgba(255,255,255,0.9);
+
+  opacity: 0;
+  pointer-events: none;
+
+  transition: opacity 0.25s ease;
+}
+
+.rsvp__form.is-success .row-form {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.rsvp__form.is-success .rsvp__success {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .rsvp__success-title {
-  font-size: 16px;
-  margin-bottom: 4px;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 2px;
 }
 
 .rsvp__success-text {
-  font-size: 13px;
+  font-size: 12px;
   color: rgba(0,0,0,0.6);
 }
 
 .rsvp__form:hover {
   border-color: var(--ink);
+}
+
+.rsvp__form form {
+  display: flex;
+  align-items: center;
+  width: 100%;
 }
 
 /* ======================================

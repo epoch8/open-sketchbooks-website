@@ -181,7 +181,6 @@ const formattedDate = new Date(event.data.date).toLocaleDateString("en", {
 
 <section class="section">
   <div class="container">
-
     <div class="rsvp">
 
       <div class="rsvp__header">
@@ -192,83 +191,65 @@ const formattedDate = new Date(event.data.date).toLocaleDateString("en", {
 
       <div class="rsvp__body">
 
-                <!-- NOTE -->
         <p class="rsvp__note">
           Leave your email and we’ll remind you before the event. No spam.
         </p>
 
-        <!-- FORM -->
-        <form 
-            id="rsvp-form" 
-            class="rsvp__form"
-            data-event="tbilisi-sketchbook-exhibition-spring-2026"
-            data-group="183455938539161323">
-          <input 
-            type="email" 
-            name="email" 
-            placeholder="your email"
-            required
-            class="rsvp__input"
-          />
+        <div id="mlb2-39245507" class="rsvp__form ml-subscribe-form">
 
-          <button type="submit" class="rsvp__button">
-            Remind me
-          </button>
-        </form>
+          <div class="row-form">
 
+          <form
+            class="ml-block-form"
+            action="https://assets.mailerlite.com/jsonp/1909692/forms/183455915355146175/subscribe"
+            method="post"
+          >
+            <input
+              type="email"
+              name="fields[email]"
+              placeholder="your email"
+              required
+              class="rsvp__input"
+              autocomplete="email"
+            />
 
+            <button type="submit" class="rsvp__button">
+              Remind me
+            </button>
 
-        <!-- SUCCESS -->
-        <div id="rsvp-success" class="rsvp__success" style="display:none;">
-          <h4 class="rsvp__success-title">
-            You're on the list ✨
-          </h4>
-          <p class="rsvp__success-text">
-            We’ll remind you before the event
-          </p>
+            <input type="hidden" name="ml-submit" value="1" />
+            <input type="hidden" name="anticsrf" value="true" />
+          </form>
+
+          </div>
+
+          <!-- ❗ БЕЗ display:none -->
+          <div class="row-success rsvp__success">
+            <h4 class="rsvp__success-title">You're on the list ✨</h4>
+            <p class="rsvp__success-text">We’ll remind you before the event</p>
+          </div>
+
         </div>
 
       </div>
 
     </div>
-
   </div>
 </section>
 
-
-
 </InternalLayout>
 
-<script>
-  const form = document.getElementById('rsvp-form');
-  const success = document.getElementById('rsvp-success');
+<script is:inline>
+  function ml_webform_success_39245507() {
+    const container = document.getElementById('mlb2-39245507');
 
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    const email = form.email.value;
-    const group = form.dataset.group;
-    const artist = form.dataset.artist;
-    const event = form.dataset.event;
-
-    const payload = {
-      email,
-      ...(group ? { group } : {}),
-      ...(artist ? { artist } : {}),
-      ...(event ? { event } : {}),
-    };
-
-    const res = await fetch('/api/subscribe', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
-
-    if (res.ok) {
-      form.style.display = 'none';
-      success.style.display = 'block';
-    } else {
-      alert('Something went wrong');
+    if (container instanceof HTMLElement) {
+      container.classList.add('is-success');
     }
-  });
+  }
 </script>
+
+<script
+  is:inline
+  src="https://groot.mailerlite.com/js/w/webforms.min.js"
+></script>
