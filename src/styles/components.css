@@ -575,6 +575,14 @@ a:focus-visible {
   flex-shrink: 0;
 }
 
+.hero-cta {
+  color: white;
+}
+
+.heroButton:hover {
+  color: white; /* 👈 фикс */
+}
+
 /* ======================================
    MOBILE
 ====================================== */
