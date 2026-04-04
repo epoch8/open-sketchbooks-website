@@ -56,11 +56,68 @@ const events = defineCollection({
 });
 
 /* ================================
+   SKETCHBOOKS
+================================ */
+
+const sketchbooks = defineCollection({
+  schema: z.object({
+    title: z.string().min(1),
+
+    /* 🔗 связь с artist.slug */
+    author: slug,
+
+    /* 🌍 язык */
+    lang: z.string().min(2),
+
+    /* 🔗 связь переводов */
+    translationKey: slug,
+
+    year: z.number().int(),
+
+    tags: z.array(z.string()).optional(),
+
+    /* 📦 формат */
+    format: z.object({
+      physical: z.boolean(),
+      digital: z.boolean(),
+    }),
+
+    /* SEO */
+    seoDescription: z.string().optional(),
+
+    /* 🎨 обложка */
+    cover: z.string().min(1),
+
+    /* 📐 дефолтный аспект */
+    defaultAspect: z.enum(["portrait", "square", "landscape"]),
+
+    /* 📄 страницы */
+    pages: z.array(
+      z.object({
+        src: z.string().min(1),
+
+        caption: z.string().optional(),
+
+        aspect: z.enum(["portrait", "square", "landscape"]).optional(),
+      })
+    ).min(1),
+
+    /* ⚙️ UI настройки */
+    settings: z.object({
+      showCaptions: z.boolean().default(true),
+      allowZoom: z.boolean().default(true),
+      background: z.enum(["light", "dark"]).default("light"),
+    }).optional(),
+  }),
+});
+
+/* ================================
    EXPORT
 ================================ */
 
 export const collections = {
   artists,
   works,
-  events
+  events,
+  sketchbooks,
 };

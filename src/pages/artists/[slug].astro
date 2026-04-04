@@ -1,6 +1,8 @@
 ---
 import InternalLayout from "@/layouts/InternalLayout.astro";
 import Gallery from "@/components/blocks/gallery/Gallery.astro";
+import CardGrid from "@/components/blocks/card-grid/CardGrid.astro";
+import CardGridItem from "@/components/blocks/card-grid/CardGridItem.astro";
 
 import { getCollection } from "astro:content";
 
@@ -34,20 +36,33 @@ export async function getStaticPaths() {
 const { artist } = Astro.props;
 const { Content } = await artist.render();
 
-/* 👉 все работы */
+/* 👉 works */
 const works = await getCollection("works");
 
-/* 👉 фильтр по художнику */
 const artistWorks = works.filter(
   (work) => work.data.artist === artist.slug
 );
 
-/* 👉 нормализация */
 const galleryWorks = artistWorks.map((w) => ({
   title: w.data.title ?? undefined,
   image: w.data.image,
   slug: w.slug,
   alt: w.data.title ?? artist.data.title ?? "Artwork",
+}));
+
+/* 👉 sketchbooks */
+const sketchbooks = await getCollection("sketchbooks");
+
+const artistSketchbooks = sketchbooks.filter(
+  (book) => book.data.author === artist.slug
+);
+
+const sketchbookCards = artistSketchbooks.map((b) => ({
+  title: b.data.title,
+  slug: b.slug,
+  cover: `/images/sketchbooks/${b.slug}/${b.data.cover}`,
+  year: b.data.year,
+  isAvailable: b.data.format?.digital ?? false,
 }));
 
 /* ================================
@@ -56,8 +71,7 @@ const galleryWorks = artistWorks.map((w) => ({
 
 const pageSEO = {
   title: artist.data.title,
-  description:
-    `Works by ${artist.data.title}`,
+  description: `Works by ${artist.data.title}`,
 };
 ---
 
@@ -77,7 +91,6 @@ const pageSEO = {
 
         <h1>{artist.data.title}</h1>
 
-        {/* 👉 meta */}
         <div class="artist-meta">
 
           {artist.data.style && (
@@ -101,12 +114,35 @@ const pageSEO = {
 
       </header>
 
-      {/* 👉 markdown контент */}
+      {/* 👉 BIO */}
       <Content />
 
-      {/* 👉 галерея */}
+      {/* 👉 SKETCHBOOKS */}
+      {sketchbookCards.length > 0 && (
+        <section class="sketchbooks-section">
+          <h2>Sketchbooks</h2>
+
+          <CardGrid>
+            {sketchbookCards.map((book) => (
+              <CardGridItem
+                title={book.title}
+                href={`/sketchbooks/${book.slug}`}
+                text={
+                  book.isAvailable
+                    ? `${book.year ?? ""}`
+                    : "Coming soon"
+                }
+                buttonLabel=""
+              />
+            ))}
+          </CardGrid>
+        </section>
+      )}
+
+      {/* 👉 WORKS */}
       {galleryWorks.length > 0 && (
         <section class="gallery-section">
+          <h2>Works</h2>
           <Gallery works={galleryWorks} />
         </section>
       )}
@@ -169,10 +205,18 @@ const pageSEO = {
 }
 
 /* ================================
+   SKETCHBOOKS
+================================ */
+
+.sketchbooks-section {
+  margin-top: 40px;
+}
+
+/* ================================
    GALLERY
 ================================ */
 
 .gallery-section {
-  margin-top: 32px;
+  margin-top: 40px;
 }
 </style>

@@ -1,0 +1,268 @@
+---
+import InternalLayout from "@/layouts/InternalLayout.astro";
+import { getCollection } from "astro:content";
+
+import {
+  mainNav,
+  footerNav,
+  footerMeta,
+} from "@/content/template/navigation/navigation";
+
+import BrandLogo from "@/components/products/open-sketchbooks/logo/BrandLogo.astro";
+import { SEOBase } from "@/content/template/seo/seo";
+
+/* ================================
+   STATIC PATHS
+================================ */
+
+export async function getStaticPaths() {
+  const sketchbooks = await getCollection("sketchbooks");
+
+  return sketchbooks.map((book) => ({
+    params: { slug: book.slug },
+    props: { book },
+  }));
+}
+
+/* ================================
+   DATA
+================================ */
+
+const { book } = Astro.props;
+const { Content } = await book.render();
+
+const basePath = `/images/sketchbooks/${book.slug}`;
+
+const pages = book.data.pages.map((p, i) => ({
+  src: `${basePath}/${p.src}`,
+  caption: p.caption,
+  aspect: p.aspect ?? book.data.defaultAspect ?? "portrait",
+  index: i + 1,
+}));
+
+const isAvailable = book.data.format?.digital ?? false;
+const pageCount = pages.length;
+
+/* ================================
+   SEO
+================================ */
+
+const pageSEO = {
+  title: book.data.title,
+  description: book.data.seoDescription ?? book.data.title,
+};
+---
+
+<InternalLayout
+  baseSEO={SEOBase}
+  pageSEO={pageSEO}
+  navItems={mainNav}
+  footerSections={footerNav}
+  footerMeta={footerMeta}
+  logo={BrandLogo}
+>
+  <section class="section">
+    <div class="container flow">
+
+      {/* HEADER */}
+      <header class="header flow">
+        <h1>{book.data.title}</h1>
+      </header>
+
+      {/* COVER */}
+      <div class="cover">
+        <img
+          src={`${basePath}/${book.data.cover}`}
+          alt={book.data.title}
+        />
+      </div>
+
+      {/* DESCRIPTION */}
+      <div class="description">
+        <Content />
+      </div>
+
+      {isAvailable ? (
+
+        <section
+          class="viewer"
+          style={`height: ${pageCount * 100}vh`}
+        >
+
+          <div class="sticky">
+            <div class="track">
+
+              {pages.map((page) => (
+                <div class={`page ${page.aspect}`}>
+                  <img src={page.src} alt="" />
+
+                  {book.data.settings?.showCaptions && page.caption && (
+                    <div class="caption">
+                      {page.caption}
+                    </div>
+                  )}
+                </div>
+              ))}
+
+            </div>
+          </div>
+
+        </section>
+
+      ) : (
+
+        <section class="coming-soon">
+          <p>
+            This sketchbook exists as a physical object.
+            Digital version will be available soon.
+          </p>
+        </section>
+
+      )}
+
+    </div>
+  </section>
+</InternalLayout>
+
+<script>
+  window.addEventListener('DOMContentLoaded', () => {
+    const viewer = document.querySelector('.viewer');
+    if (!(viewer instanceof HTMLElement)) return;
+
+    const sticky = viewer.querySelector('.sticky');
+    if (!(sticky instanceof HTMLElement)) return;
+
+    const track = viewer.querySelector('.track');
+    if (!(track instanceof HTMLElement)) return;
+
+    window.addEventListener('scroll', () => {
+      const rect = viewer.getBoundingClientRect();
+
+      const scrollStart = rect.top;
+      const scrollEnd = rect.height - window.innerHeight;
+
+      if (scrollEnd <= 0) return;
+
+      const progress = Math.min(
+        Math.max(-scrollStart / scrollEnd, 0),
+        1
+      );
+
+      const maxTranslate =
+        track.scrollWidth - sticky.clientWidth;
+
+      track.style.transform =
+        `translateX(${-maxTranslate * progress}px)`;
+    });
+  });
+</script>
+
+<style>
+/* HEADER */
+.header {
+  margin-bottom: 24px;
+}
+
+/* COVER */
+.cover img {
+  width: 100%;
+  max-width: 600px;
+  border-radius: 12px;
+}
+
+/* DESCRIPTION */
+.description {
+  max-width: 600px;
+  opacity: 0.8;
+}
+
+/* ================================
+   VIEWER
+================================ */
+
+.viewer {
+  position: relative;
+  margin-top: 40px;
+}
+
+/* sticky viewport */
+.sticky {
+  position: sticky;
+  top: 0;
+
+  height: 100vh;
+  overflow: hidden;
+
+  display: flex;
+  align-items: center;
+}
+
+/* ================================
+   TRACK
+================================ */
+
+.track {
+  display: flex;
+  align-items: center;
+  gap: 32px; /* 👈 регулируешь плотность */
+  will-change: transform;
+}
+
+/* ================================
+   PAGE (КЛЮЧЕВОЕ ИЗМЕНЕНИЕ)
+================================ */
+
+.page {
+  flex: 0 0 auto;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ================================
+   IMAGE
+================================ */
+
+.page img {
+  display: block;
+
+  max-height: 75vh;
+  width: auto;
+
+  border-radius: 8px;
+}
+
+/* аспекты */
+
+.page.landscape img {
+  max-width: 80vw;
+  height: auto;
+}
+
+.page.square img {
+  max-height: 65vh;
+}
+
+/* ================================
+   CAPTION
+================================ */
+
+.caption {
+  margin-top: 10px;
+  font-size: 14px;
+  opacity: 0.7;
+  text-align: center;
+  max-width: 320px;
+}
+
+/* ================================
+   COMING SOON
+================================ */
+
+.coming-soon {
+  margin-top: 40px;
+  opacity: 0.7;
+}
+</style>
