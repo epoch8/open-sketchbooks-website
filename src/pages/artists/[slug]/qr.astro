@@ -1,0 +1,110 @@
+---
+import { getCollection } from "astro:content";
+
+export async function getStaticPaths() {
+  const artists = await getCollection("artists");
+
+  return artists.map((artist) => ({
+    params: { slug: artist.slug },
+    props: { artist },
+  }));
+}
+
+const { artist } = Astro.props;
+
+/* 👉 ссылка на exhibition */
+const url = `https://open-sketchbook.place/artists/${artist.slug}/exhibition`;
+---
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>{artist.data.title} – QR</title>
+
+    <style>
+      @page {
+        size: A5;
+        margin: 0;
+      }
+
+      body {
+        margin: 0;
+        font-family: system-ui;
+      }
+
+      .sheet {
+        width: 148mm;
+        height: 210mm;
+
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+
+        text-align: center;
+        padding: 24mm;
+        box-sizing: border-box;
+      }
+
+      .title {
+        font-size: 28px;
+        font-weight: 600;
+        margin-bottom: 16px;
+      }
+
+      .subtitle {
+        font-size: 16px;
+        opacity: 0.7;
+        margin-bottom: 32px;
+      }
+
+      .qr {
+        width: 120mm;
+        height: 120mm;
+        margin-bottom: 24px;
+      }
+
+      .footer {
+        font-size: 12px;
+        opacity: 0.5;
+      }
+
+      @media screen {
+        body {
+          background: #eee;
+          display: flex;
+          justify-content: center;
+        }
+
+        .sheet {
+          background: white;
+          margin: 40px 0;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="sheet">
+
+      <div class="title">
+        {artist.data.title}
+      </div>
+
+      <div class="subtitle">
+        Take this sketchbook with you
+      </div>
+
+      <img
+        class="qr"
+        src={`https://api.qrserver.com/v1/create-qr-code/?size=800x800&data=${encodeURIComponent(url)}`}
+        alt="QR code"
+      />
+
+      <div class="footer">
+        open-sketchbook.place
+      </div>
+
+    </div>
+  </body>
+</html>
