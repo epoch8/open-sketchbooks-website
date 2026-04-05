@@ -53,9 +53,13 @@ const galleryWorks = artistWorks.map((w) => ({
 /* 👉 sketchbooks */
 const sketchbooks = await getCollection("sketchbooks");
 
-const artistSketchbooks = sketchbooks.filter(
-  (book) => book.data.author === artist.slug
-);
+const artistSketchbooks = sketchbooks
+  .filter(
+    (book) =>
+      book.data.author === artist.slug &&
+      book.data.published === true
+  )
+  .sort((a, b) => b.data.year - a.data.year);
 
 const sketchbookCards = artistSketchbooks.map((b) => ({
   title: b.data.title,
@@ -117,31 +121,27 @@ const pageSEO = {
       {/* 👉 BIO */}
       <Content />
 
-      {/* 👉 SKETCHBOOKS */}
-      {sketchbookCards.length > 0 && (
-        <section class="sketchbooks-section">
-          <h2>Sketchbooks</h2>
+    {/* 👉 SKETCHBOOKS */}
+    {sketchbookCards.length > 0 && (
+      <section class="sketchbooks-section flow">
+        <h2>Sketchbooks</h2>
 
-          <CardGrid>
-            {sketchbookCards.map((book) => (
-              <CardGridItem
-                title={book.title}
-                href={`/sketchbooks/${book.slug}`}
-                text={
-                  book.isAvailable
-                    ? `${book.year ?? ""}`
-                    : "Coming soon"
-                }
-                buttonLabel=""
-              />
-            ))}
-          </CardGrid>
-        </section>
-      )}
+        <CardGrid>
+          {sketchbookCards.map((book) => (
+            <CardGridItem
+              title={book.title}
+              href={`/sketchbooks/${book.slug}`}
+              text={book.year ? `${book.year}` : ""}
+              buttonLabel=""
+            />
+          ))}
+        </CardGrid>
+      </section>
+    )}
 
       {/* 👉 WORKS */}
       {galleryWorks.length > 0 && (
-        <section class="gallery-section">
+        <section class="gallery-section flow">
           <h2>Works</h2>
           <Gallery works={galleryWorks} />
         </section>
@@ -219,4 +219,6 @@ const pageSEO = {
 .gallery-section {
   margin-top: 40px;
 }
+
+
 </style>

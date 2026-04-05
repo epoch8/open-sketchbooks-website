@@ -3,10 +3,9 @@ title: "#ОсознанныеДяденьки"
 
 author: "tatarinova-olga"
 
-lang: "ru"
-translationKey: "tatarinova-olga-osoznannye-dyadenki"
+published: false
 
-year: 2026
+year: 2025
 tags:
   - "black-and-white"
   - "spring"

@@ -18,10 +18,12 @@ import { SEOBase } from "@/content/template/seo/seo";
 export async function getStaticPaths() {
   const sketchbooks = await getCollection("sketchbooks");
 
-  return sketchbooks.map((book) => ({
-    params: { slug: book.slug },
-    props: { book },
-  }));
+  return sketchbooks
+    .filter((book) => book.data.published === true) // 👈 КЛЮЧЕВОЕ
+    .map((book) => ({
+      params: { slug: book.slug },
+      props: { book },
+    }));
 }
 
 /* ================================

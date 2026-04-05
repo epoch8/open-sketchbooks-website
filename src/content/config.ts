@@ -63,23 +63,21 @@ const sketchbooks = defineCollection({
   schema: z.object({
     title: z.string().min(1),
 
-    /* 🔗 связь с artist.slug */
-    author: slug,
+    /* 👤 автор */
+    author: z.string().min(1), // slug как string — достаточно
 
-    /* 🌍 язык */
-    lang: z.string().min(2),
+    published: z.boolean().default(false),
 
-    /* 🔗 связь переводов */
-    translationKey: slug,
-
+    /* 📅 */
     year: z.number().int(),
 
-    tags: z.array(z.string()).optional(),
+    /* 🏷 */
+    tags: z.array(z.string()).default([]),
 
     /* 📦 формат */
     format: z.object({
-      physical: z.boolean(),
-      digital: z.boolean(),
+      physical: z.boolean().default(true),
+      digital: z.boolean().default(false),
     }),
 
     /* SEO */
@@ -88,26 +86,36 @@ const sketchbooks = defineCollection({
     /* 🎨 обложка */
     cover: z.string().min(1),
 
-    /* 📐 дефолтный аспект */
-    defaultAspect: z.enum(["portrait", "square", "landscape"]),
+    /* 📐 дефолт */
+    defaultAspect: z
+      .enum(["portrait", "square", "landscape"])
+      .default("portrait"),
 
     /* 📄 страницы */
-    pages: z.array(
-      z.object({
-        src: z.string().min(1),
+    pages: z
+      .array(
+        z.object({
+          src: z.string().min(1),
 
-        caption: z.string().optional(),
+          caption: z.string().optional(),
 
-        aspect: z.enum(["portrait", "square", "landscape"]).optional(),
+          aspect: z
+            .enum(["portrait", "square", "landscape"])
+            .optional(),
+        })
+      )
+      .min(1),
+
+    /* ⚙️ UI */
+    settings: z
+      .object({
+        showCaptions: z.boolean().default(true),
+        allowZoom: z.boolean().default(true),
+        background: z
+          .enum(["light", "dark"])
+          .default("light"),
       })
-    ).min(1),
-
-    /* ⚙️ UI настройки */
-    settings: z.object({
-      showCaptions: z.boolean().default(true),
-      allowZoom: z.boolean().default(true),
-      background: z.enum(["light", "dark"]).default("light"),
-    }).optional(),
+      .default({}),
   }),
 });
 
