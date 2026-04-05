@@ -60,7 +60,7 @@ function formatDate(date: Date | string) {
   {sortedEvents.map((event) => (
     <CardGridItem
       title={event.data.title}
-      href={`/events/${event.slug}`} // 👈 используем slug для ссылки
+      href={`/events/${event.slug}`}
 
       text={`${formatDate(event.data.date)} · ${event.data.location}`}
 

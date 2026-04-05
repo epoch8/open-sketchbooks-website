@@ -90,33 +90,41 @@ const pageSEO = {
   <section class="section">
     <div class="container flow">
 
-      {/* 👉 HEADER */}
-      <header class="header flow">
+  {/* 👉 HEADER */}
+  <header class="hero-header">
 
-        <h1>{artist.data.title}</h1>
+    <div class="hero-header__left">
+      <h1>{artist.data.title}</h1>
 
-        <div class="artist-meta">
+      <div class="artist-meta">
 
-          {artist.data.style && (
-            <span class="style">
-              {artist.data.style}
-            </span>
-          )}
+        {artist.data.style && (
+          <span class="style">
+            {artist.data.style}
+          </span>
+        )}
 
-          {artist.data.instagram && (
-            <a
-              href={`https://instagram.com/${artist.data.instagram}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="instagram"
-            >
-              @{artist.data.instagram}
-            </a>
-          )}
+        {artist.data.instagram && (
+          <a
+            href={`https://instagram.com/${artist.data.instagram}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="instagram"
+          >
+            @{artist.data.instagram}
+          </a>
+        )}
 
-        </div>
+      </div>
+    </div>
 
-      </header>
+    <div class="hero-header__right">
+      <button class="hero-cta" data-scroll-to-rsvp>
+        Get new sketchbooks
+      </button>
+    </div>
+
+  </header>
 
       {/* 👉 BIO */}
       <Content />
@@ -149,6 +157,79 @@ const pageSEO = {
 
     </div>
   </section>
+
+{/* ================================
+   FOLLOW ARTIST CTA
+================================ */}
+
+<section class="section" id="rsvp">
+  <div class="container">
+    <div class="rsvp">
+
+      <div class="rsvp__header">
+        <h2 class="rsvp__title">
+          Get new sketchbooks
+        </h2>
+      </div>
+
+      <div class="rsvp__body">
+
+        <p class="rsvp__note">
+          Get new sketchbooks from this artist as soon as they’re published.
+        </p>
+
+        <div id="mlb2-39458049" class="rsvp__form ml-subscribe-form ml-subscribe-form-39458049">
+
+          {/* 👉 ВАЖНО: row-form */}
+          <div class="row-form">
+
+            <form
+              class="ml-block-form"
+              action="https://assets.mailerlite.com/jsonp/1909692/forms/183874219513218877/subscribe"
+              method="post"
+            >
+              <input
+                type="email"
+                name="fields[email]"
+                placeholder="your email"
+                required
+                class="rsvp__input"
+                autocomplete="email"
+              />
+
+              {/* 👉 передаём artist */}
+              <input
+                type="hidden"
+                name="fields[artist]"
+                value={artist.slug}
+              />
+
+              <button type="submit" class="rsvp__button">
+                Follow this artist
+              </button>
+
+              <input type="hidden" name="ml-submit" value="1" />
+              <input type="hidden" name="anticsrf" value="true" />
+            </form>
+
+          </div>
+
+          {/* 👉 ВАЖНО: row-success */}
+          <div class="row-success rsvp__success">
+            <h4 class="rsvp__success-title">You're in ✨</h4>
+            <p class="rsvp__success-text">
+              We’ll send you new sketchbooks from this artist
+            </p>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</section>
+
 </InternalLayout>
 
 <style>
@@ -222,3 +303,29 @@ const pageSEO = {
 
 
 </style>
+
+<script is:inline>
+  function ml_webform_success_39458049() {
+    const container = document.getElementById('mlb2-39458049');
+
+    if (container instanceof HTMLElement) {
+      container.classList.add('is-success');
+    }
+  }
+</script>
+
+<script
+  is:inline
+  src="https://groot.mailerlite.com/js/w/webforms.min.js"
+></script>
+
+<script is:inline>
+  document.querySelectorAll('[data-scroll-to-rsvp]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const el = document.getElementById('rsvp');
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    });
+  });
+</script>
