@@ -1,0 +1,278 @@
+---
+import InternalLayout from "@/layouts/InternalLayout.astro";
+import { getCollection } from "astro:content";
+
+import {
+  mainNav,
+  footerNav,
+  footerMeta,
+} from "@/content/template/navigation/navigation";
+
+import BrandLogo from "@/components/products/open-sketchbooks/logo/BrandLogo.astro";
+import { SEOBase } from "@/content/template/seo/seo";
+
+import Callout from "@/components/blocks/callout/Callout.astro";
+
+/* ================================
+   STATIC PATHS
+================================ */
+
+export async function getStaticPaths() {
+  const artists = await getCollection("artists");
+
+  return artists.map((artist) => ({
+    params: { slug: artist.slug },
+    props: { artist },
+  }));
+}
+
+/* ================================
+   DATA
+================================ */
+
+const { artist } = Astro.props;
+const { Content } = await artist.render();
+
+/* ================================
+   SEO
+================================ */
+
+const pageSEO = {
+  title: `${artist.data.title} — Sketchbook`,
+  description: `Sketchbook by ${artist.data.title}`,
+};
+---
+
+<InternalLayout
+  baseSEO={SEOBase}
+  pageSEO={pageSEO}
+  navItems={mainNav}
+  footerSections={footerNav}
+  footerMeta={footerMeta}
+  logo={BrandLogo}
+>
+
+  <section class="section">
+    <div class="container exhibition">
+
+      {/* ================================
+         HERO
+      ================================= */}
+
+      <section class="exhibition-hero">
+
+        <p class="lead">
+          You’re holding a sketchbook from the exhibition.
+        </p>
+
+        <p>
+          Each sketchbook is a personal series of drawings – a way the artist explores places, thoughts, and moments.
+        </p>
+
+        <p>
+          This one belongs to <strong>{artist.data.title}</strong>.
+        </p>
+
+        <p class="transition">
+          If it caught your attention, meet the artist behind it.
+        </p>
+
+      </section>
+
+      {/* ================================
+         ARTIST VOICE (CALLOUT)
+      ================================= */}
+
+      <section class="exhibition-callout">
+
+        <Callout>
+
+          <p class="voice-label">From the artist</p>
+
+          <div class="artist-voice flow">
+            <Content />
+          </div>
+
+        </Callout>
+
+      </section>
+
+      {/* ================================
+         CTA
+      ================================= */}
+
+      <section class="exhibition-cta" id="rsvp">
+
+        <div class="rsvp">
+
+          <h2 class="rsvp__title">
+            Want to keep this?
+          </h2>
+
+          <p class="rsvp__note">
+            We’ll send you this artist’s sketchbooks when they’re ready.
+          </p>
+
+          <div id="mlb2-39458049" class="rsvp__form ml-subscribe-form ml-subscribe-form-39458049">
+
+            <div class="row-form">
+
+              <form
+                class="ml-block-form"
+                action="https://assets.mailerlite.com/jsonp/1909692/forms/183874219513218877/subscribe"
+                method="post"
+              >
+                <input
+                  type="email"
+                  name="fields[email]"
+                  placeholder="your email"
+                  required
+                  class="rsvp__input"
+                  autocomplete="email"
+                />
+
+                <input
+                  type="hidden"
+                  name="fields[artist]"
+                  value={artist.slug}
+                />
+
+                <button type="submit" class="rsvp__button">
+                  Get sketchbooks
+                </button>
+
+                <input type="hidden" name="ml-submit" value="1" />
+                <input type="hidden" name="anticsrf" value="true" />
+              </form>
+
+            </div>
+
+            <div class="row-success rsvp__success">
+              <h4 class="rsvp__success-title">You're in ✨</h4>
+              <p class="rsvp__success-text">
+                We’ll send you this artist’s sketchbooks
+              </p>
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+    </div>
+  </section>
+
+</InternalLayout>
+
+<style>
+
+/* ================================
+   LAYOUT
+================================ */
+
+.exhibition {
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 6px 16px 40px; /* 👈 ещё меньше сверху */
+}
+
+/* ================================
+   HERO
+================================ */
+
+.exhibition-hero {
+  display: flex;
+  flex-direction: column;
+  gap: 12px; /* 👈 ещё чуть плотнее */
+
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.lead {
+  font-weight: 500;
+}
+
+.transition {
+  opacity: 0.7;
+  margin-top: 2px;
+}
+
+/* ================================
+   CALLOUT (ВНЕШНИЕ ОТСТУПЫ)
+================================ */
+
+.exhibition-callout {
+  margin-top: 22px;
+}
+
+/* ================================
+   CALLOUT (ВНУТРЕННЯЯ ТИПОГРАФИКА)
+================================ */
+
+/* label */
+.voice-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  opacity: 0.45;
+  margin-bottom: 14px; /* 👈 больше воздуха до заголовка */
+}
+
+
+/* основной текст */
+.artist-voice p {
+  font-size: 15.5px;
+  line-height: 1.65;
+  opacity: 0.8;
+  margin-bottom: 14px;
+}
+
+/* списки */
+.artist-voice ul {
+  margin-top: 12px;
+  padding-left: 18px;
+}
+
+.artist-voice li {
+  margin-bottom: 8px;
+  opacity: 0.75;
+  line-height: 1.5;
+}
+
+/* ================================
+   CTA
+================================ */
+
+.exhibition-cta {
+  margin-top: 34px;
+}
+
+.rsvp__title {
+  font-size: 26px;
+  line-height: 1.2;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.rsvp__note {
+  font-size: 15.5px;
+  opacity: 0.7;
+  margin-bottom: 16px;
+}
+</style>
+
+<script is:inline>
+  function ml_webform_success_39458049() {
+    const container = document.getElementById('mlb2-39458049');
+    if (container instanceof HTMLElement) {
+      container.classList.add('is-success');
+    }
+  }
+</script>
+
+<script
+  is:inline
+  src="https://groot.mailerlite.com/js/w/webforms.min.js"
+></script>
