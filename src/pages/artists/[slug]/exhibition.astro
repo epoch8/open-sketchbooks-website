@@ -62,42 +62,12 @@ const pageSEO = {
       <section class="exhibition-hero">
 
         <p class="lead">
-          You’re holding a sketchbook from the exhibition.
+          You’re holding a sketchbook from the exhibition. This one belongs to <strong>{artist.data.title}</strong>.
         </p>
 
-        <p>
-          Each sketchbook is a personal series of drawings – a way the artist explores places, thoughts, and moments.
-        </p>
+        </section>
 
-        <p>
-          This one belongs to <strong>{artist.data.title}</strong>.
-        </p>
-
-        <p class="transition">
-          If it caught your attention, meet the artist behind it.
-        </p>
-
-      </section>
-
-      {/* ================================
-         ARTIST VOICE (CALLOUT)
-      ================================= */}
-
-      <section class="exhibition-callout">
-
-        <Callout>
-
-          <p class="voice-label">From the artist</p>
-
-          <div class="artist-voice flow">
-            <Content />
-          </div>
-
-        </Callout>
-
-      </section>
-
-      {/* ================================
+    {/* ================================
          CTA
       ================================= */}
 
@@ -110,7 +80,7 @@ const pageSEO = {
           </h2>
 
           <p class="rsvp__note">
-            We’ll send you this artist’s sketchbooks when they’re ready.
+            We’ll send you the digital version when it’s ready.
           </p>
 
           <div id="mlb2-39458049" class="rsvp__form ml-subscribe-form ml-subscribe-form-39458049">
@@ -138,7 +108,7 @@ const pageSEO = {
                 />
 
                 <button type="submit" class="rsvp__button">
-                  Get sketchbooks
+                  Get it
                 </button>
 
                 <input type="hidden" name="ml-submit" value="1" />
@@ -160,8 +130,45 @@ const pageSEO = {
 
       </section>
 
+    
+    <section class="exhibition-cta flow">
+
+        <p class="lead">
+          If it caught your attention, meet the artist behind it.
+        </p>
+
+      </section>
+
+      {/* ================================
+         ARTIST VOICE (CALLOUT)
+      ================================= */}
+
+      <section class="exhibition-callout">
+
+        <Callout>
+
+          <p class="voice-label">From the artist</p>
+
+          <div class="artist-voice flow">
+            <Content />
+          </div>
+
+        </Callout>
+
+      </section>
+
+            <section>
+
+        <p class="lead">
+          Want to keep this? Scroll up to get the digital version.
+        </p>
+
+      </section>
+
     </div>
   </section>
+
+
 
 </InternalLayout>
 
@@ -260,6 +267,37 @@ const pageSEO = {
   font-size: 15.5px;
   opacity: 0.7;
   margin-bottom: 16px;
+}
+
+/* ================================
+   FORM BASE
+================================ */
+
+.ml-block-form {
+  display: flex;
+  gap: 8px;
+}
+
+/* input растягивается */
+.rsvp__input {
+  flex: 1;
+}
+
+/* ================================
+   MOBILE FIX
+================================ */
+
+@media (max-width: 640px) {
+
+  .ml-block-form {
+    flex-direction: column; /* 👈 ключ */
+    gap: 10px;
+  }
+
+  .rsvp__button {
+    width: 100%;
+  }
+
 }
 </style>
 
