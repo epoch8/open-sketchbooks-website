@@ -181,7 +181,7 @@ const pageSEO = {
 .exhibition {
   max-width: 520px;
   margin: 0 auto;
-  padding: 6px 16px 40px; /* 👈 ещё меньше сверху */
+  padding: 6px 16px 40px;
 }
 
 /* ================================
@@ -191,7 +191,7 @@ const pageSEO = {
 .exhibition-hero {
   display: flex;
   flex-direction: column;
-  gap: 12px; /* 👈 ещё чуть плотнее */
+  gap: 12px;
 
   font-size: 16px;
   line-height: 1.5;
@@ -207,28 +207,21 @@ const pageSEO = {
 }
 
 /* ================================
-   CALLOUT (ВНЕШНИЕ ОТСТУПЫ)
+   CALLOUT
 ================================ */
 
 .exhibition-callout {
   margin-top: 22px;
 }
 
-/* ================================
-   CALLOUT (ВНУТРЕННЯЯ ТИПОГРАФИКА)
-================================ */
-
-/* label */
 .voice-label {
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   opacity: 0.45;
-  margin-bottom: 14px; /* 👈 больше воздуха до заголовка */
+  margin-bottom: 14px;
 }
 
-
-/* основной текст */
 .artist-voice p {
   font-size: 15.5px;
   line-height: 1.65;
@@ -236,7 +229,6 @@ const pageSEO = {
   margin-bottom: 14px;
 }
 
-/* списки */
 .artist-voice ul {
   margin-top: 12px;
   padding-left: 18px;
@@ -275,30 +267,195 @@ const pageSEO = {
 
 .ml-block-form {
   display: flex;
+  align-items: center;
   gap: 8px;
 }
 
-/* input растягивается */
+.rsvp__input,
+.rsvp__button {
+  box-sizing: border-box;
+  height: 56px;
+  border-radius: 999px;
+  font-size: 16px;
+}
+
 .rsvp__input {
-  flex: 1;
+  flex: 1 1 auto;
+  width: 100%;
+  min-width: 0;
+
+  padding: 0 18px;
+  line-height: 56px;
+
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.rsvp__button {
+  flex: 0 0 auto;
+  padding: 0 22px;
+  font-weight: 600;
+  white-space: nowrap;
 }
 
 /* ================================
    MOBILE FIX
 ================================ */
 
-@media (max-width: 640px) {
+@media (max-width: 800px) {
 
-  .ml-block-form {
-    flex-direction: column; /* 👈 ключ */
-    gap: 10px;
+  /* 👇 убираем главный белый pill */
+  .rsvp__form.ml-subscribe-form {
+    background: none !important;
+    border: none !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+  }
+  /* ================================
+     PARTIAL RESET (НЕ ломаем всё подряд)
+  ================================= */
+
+  .ml-subscribe-form,
+  .ml-subscribe-form * {
+    box-sizing: border-box;
   }
 
-  .rsvp__button {
+  /* убираем только опасные вещи */
+  .ml-subscribe-form * {
+    margin: 0;
+    padding: 0;
+  }
+
+  /* ================================
+     STRUCTURE
+  ================================= */
+
+  .ml-subscribe-form {
+    display: block;
     width: 100%;
   }
 
+  .ml-subscribe-form form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+  }
+
+  /* ================================
+     INPUT
+  ================================= */
+
+  .ml-subscribe-form input[type="email"] {
+    display: block;
+    width: 100%;
+    height: 56px;
+
+    padding: 0 18px;
+
+    border-radius: 999px;
+    border: 1px solid rgba(0,0,0,0.12);
+
+    font-size: 16px;
+    line-height: 1;
+
+    background: #fff;
+
+    appearance: none;
+    -webkit-appearance: none;
+  }
+
+  /* ================================
+     BUTTON
+  ================================= */
+
+  .ml-subscribe-form button {
+    display: block;
+    width: 100%;
+    height: 56px;
+
+    border-radius: 999px;
+    border: none;
+
+    font-size: 16px;
+    font-weight: 600;
+
+    background: #111;
+    color: white;
+
+    text-align: center;
+
+    cursor: pointer;
+  }
+
+  /* ================================
+     PLACEHOLDER
+  ================================= */
+
+  .ml-subscribe-form input::placeholder {
+    color: rgba(0,0,0,0.45);
+  }
+
+  /* ================================
+     SUCCESS STATE (КЛЮЧЕВОЕ)
+  ================================= */
+
+  /* по умолчанию скрыт */
+  .row-success {
+    display: none;
+  }
+
+  /* показываем после submit */
+  #mlb2-39458049.is-success .row-success {
+    display: block;
+    margin-top: 12px;
+  }
+
+  /* скрываем форму после успеха */
+  #mlb2-39458049.is-success .row-form {
+    display: none;
+  }
+
+
+  /* success становится нормальным блоком */
+  #mlb2-39458049.is-success .row-success {
+    display: block;
+    position: static !important;
+
+    margin-top: 16px;
+  }
+
+  /* даём ему вертикальный ритм */
+  .rsvp__success {
+    display: block;
+    width: 100%;
+
+    margin-top: 16px;
+    text-align: center;
+    
+  }
+
+  .rsvp__success-title {
+    display: block;
+    font-size: 16px;
+    font-weight: 600;
+
+    margin-bottom: 4px;
+        text-align: center;
+
+  }
+
+  .rsvp__success-text {
+    display: block;
+    font-size: 14px;
+    opacity: 0.7;
+        text-align: center;
+
+  }
+
 }
+
 </style>
 
 <script is:inline>
