@@ -11,8 +11,34 @@ const artists = defineCollection({
   schema: z.object({
     title: z.string().min(1),
 
+    /* 👤 соцсети */
     instagram: z.string().optional(),
+
+    /* 🎨 опционально */
     style: z.string().optional(),
+
+    /* 💸 поддержка / покупка */
+    paymentLinks: z
+      .array(
+        z.object({
+          title: z.string().min(1),
+          description: z.string().optional(),
+          url: z.string().url(),
+        })
+      )
+      .default([]),
+
+    /* 💬 контакт */
+    contact: z
+      .object({
+        telegram: z
+          .object({
+            url: z.string().url(),
+            label: z.string().optional(),
+          })
+          .optional(),
+      })
+      .optional(),
   }),
 });
 

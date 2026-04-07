@@ -5,7 +5,7 @@ title: Tbilisi Balcony
 price: 75
 currency: GEL
 
-artist: olya-tatarinova
+artist: tatarinova-olga
 
 image: /images/products/tatarinova-olga/10.jpg
 

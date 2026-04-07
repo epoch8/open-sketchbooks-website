@@ -1,0 +1,192 @@
+---
+import InternalLayout from "@/layouts/InternalLayout.astro";
+import { getCollection } from "astro:content";
+
+import {
+  mainNav,
+  footerNav,
+  footerMeta,
+} from "@/content/template/navigation/navigation";
+
+import BrandLogo from "@/components/products/open-sketchbooks/logo/BrandLogo.astro";
+import { SEOBase } from "@/content/template/seo/seo";
+
+/* ================================
+   DATA
+================================ */
+
+const allProducts = await getCollection("products");
+const artists = await getCollection("artists");
+
+/* 👇 сортировка (пока простая) */
+const products = allProducts.sort((a, b) =>
+  a.data.title.localeCompare(b.data.title)
+);
+
+/* 👇 helper: найти автора */
+function getArtist(slug) {
+  return artists.find((a) => a.slug === slug);
+}
+
+/* ================================
+   SEO
+================================ */
+
+const pageSEO = {
+  title: "All works",
+  description: "All sketchbook-based works and prints",
+};
+---
+
+<InternalLayout
+  baseSEO={SEOBase}
+  pageSEO={pageSEO}
+  navItems={mainNav}
+  footerSections={footerNav}
+  footerMeta={footerMeta}
+  logo={BrandLogo}
+>
+
+  <section class="section">
+    <div class="container flow">
+
+      {/* ================================
+          HEADER
+      ================================= */}
+
+      <header class="header">
+        <h1>All works</h1>
+      </header>
+
+      {/* ================================
+          GRID
+      ================================= */}
+
+      <section class="grid">
+
+        {products.map((product) => {
+          const artist = getArtist(product.data.artist);
+
+          return (
+            <a
+              href={`/products/${product.slug}`}
+              class="card"
+            >
+              <div class="image">
+                <img
+                  src={product.data.image}
+                  alt={product.data.title}
+                  loading="lazy"
+                />
+              </div>
+
+              <div class="meta">
+
+                <div class="title">
+                  {product.data.title}
+                </div>
+
+                {artist && (
+                  <div class="artist">
+                    {artist.data.title}
+                  </div>
+                )}
+
+                {product.data.price && (
+                  <div class="price">
+                    {product.data.price} {product.data.currency}
+                  </div>
+                )}
+
+              </div>
+            </a>
+          );
+        })}
+
+      </section>
+
+    </div>
+  </section>
+
+</InternalLayout>
+
+<style>
+
+/* ================================
+   HEADER
+================================ */
+
+.header h1 {
+  font-size: 28px;
+  line-height: 1.2;
+}
+
+/* ================================
+   GRID
+================================ */
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 20px;
+}
+
+/* ================================
+   CARD
+================================ */
+
+.card {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+
+  transition: transform 0.15s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+}
+
+/* ================================
+   IMAGE
+================================ */
+
+.image {
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  border-radius: 10px;
+  background: #f5f5f5;
+}
+
+.image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ================================
+   META
+================================ */
+
+.meta {
+  margin-top: 8px;
+}
+
+.title {
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.artist {
+  font-size: 13px;
+  opacity: 0.6;
+  margin-top: 2px;
+}
+
+.price {
+  font-size: 14px;
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+</style>

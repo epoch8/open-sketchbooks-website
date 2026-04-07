@@ -52,6 +52,13 @@ const sketchbook = product.data.sketchbook
     )
   : null;
 
+/* 👇 artist */
+const artists = await getCollection("artists");
+
+const artist = product.data.artist
+  ? artists.find((a) => a.slug === product.data.artist)
+  : null;
+
 /* ================================
    SEO
 ================================ */
@@ -93,6 +100,16 @@ const pageSEO = {
 
           <h1>{product.data.title}</h1>
 
+          {/* 👇 AUTHOR */}
+          {artist && (
+            <div class="artist">
+              by{" "}
+              <a href={`/artists/${artist.slug}`}>
+                {artist.data.title}
+              </a>
+            </div>
+          )}
+
           {/* PRICE */}
           {product.data.price && (
             <div class="price">
@@ -102,7 +119,6 @@ const pageSEO = {
 
           {/* META */}
           <div class="meta">
-
             {product.data.medium && (
               <div>{product.data.medium}</div>
             )}
@@ -110,7 +126,6 @@ const pageSEO = {
             {product.data.size && (
               <div>{product.data.size}</div>
             )}
-
           </div>
 
           {/* CTA */}
@@ -131,9 +146,7 @@ const pageSEO = {
 
           {product.data.sketchbook && (
             <div class="sketchbook-link">
-              <a
-                href={`/sketchbooks/${product.data.sketchbook}`}
-              >
+              <a href={`/sketchbooks/${product.data.sketchbook}`}>
                 See where this came from →
               </a>
 
@@ -165,7 +178,7 @@ const pageSEO = {
                 class="card"
               >
                 <div class="image">
-                  <img src={p.data.image} />
+                  <img src={p.data.image} alt={p.data.title} />
                 </div>
 
                 <div class="meta">
@@ -212,6 +225,28 @@ const pageSEO = {
 .product__info {
   max-width: 420px;
 }
+
+/* ================================
+   ARTIST
+================================ */
+
+.artist {
+  font-size: 14px;
+  opacity: 0.7;
+  margin-top: -6px;
+}
+
+.artist a {
+  text-decoration: none;
+}
+
+.artist a:hover {
+  text-decoration: underline;
+}
+
+/* ================================
+   PRICE
+================================ */
 
 .price {
   font-size: 24px;
