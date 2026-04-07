@@ -64,7 +64,7 @@ const sketchbooks = defineCollection({
     title: z.string().min(1),
 
     /* 👤 автор */
-    author: z.string().min(1), // slug как string — достаточно
+    author: z.string().min(1),
 
     published: z.boolean().default(false),
 
@@ -84,7 +84,7 @@ const sketchbooks = defineCollection({
     seoDescription: z.string().optional(),
 
     /* 🎨 обложка */
-    cover: z.string().min(1),
+    cover: z.string().min(1).optional(),
 
     /* 📐 дефолт */
     defaultAspect: z
@@ -96,15 +96,14 @@ const sketchbooks = defineCollection({
       .array(
         z.object({
           src: z.string().min(1),
-
           caption: z.string().optional(),
-
           aspect: z
             .enum(["portrait", "square", "landscape"])
             .optional(),
         })
       )
-      .min(1),
+      .optional()
+      .default([]),
 
     /* ⚙️ UI */
     settings: z
@@ -120,6 +119,65 @@ const sketchbooks = defineCollection({
 });
 
 /* ================================
+   PRODUCTS
+================================ */
+
+const products = defineCollection({
+  schema: z.object({
+    /* 🧩 тип продукта */
+    type: z.enum(["print", "original", "zine"]),
+
+    /* 📛 */
+    title: z.string().min(1),
+
+    /* 💰 */
+    price: z.number().positive(),
+    currency: z.enum(["GEL", "USD", "EUR"]).default("GEL"),
+
+    /* 👤 связь с artist.slug */
+    artist: slug,
+
+    /* 🖼 */
+    image: z.string().min(1),
+
+    /* 🔗 связи */
+    collection: slug.optional(),
+    sketchbook: slug.optional(),
+    page: z.number().int().optional(),
+
+    /* 📦 */
+    status: z.enum(["available", "sold", "reserved"]).default("available"),
+
+    /* 🎨 мета (на будущее) */
+    medium: z.string().optional(),
+    size: z.string().optional(),
+    edition: z.string().optional(),
+  }),
+});
+
+/* ================================
+   PRODUCT COLLECTIONS
+================================ */
+
+const productCollections = defineCollection({
+  schema: z.object({
+    title: z.string().min(1),
+
+    /* 👤 */
+    artist: slug,
+
+    /* 🔗 связь с sketchbook */
+    sketchbook: slug.optional(),
+
+    /* 📝 */
+    description: z.string().optional(),
+
+    /* 🖼 */
+    cover: z.string().optional(),
+  }),
+});
+
+/* ================================
    EXPORT
 ================================ */
 
@@ -128,4 +186,6 @@ export const collections = {
   works,
   events,
   sketchbooks,
+  products,
+  productCollections,
 };

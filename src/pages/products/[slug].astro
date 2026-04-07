@@ -1,0 +1,302 @@
+---
+import InternalLayout from "@/layouts/InternalLayout.astro";
+import { getCollection } from "astro:content";
+
+import {
+  mainNav,
+  footerNav,
+  footerMeta,
+} from "@/content/template/navigation/navigation";
+
+import BrandLogo from "@/components/products/open-sketchbooks/logo/BrandLogo.astro";
+import { SEOBase } from "@/content/template/seo/seo";
+
+/* ================================
+   STATIC PATHS
+================================ */
+
+export async function getStaticPaths() {
+  const products = await getCollection("products");
+
+  return products.map((product) => ({
+    params: { slug: product.slug },
+    props: { product },
+  }));
+}
+
+/* ================================
+   DATA
+================================ */
+
+const { product } = Astro.props;
+const { Content } = await product.render();
+
+/* 👇 все продукты (для related) */
+const allProducts = await getCollection("products");
+
+/* 👇 related */
+const related = product.data.collection
+  ? allProducts.filter(
+      (p) =>
+        p.data.collection === product.data.collection &&
+        p.slug !== product.slug
+    )
+  : [];
+
+/* 👇 sketchbook */
+const sketchbooks = await getCollection("sketchbooks");
+
+const sketchbook = product.data.sketchbook
+  ? sketchbooks.find(
+      (s) => s.slug === product.data.sketchbook
+    )
+  : null;
+
+/* ================================
+   SEO
+================================ */
+
+const pageSEO = {
+  title: product.data.title,
+  description: product.data.title,
+};
+---
+
+<InternalLayout
+  baseSEO={SEOBase}
+  pageSEO={pageSEO}
+  navItems={mainNav}
+  footerSections={footerNav}
+  footerMeta={footerMeta}
+  logo={BrandLogo}
+>
+
+  <section class="section">
+    <div class="container flow">
+
+      {/* ================================
+          MAIN
+      ================================= */}
+
+      <section class="product">
+
+        {/* IMAGE */}
+        <div class="product__image">
+          <img
+            src={product.data.image}
+            alt={product.data.title}
+          />
+        </div>
+
+        {/* INFO */}
+        <div class="product__info flow">
+
+          <h1>{product.data.title}</h1>
+
+          {/* PRICE */}
+          {product.data.price && (
+            <div class="price">
+              {product.data.price} {product.data.currency}
+            </div>
+          )}
+
+          {/* META */}
+          <div class="meta">
+
+            {product.data.medium && (
+              <div>{product.data.medium}</div>
+            )}
+
+            {product.data.size && (
+              <div>{product.data.size}</div>
+            )}
+
+          </div>
+
+          {/* CTA */}
+          <div class="cta">
+            <button class="buy">
+              Buy this piece
+            </button>
+          </div>
+
+          {/* DESCRIPTION */}
+          <div class="description">
+            <Content />
+          </div>
+
+          {/* ================================
+              SKETCHBOOK LINK
+          ================================= */}
+
+          {product.data.sketchbook && (
+            <div class="sketchbook-link">
+              <a
+                href={`/sketchbooks/${product.data.sketchbook}`}
+              >
+                See where this came from →
+              </a>
+
+              {product.data.page && (
+                <div class="page">
+                  Page {product.data.page}
+                </div>
+              )}
+            </div>
+          )}
+
+        </div>
+
+      </section>
+
+      {/* ================================
+          RELATED
+      ================================= */}
+
+      {related.length > 0 && (
+        <section class="related">
+
+          <h2>More from this series</h2>
+
+          <div class="grid">
+            {related.map((p) => (
+              <a
+                href={`/products/${p.slug}`}
+                class="card"
+              >
+                <div class="image">
+                  <img src={p.data.image} />
+                </div>
+
+                <div class="meta">
+                  <div class="title">
+                    {p.data.title}
+                  </div>
+                </div>
+              </a>
+            ))}
+          </div>
+
+        </section>
+      )}
+
+    </div>
+  </section>
+
+</InternalLayout>
+
+<style>
+/* ================================
+   LAYOUT
+================================ */
+
+.product {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+}
+
+/* ================================
+   IMAGE
+================================ */
+
+.product__image img {
+  width: 100%;
+  border-radius: 12px;
+}
+
+/* ================================
+   INFO
+================================ */
+
+.product__info {
+  max-width: 420px;
+}
+
+.price {
+  font-size: 24px;
+  font-weight: 600;
+}
+
+/* ================================
+   META
+================================ */
+
+.meta {
+  font-size: 14px;
+  opacity: 0.7;
+}
+
+/* ================================
+   CTA
+================================ */
+
+.buy {
+  padding: 12px 20px;
+  border-radius: 999px;
+  border: none;
+
+  background: black;
+  color: white;
+
+  cursor: pointer;
+}
+
+/* ================================
+   DESCRIPTION
+================================ */
+
+.description {
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* ================================
+   SKETCHBOOK
+================================ */
+
+.sketchbook-link {
+  margin-top: 12px;
+  font-size: 14px;
+}
+
+.page {
+  opacity: 0.6;
+}
+
+/* ================================
+   RELATED
+================================ */
+
+.related {
+  margin-top: 48px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 16px;
+}
+
+.card {
+  text-decoration: none;
+  color: inherit;
+}
+
+.image {
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  border-radius: 10px;
+}
+
+.image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.title {
+  font-size: 13px;
+  margin-top: 6px;
+}
+</style>

@@ -3,7 +3,7 @@ title: "#ОсознанныеДяденьки"
 
 author: "tatarinova-olga"
 
-published: true
+published: false
 
 year: 2025
 tags:
