@@ -7,6 +7,33 @@ const slug = z.string().regex(/^[a-z0-9-]+$/);
    ARTISTS
 ================================ */
 
+const paymentMethodSchema = z.discriminatedUnion("type", [
+  z.object({
+    type: z.literal("link"),
+    title: z.string().min(1),
+    description: z.string().optional(),
+    url: z.string().url(),
+  }),
+
+  z.object({
+    type: z.literal("account"),
+    title: z.string().min(1),
+    accountNumber: z.string().min(1),
+  }),
+
+  z.object({
+    type: z.literal("card"),
+    title: z.string().min(1),
+    cardNumber: z.string().min(1),
+  }),
+
+  z.object({
+    type: z.literal("cash"),
+    title: z.string().min(1),
+    description: z.string().optional(),
+  }),
+]);
+
 const artists = defineCollection({
   schema: z.object({
     title: z.string().min(1),
@@ -17,16 +44,8 @@ const artists = defineCollection({
     /* 🎨 опционально */
     style: z.string().optional(),
 
-    /* 💸 поддержка / покупка */
-    paymentLinks: z
-      .array(
-        z.object({
-          title: z.string().min(1),
-          description: z.string().optional(),
-          url: z.string().url(),
-        })
-      )
-      .default([]),
+    /* 💸 оплата */
+    paymentMethods: z.array(paymentMethodSchema).default([]),
 
     /* 💬 контакт */
     contact: z

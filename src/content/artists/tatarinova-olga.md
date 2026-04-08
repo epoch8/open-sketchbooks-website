@@ -1,10 +1,15 @@
 ---
 title: Olga Tatarinova
 
-paymentLinks:
-  - title: TBC
+paymentMethods:
+  - type: link
+    title: TBC
     description: Money transfer via TBC
     url: https://transfer.tbcbank.ge/?iban=eXRWCd6va4y6iDI90y2WsETuuQyAkVsfNlRJABmpckyWs4+h9TyMfMMyeHdinNlJsAw=
+
+  - type: account
+    title: TBC
+    accountNumber: GE15TB7977745063400001
 
 contact:
   telegram:

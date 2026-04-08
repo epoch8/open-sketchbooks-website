@@ -1,0 +1,309 @@
+---
+import { getCollection } from "astro:content";
+
+export async function getStaticPaths() {
+  const products = await getCollection("products");
+
+  return products.map((product) => ({
+    params: { slug: product.slug },
+    props: { product },
+  }));
+}
+
+const { product } = Astro.props;
+
+/* 👇 artist */
+const artists = await getCollection("artists");
+
+const artist = product.data.artist
+  ? artists.find((a) => a.slug === product.data.artist)
+  : null;
+
+/* 👇 payment methods */
+const paymentMethods = artist?.data.paymentMethods ?? [];
+
+/* 👇 делим */
+const linkMethods = paymentMethods.filter((m) => m.type === "link");
+const otherMethods = paymentMethods.filter((m) => m.type !== "link");
+
+/* 👇 ссылки */
+const artistUrl = artist
+  ? `https://open-sketchbook.place/artists/${artist.slug}`
+  : null;
+---
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>{product.data.title} – Pricetag</title>
+
+    <style>
+  @page {
+    size: A6;
+    margin: 0;
+  }
+
+  body {
+    margin: 0;
+    font-family: system-ui;
+  }
+
+  .sheet {
+    width: 105mm;
+    height: 148mm;
+    padding: 10mm;
+
+    display: flex;
+    flex-direction: column;
+
+    box-sizing: border-box;
+  }
+
+  /* ================================
+     HEADER (фикс сверху)
+  ================================= */
+
+  .header-block {
+    flex-shrink: 0;
+  }
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .title {
+    font-size: 18px;
+    font-weight: 600;
+  }
+
+  .artist {
+    font-size: 14px;
+    opacity: 0.7;
+    margin-top: 4px;
+  }
+
+  .artist-qr {
+    width: 48px;
+    height: 48px;
+  }
+
+  .price {
+    font-size: 28px;
+    font-weight: 700;
+    margin-top: 12px;
+  }
+
+  /* ================================
+     CENTER BLOCK (ключевое)
+  ================================= */
+
+  .center-block {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* центр по высоте */
+  }
+
+  /* ================================
+     PAYMENTS
+  ================================= */
+
+  .payments-wrapper {
+      margin-top: 36px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px; /* больше воздуха */
+  }
+
+
+
+
+  /* Сильнее заголовок */
+  .payments-title {
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    opacity: 0.9;
+  }
+
+  /* QR ROW */
+
+  .payment-qr-row {
+    display: flex;
+    gap: 16px; /* увеличили расстояние */
+  }
+
+  .payment-qr {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .qr {
+    width: 90px;
+    height: 90px;
+  }
+
+  .label {
+    font-size: 11px;
+    opacity: 0.7;
+  }
+
+  /* ACCOUNT LIST */
+
+  .payment-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* увеличили расстояние */
+  }
+
+  .payment-row {
+    display: flex;
+    gap: 10px;
+
+    font-size: 15px; /* чуть крупнее */
+    line-height: 1.35;
+  }
+
+  .payment-row__label {
+    opacity: 0.6;
+    white-space: nowrap;
+  }
+
+  .payment-row__value {
+    font-weight: 600;
+    word-break: break-all;
+  }
+
+  /* ================================
+     FOOTER (фикс снизу)
+  ================================= */
+
+  .footer {
+    flex-shrink: 0;
+    font-size: 10px;
+    opacity: 0.5;
+    margin-top: 46px;
+  }
+
+  /* ================================
+     SCREEN
+  ================================= */
+
+  @media screen {
+    body {
+      background: #eee;
+      display: flex;
+      justify-content: center;
+    }
+
+    .sheet {
+      background: white;
+      margin: 40px 0;
+    }
+  }
+</style>
+  </head>
+
+  <body>
+    <div class="sheet">
+
+      {/* HEADER */}
+      <div>
+
+        <div class="header">
+
+          <div>
+            <div class="title">{product.data.title}</div>
+
+            {artist && (
+              <div class="artist">
+                by {artist.data.title}
+              </div>
+            )}
+          </div>
+
+          {artistUrl && (
+            <img
+              class="artist-qr"
+              src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(artistUrl)}`}
+            />
+          )}
+
+        </div>
+
+        {product.data.price && (
+          <div class="price">
+            {product.data.price} {product.data.currency}
+          </div>
+        )}
+
+      </div>
+
+      {/* PAYMENTS */}
+      {paymentMethods.length > 0 && (
+        <div class="payments-wrapper">
+
+          <div class="payments-title">
+            Payment
+          </div>
+
+          {/* QR В РЯД */}
+          {linkMethods.length > 0 && (
+            <div class="payment-qr-row">
+              {linkMethods.map((method) => (
+                <div class="payment-qr">
+
+                  <img
+                    class="qr"
+                    src={`https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=${encodeURIComponent(method.url)}`}
+                  />
+
+                  <div class="label">
+                    {method.title}
+                  </div>
+
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* ACCOUNT LIST */}
+          {otherMethods.length > 0 && (
+            <div class="payment-list">
+
+              {otherMethods.map((method) => (
+                <div class="payment-row">
+
+                  <div class="payment-row__label">
+                    {method.title}
+                  </div>
+
+                  <div class="payment-row__value">
+                    {method.type === "account" && method.accountNumber}
+                    {method.type === "card" && method.cardNumber}
+                    {method.type === "cash" && (method.description ?? "Cash")}
+                  </div>
+
+                </div>
+              ))}
+
+            </div>
+          )}
+
+        </div>
+      )}
+
+      {/* FOOTER */}
+      <div class="footer">
+        open-sketchbook.place
+      </div>
+
+    </div>
+  </body>
+</html>
