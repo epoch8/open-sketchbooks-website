@@ -163,11 +163,21 @@ const sketchbooks = defineCollection({
   }),
 });
 
+
 /* ================================
    PRODUCTS
 ================================ */
 
-const products = defineCollection({
+const relation = z.object({
+  type: z.enum(["from", "related", "part_of"]),
+  target: z.enum(["sketchbook", "collection"]),
+  slug: slug,
+
+  // опционально (только для from)
+  page: z.number().int().positive().optional(),
+});
+
+export const products = defineCollection({
   schema: z.object({
     /* 🧩 тип продукта */
     type: z.enum(["print", "original", "zine"]),
@@ -176,24 +186,29 @@ const products = defineCollection({
     title: z.string().min(1),
 
     /* 💰 */
-    price: z.number().positive(),
-    currency: z.enum(["GEL", "USD", "EUR"]).default("GEL"),
+    price: z.object({
+      amount: z.number().positive(),
+      currency: z.enum(["GEL", "USD", "EUR"]),
+    }),
 
-    /* 👤 связь с artist.slug */
+    /* 👤 */
     artist: slug,
 
     /* 🖼 */
     image: z.string().min(1),
 
-    /* 🔗 связи */
-    collection: slug.optional(),
-    sketchbook: slug.optional(),
-    page: z.number().int().optional(),
-
     /* 📦 */
     status: z.enum(["available", "sold", "reserved"]).default("available"),
 
-    /* 🎨 мета (на будущее) */
+    /* ⭐ placement */
+    featured: z
+      .array(z.enum(["artist", "items", "series"]))
+      .default([]),
+
+    /* 🔗 связи */
+    relations: z.array(relation).default([]),
+
+    /* 🎨 мета */
     medium: z.string().optional(),
     size: z.string().optional(),
     edition: z.string().optional(),
@@ -213,6 +228,11 @@ const productCollections = defineCollection({
 
     /* 🔗 связь с sketchbook */
     sketchbook: slug.optional(),
+
+        /* ⭐ placement */
+    featured: z
+      .array(z.enum(["artist", "items", "series"]))
+      .default([]),
 
     /* 📝 */
     description: z.string().optional(),

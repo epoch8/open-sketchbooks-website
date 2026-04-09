@@ -12,21 +12,45 @@ export async function getStaticPaths() {
 
 const { product } = Astro.props;
 
-/* 👇 artist */
+/* ================================
+   DATA
+================================ */
+
 const artists = await getCollection("artists");
 
 const artist = product.data.artist
   ? artists.find((a) => a.slug === product.data.artist)
   : null;
 
-/* 👇 payment methods */
+/* 💳 payment */
 const paymentMethods = artist?.data.paymentMethods ?? [];
 
-/* 👇 делим */
 const linkMethods = paymentMethods.filter((m) => m.type === "link");
 const otherMethods = paymentMethods.filter((m) => m.type !== "link");
 
-/* 👇 ссылки */
+/* 🔗 relations */
+const relations = product.data.relations ?? [];
+
+const from = relations.find((r) => r.type === "from");
+const partOf = relations.find(
+  (r) => r.type === "part_of" && r.target === "collection"
+);
+
+/* 📚 */
+const sketchbooks = await getCollection("sketchbooks");
+const collections = await getCollection("productCollections");
+
+const fromSketchbook =
+  from?.target === "sketchbook"
+    ? sketchbooks.find((s) => s.slug === from.slug)
+    : null;
+
+const collection =
+  partOf?.target === "collection"
+    ? collections.find((c) => c.slug === partOf.slug)
+    : null;
+
+/* 🔗 */
 const artistUrl = artist
   ? `https://open-sketchbook.place/artists/${artist.slug}`
   : null;
@@ -38,176 +62,148 @@ const artistUrl = artist
     <title>{product.data.title} – Pricetag</title>
 
     <style>
-  @page {
-    size: A6;
-    margin: 0;
-  }
+      @page {
+        size: A6;
+        margin: 0;
+      }
 
-  body {
-    margin: 0;
-    font-family: system-ui;
-  }
+      body {
+        margin: 0;
+        font-family: system-ui;
+      }
 
-  .sheet {
-    width: 105mm;
-    height: 148mm;
-    padding: 10mm;
+      .sheet {
+        width: 105mm;
+        height: 148mm;
+        padding: 10mm;
 
-    display: flex;
-    flex-direction: column;
+        display: flex;
+        flex-direction: column;
 
-    box-sizing: border-box;
-  }
+        box-sizing: border-box;
+      }
 
-  /* ================================
-     HEADER (фикс сверху)
-  ================================= */
+      /* HEADER */
 
-  .header-block {
-    flex-shrink: 0;
-  }
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 12px;
+      }
 
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 12px;
-  }
+      .title {
+        font-size: 18px;
+        font-weight: 600;
+      }
 
-  .title {
-    font-size: 18px;
-    font-weight: 600;
-  }
+      .artist {
+        font-size: 14px;
+        opacity: 0.7;
+        margin-top: 4px;
+      }
 
-  .artist {
-    font-size: 14px;
-    opacity: 0.7;
-    margin-top: 4px;
-  }
+      .artist-qr {
+        width: 48px;
+        height: 48px;
+      }
 
-  .artist-qr {
-    width: 48px;
-    height: 48px;
-  }
+      /* 🔥 CONTEXT ПЕРЕНЕСЕН СЮДА */
 
-  .price {
-    font-size: 28px;
-    font-weight: 700;
-    margin-top: 12px;
-  }
+      .context {
+        margin-top: 6px;
+        font-size: 12px;
+        opacity: 0.6;
+      }
 
-  /* ================================
-     CENTER BLOCK (ключевое)
-  ================================= */
+      /* PRICE */
 
-  .center-block {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center; /* центр по высоте */
-  }
+      .price {
+        font-size: 28px;
+        font-weight: 700;
+        margin-top: 16px;
+      }
 
-  /* ================================
-     PAYMENTS
-  ================================= */
+      /* PAYMENTS */
 
-  .payments-wrapper {
-      margin-top: 36px;
-    display: flex;
-    flex-direction: column;
-    gap: 16px; /* больше воздуха */
-  }
+      .payments-wrapper {
+        margin-top: 36px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
 
+      .payments-title {
+        font-size: 14px;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        opacity: 0.9;
+      }
 
+      .payment-qr-row {
+        display: flex;
+        gap: 16px;
+      }
 
+      .payment-qr {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
 
-  /* Сильнее заголовок */
-  .payments-title {
-    font-size: 14px;
-    font-weight: 600;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    opacity: 0.9;
-  }
+      .qr {
+        width: 90px;
+        height: 90px;
+      }
 
-  /* QR ROW */
+      .label {
+        font-size: 11px;
+        opacity: 0.7;
+      }
 
-  .payment-qr-row {
-    display: flex;
-    gap: 16px; /* увеличили расстояние */
-  }
+      .payment-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
 
-  .payment-qr {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 6px;
-  }
+      .payment-row {
+        display: flex;
+        gap: 10px;
+        font-size: 15px;
+        line-height: 1.35;
+      }
 
-  .qr {
-    width: 90px;
-    height: 90px;
-  }
+      .payment-row__label {
+        opacity: 0.6;
+        white-space: nowrap;
+      }
 
-  .label {
-    font-size: 11px;
-    opacity: 0.7;
-  }
+      .payment-row__value {
+        font-weight: 600;
+        word-break: break-all;
+      }
 
-  /* ACCOUNT LIST */
+      .footer {
+        font-size: 10px;
+        opacity: 0.5;
+        margin-top: 46px;
+      }
 
-  .payment-list {
-    display: flex;
-    flex-direction: column;
-    gap: 10px; /* увеличили расстояние */
-  }
+      @media screen {
+        body {
+          background: #eee;
+          display: flex;
+          justify-content: center;
+        }
 
-  .payment-row {
-    display: flex;
-    gap: 10px;
-
-    font-size: 15px; /* чуть крупнее */
-    line-height: 1.35;
-  }
-
-  .payment-row__label {
-    opacity: 0.6;
-    white-space: nowrap;
-  }
-
-  .payment-row__value {
-    font-weight: 600;
-    word-break: break-all;
-  }
-
-  /* ================================
-     FOOTER (фикс снизу)
-  ================================= */
-
-  .footer {
-    flex-shrink: 0;
-    font-size: 10px;
-    opacity: 0.5;
-    margin-top: 46px;
-  }
-
-  /* ================================
-     SCREEN
-  ================================= */
-
-  @media screen {
-    body {
-      background: #eee;
-      display: flex;
-      justify-content: center;
-    }
-
-    .sheet {
-      background: white;
-      margin: 40px 0;
-    }
-  }
-</style>
+        .sheet {
+          background: white;
+          margin: 40px 0;
+        }
+      }
+    </style>
   </head>
 
   <body>
@@ -226,6 +222,23 @@ const artistUrl = artist
                 by {artist.data.title}
               </div>
             )}
+
+            {/* 🔥 ТЕПЕРЬ ЗДЕСЬ */}
+            <div class="context">
+              {fromSketchbook && (
+                <div>
+                  from {fromSketchbook.data.title}
+                  {from?.page && ` (page ${from.page})`}
+                </div>
+              )}
+
+              {!fromSketchbook && collection && (
+                <div>
+                  part of {collection.data.title}
+                </div>
+              )}
+            </div>
+
           </div>
 
           {artistUrl && (
@@ -237,9 +250,10 @@ const artistUrl = artist
 
         </div>
 
+        {/* PRICE */}
         {product.data.price && (
           <div class="price">
-            {product.data.price} {product.data.currency}
+            {product.data.price.amount} {product.data.price.currency}
           </div>
         )}
 
@@ -253,7 +267,6 @@ const artistUrl = artist
             Payment
           </div>
 
-          {/* QR В РЯД */}
           {linkMethods.length > 0 && (
             <div class="payment-qr-row">
               {linkMethods.map((method) => (
@@ -273,7 +286,6 @@ const artistUrl = artist
             </div>
           )}
 
-          {/* ACCOUNT LIST */}
           {otherMethods.length > 0 && (
             <div class="payment-list">
 
@@ -299,7 +311,6 @@ const artistUrl = artist
         </div>
       )}
 
-      {/* FOOTER */}
       <div class="footer">
         open-sketchbook.place
       </div>

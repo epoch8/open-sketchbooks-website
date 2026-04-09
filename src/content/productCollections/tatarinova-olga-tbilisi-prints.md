@@ -2,6 +2,11 @@
 title: Tbilisi Sketches
 artist: tatarinova-olga
 
+featured:
+  - artist
+  - items   # на будущее
+  # - catalog
+
 description: >
   A series of sketches captured in Tbilisi – streets, courtyards and quiet moments.
   These prints are extracted from original sketchbooks.

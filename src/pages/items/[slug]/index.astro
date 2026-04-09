@@ -31,33 +31,76 @@ export async function getStaticPaths() {
 const { product } = Astro.props;
 const { Content } = await product.render();
 
-/* 👇 все продукты (для related) */
+/* 👇 все продукты */
 const allProducts = await getCollection("products");
 
-/* 👇 related */
-const related = product.data.collection
-  ? allProducts.filter(
-      (p) =>
-        p.data.collection === product.data.collection &&
-        p.slug !== product.slug
-    )
-  : [];
+/* ================================
+   RELATIONS HELPERS
+================================ */
 
-/* 👇 sketchbook */
-const sketchbooks = await getCollection("sketchbooks");
+const relations = product.data.relations ?? [];
 
-const sketchbook = product.data.sketchbook
-  ? sketchbooks.find(
-      (s) => s.slug === product.data.sketchbook
-    )
+/* 🔴 from */
+const from = relations.find((r) => r.type === "from");
+
+/* 🔵 part_of (collection) */
+const collectionRel = relations.find(
+  (r) => r.type === "part_of" && r.target === "collection"
+);
+
+/* 🟡 related */
+const relatedRels = relations.filter((r) => r.type === "related");
+
+/* ================================
+   COLLECTION ENTITY
+================================ */
+
+const collections = await getCollection("productCollections");
+
+const collection = collectionRel
+  ? collections.find((c) => c.slug === collectionRel.slug)
   : null;
 
-/* 👇 artist */
+/* ================================
+   SKETCHBOOK ENTITY
+================================ */
+
+const sketchbooks = await getCollection("sketchbooks");
+
+const fromSketchbook =
+  from?.target === "sketchbook"
+    ? sketchbooks.find((s) => s.slug === from.slug)
+    : null;
+
+/* ================================
+   ARTIST
+================================ */
+
 const artists = await getCollection("artists");
 
 const artist = product.data.artist
   ? artists.find((a) => a.slug === product.data.artist)
   : null;
+
+/* ================================
+   RELATED PRODUCTS (через коллекцию)
+================================ */
+
+const related =
+  collectionRel
+    ? allProducts.filter((p) => {
+        if (p.slug === product.slug) return false;
+
+        const rels = p.data.relations ?? [];
+
+        return rels.some(
+          (r) =>
+            r.type === "part_of" &&
+            r.target === "collection" &&
+            r.slug === collectionRel.slug
+        );
+      })
+    : [];
 
 /* ================================
    SEO
@@ -100,7 +143,7 @@ const pageSEO = {
 
           <h1>{product.data.title}</h1>
 
-          {/* 👇 AUTHOR */}
+          {/* 👤 ARTIST */}
           {artist && (
             <div class="artist">
               by{" "}
@@ -110,22 +153,17 @@ const pageSEO = {
             </div>
           )}
 
-          {/* PRICE */}
+          {/* 💰 PRICE */}
           {product.data.price && (
             <div class="price">
-              {product.data.price} {product.data.currency}
+              {product.data.price.amount} {product.data.price.currency}
             </div>
           )}
 
-          {/* META */}
+          {/* 🧾 META */}
           <div class="meta">
-            {product.data.medium && (
-              <div>{product.data.medium}</div>
-            )}
-
-            {product.data.size && (
-              <div>{product.data.size}</div>
-            )}
+            {product.data.medium && <div>{product.data.medium}</div>}
+            {product.data.size && <div>{product.data.size}</div>}
           </div>
 
           {/* CTA */}
@@ -141,29 +179,82 @@ const pageSEO = {
           </div>
 
           {/* ================================
-              SKETCHBOOK LINK
+              RELATIONS BLOCK (🔥 ключевой)
           ================================= */}
 
-          {product.data.sketchbook && (
-            <div class="sketchbook-link">
-              <a href={`/sketchbooks/${product.data.sketchbook}`}>
-                See where this came from →
-              </a>
+          <div class="relations flow">
 
-              {product.data.page && (
-                <div class="page">
-                  Page {product.data.page}
+            {/* 🔴 FROM */}
+            {fromSketchbook && (
+              <div class="relation relation--from">
+                <div class="label">from</div>
+
+                <a href={`/sketchbooks/${fromSketchbook.slug}`}>
+                  {fromSketchbook.data.title}
+                </a>
+
+                {from?.page && (
+                  <div class="page">
+                    page {from.page}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* 🔵 COLLECTION */}
+            {collection && (
+              <div class="relation relation--collection">
+                <div class="label">part of</div>
+
+                <a href={`/collections/${collection.slug}`}>
+                  {collection.data.title}
+                </a>
+              </div>
+            )}
+
+            {/* 🟡 RELATED */}
+            {relatedRels.length > 0 && (
+              <div class="relation relation--related">
+                <div class="label">related</div>
+
+                <div class="related-links">
+                  {relatedRels.map((r) => {
+                    if (r.target === "sketchbook") {
+                      const s = sketchbooks.find((x) => x.slug === r.slug);
+                      if (!s) return null;
+
+                      return (
+                        <a href={`/sketchbooks/${s.slug}`}>
+                          {s.data.title}
+                        </a>
+                      );
+                    }
+
+                    if (r.target === "collection") {
+                      const c = collections.find((x) => x.slug === r.slug);
+                      if (!c) return null;
+
+                      return (
+                        <a href={`/collections/${c.slug}`}>
+                          {c.data.title}
+                        </a>
+                      );
+                    }
+
+                    return null;
+                  })}
                 </div>
-              )}
-            </div>
-          )}
+              </div>
+            )}
+
+          </div>
 
         </div>
 
       </section>
 
       {/* ================================
-          RELATED
+          RELATED PRODUCTS
       ================================= */}
 
       {related.length > 0 && (
@@ -173,18 +264,13 @@ const pageSEO = {
 
           <div class="grid">
             {related.map((p) => (
-              <a
-                href={`/items/${p.slug}`}
-                class="card"
-              >
+              <a href={`/items/${p.slug}`} class="card">
                 <div class="image">
                   <img src={p.data.image} alt={p.data.title} />
                 </div>
 
                 <div class="meta">
-                  <div class="title">
-                    {p.data.title}
-                  </div>
+                  <div class="title">{p.data.title}</div>
                 </div>
               </a>
             ))}
@@ -199,36 +285,20 @@ const pageSEO = {
 </InternalLayout>
 
 <style>
-/* ================================
-   LAYOUT
-================================ */
-
 .product {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 40px;
 }
 
-/* ================================
-   IMAGE
-================================ */
-
 .product__image img {
   width: 100%;
   border-radius: 12px;
 }
 
-/* ================================
-   INFO
-================================ */
-
 .product__info {
   max-width: 420px;
 }
-
-/* ================================
-   ARTIST
-================================ */
 
 .artist {
   font-size: 14px;
@@ -236,50 +306,24 @@ const pageSEO = {
   margin-top: -6px;
 }
 
-.artist a {
-  text-decoration: none;
-}
-
-.artist a:hover {
-  text-decoration: underline;
-}
-
-/* ================================
-   PRICE
-================================ */
-
 .price {
   font-size: 24px;
   font-weight: 600;
 }
-
-/* ================================
-   META
-================================ */
 
 .meta {
   font-size: 14px;
   opacity: 0.7;
 }
 
-/* ================================
-   CTA
-================================ */
-
 .buy {
   padding: 12px 20px;
   border-radius: 999px;
   border: none;
-
   background: black;
   color: white;
-
   cursor: pointer;
 }
-
-/* ================================
-   DESCRIPTION
-================================ */
 
 .description {
   font-size: 14px;
@@ -287,12 +331,27 @@ const pageSEO = {
 }
 
 /* ================================
-   SKETCHBOOK
+   RELATIONS
 ================================ */
 
-.sketchbook-link {
+.relations {
   margin-top: 12px;
   font-size: 14px;
+}
+
+.relation .label {
+  opacity: 0.5;
+  font-size: 12px;
+}
+
+.relation--from {
+  font-weight: 500;
+}
+
+.related-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .page {
@@ -300,7 +359,7 @@ const pageSEO = {
 }
 
 /* ================================
-   RELATED
+   RELATED GRID
 ================================ */
 
 .related {

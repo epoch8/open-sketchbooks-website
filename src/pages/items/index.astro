@@ -1,6 +1,7 @@
 ---
 import InternalLayout from "@/layouts/InternalLayout.astro";
 import { getCollection } from "astro:content";
+import type { CollectionEntry } from "astro:content";
 
 import {
   mainNav,
@@ -12,21 +13,54 @@ import BrandLogo from "@/components/products/open-sketchbooks/logo/BrandLogo.ast
 import { SEOBase } from "@/content/template/seo/seo";
 
 /* ================================
+   TYPES
+================================ */
+
+type Product = CollectionEntry<"products">;
+type Artist = CollectionEntry<"artists">;
+
+type Relation = Product["data"]["relations"][number];
+type RelationType = Relation["type"];
+
+/* ================================
    DATA
 ================================ */
 
-const allProducts = await getCollection("products");
-const artists = await getCollection("artists");
+const allProducts: Product[] = await getCollection("products");
+const artists: Artist[] = await getCollection("artists");
 
-/* 👇 сортировка (пока простая) */
-const products = allProducts.sort((a, b) =>
-  a.data.title.localeCompare(b.data.title)
-);
+/* ================================
+   HELPERS
+================================ */
 
-/* 👇 helper: найти автора */
-function getArtist(slug) {
+function getArtist(slug: string): Artist | undefined {
   return artists.find((a) => a.slug === slug);
 }
+
+function getRelation(
+  product: Product,
+  type: RelationType
+): Relation | undefined {
+  return product.data.relations?.find((r) => r.type === type);
+}
+
+function hasRelation(
+  product: Product,
+  type: RelationType
+): boolean {
+  return product.data.relations?.some((r) => r.type === type) ?? false;
+}
+
+/* ================================
+   FILTERING
+================================ */
+
+/* 👇 можно включить позже */
+const products: Product[] = allProducts
+  // .filter((p) => hasRelation(p, "from") || hasRelation(p, "part_of"))
+  .sort((a, b) =>
+    a.data.title.localeCompare(b.data.title)
+  );
 
 /* ================================
    SEO
@@ -67,11 +101,15 @@ const pageSEO = {
         {products.map((product) => {
           const artist = getArtist(product.data.artist);
 
+          const from = getRelation(product, "from");
+          const partOf = getRelation(product, "part_of");
+
           return (
             <a
-              href={`/products/${product.slug}`}
+              href={`/items/${product.slug}`}
               class="card"
             >
+              {/* IMAGE */}
               <div class="image">
                 <img
                   src={product.data.image}
@@ -80,6 +118,7 @@ const pageSEO = {
                 />
               </div>
 
+              {/* META */}
               <div class="meta">
 
                 <div class="title">
@@ -94,9 +133,27 @@ const pageSEO = {
 
                 {product.data.price && (
                   <div class="price">
-                    {product.data.price} {product.data.currency}
+                    {product.data.price.amount}{" "}
+                    {product.data.price.currency}
                   </div>
                 )}
+
+                {/* 🔗 смысловой намёк */}
+                <div class="relation-hint">
+
+                  {from && (
+                    <span class="hint hint--from">
+                      from sketchbook
+                    </span>
+                  )}
+
+                  {!from && partOf && (
+                    <span class="hint hint--collection">
+                      part of series
+                    </span>
+                  )}
+
+                </div>
 
               </div>
             </a>
@@ -187,6 +244,20 @@ const pageSEO = {
   font-size: 14px;
   font-weight: 600;
   margin-top: 4px;
+}
+
+/* ================================
+   RELATION HINT
+================================ */
+
+.relation-hint {
+  margin-top: 4px;
+  font-size: 11px;
+  opacity: 0.5;
+}
+
+.hint--from {
+  opacity: 0.7;
 }
 
 </style>

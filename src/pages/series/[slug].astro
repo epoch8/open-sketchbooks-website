@@ -1,6 +1,7 @@
 ---
 import InternalLayout from "@/layouts/InternalLayout.astro";
 import { getCollection } from "astro:content";
+import type { CollectionEntry } from "astro:content";
 
 import {
   mainNav,
@@ -10,6 +11,16 @@ import {
 
 import BrandLogo from "@/components/products/open-sketchbooks/logo/BrandLogo.astro";
 import { SEOBase } from "@/content/template/seo/seo";
+
+/* ================================
+   TYPES
+================================ */
+
+type Product = CollectionEntry<"products">;
+type Collection = CollectionEntry<"productCollections">;
+type Sketchbook = CollectionEntry<"sketchbooks">;
+
+type Relation = Product["data"]["relations"][number];
 
 /* ================================
    STATIC PATHS
@@ -28,28 +39,61 @@ export async function getStaticPaths() {
    DATA
 ================================ */
 
-const { collection } = Astro.props;
+const { collection } = Astro.props as { collection: Collection };
 const { Content } = await collection.render();
 
-/* 👇 все продукты */
-const allProducts = await getCollection("products");
+const allProducts: Product[] = await getCollection("products");
+const sketchbooks: Sketchbook[] = await getCollection("sketchbooks");
 
-/* 👇 фильтруем по collection */
-const products = allProducts.filter(
-  (p) => p.data.collection === collection.slug
-);
+/* ================================
+   HELPERS
+================================ */
 
-/* 👇 сортировка (можешь потом поменять) */
-products.sort((a, b) => a.data.title.localeCompare(b.data.title));
+function hasPartOfCollection(
+  product: Product,
+  slug: string
+): boolean {
+  return product.data.relations?.some(
+    (r) =>
+      r.type === "part_of" &&
+      r.target === "collection" &&
+      r.slug === slug
+  ) ?? false;
+}
 
-/* 👇 скетчбук (если есть) */
-const sketchbooks = await getCollection("sketchbooks");
+function getFromRelation(
+  product: Product
+): Relation | undefined {
+  return product.data.relations?.find(
+    (r) => r.type === "from"
+  );
+}
 
-const sketchbook = collection.data.sketchbook
-  ? sketchbooks.find(
-      (s) => s.slug === collection.data.sketchbook
-    )
-  : null;
+/* ================================
+   PRODUCTS
+================================ */
+
+const products: Product[] = allProducts
+  .filter((p) => hasPartOfCollection(p, collection.slug))
+  .sort((a, b) =>
+    a.data.title.localeCompare(b.data.title)
+  );
+
+/* ================================
+   SKETCHBOOK (из items)
+================================ */
+
+const firstFrom: Relation | undefined = products
+  .map((p) => getFromRelation(p))
+  .find(
+    (r): r is Relation =>
+      !!r && r.target === "sketchbook"
+  );
+
+const sketchbook: Sketchbook | undefined =
+  firstFrom?.target === "sketchbook"
+    ? sketchbooks.find((s) => s.slug === firstFrom.slug)
+    : undefined;
 
 /* ================================
    SEO
@@ -75,18 +119,12 @@ const pageSEO = {
   <section class="section">
     <div class="container flow">
 
-      {/* ================================
-          HEADER
-      ================================= */}
-
+      {/* HEADER */}
       <header class="header flow">
         <h1>{collection.data.title}</h1>
       </header>
 
-      {/* ================================
-          COVER
-      ================================= */}
-
+      {/* COVER */}
       {collection.data.cover && (
         <div class="cover">
           <img
@@ -97,64 +135,68 @@ const pageSEO = {
         </div>
       )}
 
-      {/* ================================
-          DESCRIPTION
-      ================================= */}
-
+      {/* DESCRIPTION */}
       <div class="description">
         <Content />
       </div>
 
-      {/* ================================
-          SKETCHBOOK LINK
-      ================================= */}
-
+      {/* CONTEXT */}
       {sketchbook && (
-        <div class="sketchbook-link">
+        <div class="context">
           <a href={`/sketchbooks/${sketchbook.slug}`}>
-            View full sketchbook →
+            rooted in {sketchbook.data.title} →
           </a>
         </div>
       )}
 
-      {/* ================================
-          PRODUCTS
-      ================================= */}
-
+      {/* PRODUCTS */}
       {products.length > 0 && (
         <section class="products">
 
           <h2 class="products__title">
-            Prints from this series
+            Objects from this series
           </h2>
 
           <div class="grid">
-            {products.map((product) => (
-              <a
-                href={`/series/${product.slug}`}
-                class="card"
-              >
-                <div class="image">
-                  <img
-                    src={product.data.image}
-                    alt={product.data.title}
-                    loading="lazy"
-                  />
-                </div>
+            {products.map((product) => {
+              const from = getFromRelation(product);
 
-                <div class="meta">
-                  <div class="title">
-                    {product.data.title}
+              return (
+                <a
+                  href={`/items/${product.slug}`}
+                  class="card"
+                >
+                  <div class="image">
+                    <img
+                      src={product.data.image}
+                      alt={product.data.title}
+                      loading="lazy"
+                    />
                   </div>
 
-                  {product.data.price && (
-                    <div class="price">
-                      {product.data.price} {product.data.currency}
+                  <div class="meta">
+
+                    <div class="title">
+                      {product.data.title}
                     </div>
-                  )}
-                </div>
-              </a>
-            ))}
+
+                    {product.data.price && (
+                      <div class="price">
+                        {product.data.price.amount}{" "}
+                        {product.data.price.currency}
+                      </div>
+                    )}
+
+                    {from && (
+                      <div class="hint">
+                        from sketchbook
+                      </div>
+                    )}
+
+                  </div>
+                </a>
+              );
+            })}
           </div>
 
         </section>
@@ -166,61 +208,43 @@ const pageSEO = {
 </InternalLayout>
 
 <style>
-/* ================================
-   HEADER
-================================ */
 
+/* HEADER */
 .header h1 {
   font-size: 28px;
   line-height: 1.2;
 }
 
-/* ================================
-   COVER (FIX)
-================================ */
-
+/* COVER */
 .cover {
   margin: 16px 0 24px;
-
-  max-width: 520px; /* 👈 ключ */
+  max-width: 520px;
 }
 
 .cover img {
   width: 100%;
-  height: auto;
-
   border-radius: 12px;
 }
 
-/* ================================
-   DESCRIPTION
-================================ */
-
+/* DESCRIPTION */
 .description {
   font-size: 16px;
   line-height: 1.6;
   opacity: 0.85;
-
   max-width: 560px;
 }
 
-/* ================================
-   SKETCHBOOK LINK
-================================ */
-
-.sketchbook-link {
+/* CONTEXT */
+.context {
   margin: 12px 0 24px;
   font-size: 14px;
 }
 
-.sketchbook-link a {
+.context a {
   text-decoration: underline;
 }
 
-/* ================================
-   PRODUCTS
-================================ */
-
+/* PRODUCTS */
 .products {
   margin-top: 32px;
 }
@@ -231,25 +255,18 @@ const pageSEO = {
   margin-bottom: 16px;
 }
 
-/* ================================
-   GRID
-================================ */
-
+/* GRID */
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   gap: 16px;
 }
 
-/* ================================
-   CARD
-================================ */
-
+/* CARD */
 .card {
   text-decoration: none;
   color: inherit;
   display: block;
-
   transition: transform 0.15s ease;
 }
 
@@ -257,15 +274,11 @@ const pageSEO = {
   transform: translateY(-2px);
 }
 
-/* ================================
-   IMAGE
-================================ */
-
+/* IMAGE */
 .image {
   aspect-ratio: 1 / 1;
   overflow: hidden;
   border-radius: 10px;
-
   background: #f5f5f5;
 }
 
@@ -275,10 +288,7 @@ const pageSEO = {
   object-fit: cover;
 }
 
-/* ================================
-   META
-================================ */
-
+/* META */
 .meta {
   margin-top: 8px;
 }
@@ -293,4 +303,11 @@ const pageSEO = {
   font-weight: 600;
   margin-top: 4px;
 }
+
+.hint {
+  font-size: 11px;
+  opacity: 0.5;
+  margin-top: 2px;
+}
+
 </style>

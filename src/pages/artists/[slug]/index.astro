@@ -70,6 +70,47 @@ const sketchbookCards = artistSketchbooks.map((b) => ({
 }));
 
 /* ================================
+   ITEMS & COLLECTIONS
+================================ */
+
+const allItems = await getCollection("products");
+const allCollections = await getCollection("productCollections");
+
+/* фильтр по артисту */
+
+const items = allItems.filter(
+  (p) => p.data.artist === artist.slug
+);
+
+const collections = allCollections.filter(
+  (c) => c.data.artist === artist.slug
+);
+
+/* ================================
+   FEATURED
+================================ */
+
+const featuredItems = items.filter((p) =>
+  p.data.featured?.includes("artist")
+);
+
+const featuredCollections = collections.filter((c) =>
+  c.data.featured?.includes("artist")
+);
+
+/* ================================
+   ОСТАЛЬНОЕ (без магии)
+================================ */
+
+const nonFeaturedCollections = collections.filter(
+  (c) => !c.data.featured?.includes("artist")
+);
+
+const nonFeaturedItems = items.filter(
+  (p) => !p.data.featured?.includes("artist")
+);
+
+/* ================================
    SEO
 ================================ */
 
@@ -157,7 +198,126 @@ const pageSEO = {
 
     </div>
   </section>
+{/* ================================
+    FEATURED
+================================ */}
 
+{(featuredItems.length > 0 || featuredCollections.length > 0) && (
+  <section class="featured-section flow">
+    <h2>Available pieces</h2>
+
+    <div class="grid">
+
+      {/* SERIES */}
+      {featuredCollections.map((c) => (
+        <a href={`/series/${c.slug}`} class="card card--series">
+
+          {c.data.cover && (
+            <div class="image">
+              <img
+                src={c.data.cover}
+                alt={c.data.title}
+                loading="lazy"
+              />
+            </div>
+          )}
+
+          <div class="meta">
+            <div class="title">{c.data.title}</div>
+            <div class="type">series</div>
+          </div>
+
+        </a>
+      ))}
+
+      {/* ITEMS */}
+      {featuredItems.map((p) => (
+        <a href={`/items/${p.slug}`} class="card card--item">
+
+          <div class="image">
+            <img
+              src={p.data.image}
+              alt={p.data.title}
+              loading="lazy"
+            />
+          </div>
+
+          <div class="meta">
+            <div class="title">{p.data.title}</div>
+          </div>
+
+        </a>
+      ))}
+
+    </div>
+  </section>
+)}
+
+{/* ================================
+    COLLECTIONS
+================================ */}
+
+{nonFeaturedCollections.length > 0 && (
+  <section class="collections-section flow">
+    <h2>Series</h2>
+
+    <div class="grid">
+
+      {nonFeaturedCollections.map((c) => (
+        <a href={`/series/${c.slug}`} class="card card--series">
+
+          {c.data.cover && (
+            <div class="image">
+              <img
+                src={c.data.cover}
+                alt={c.data.title}
+                loading="lazy"
+              />
+            </div>
+          )}
+
+          <div class="meta">
+            <div class="title">{c.data.title}</div>
+          </div>
+
+        </a>
+      ))}
+
+    </div>
+  </section>
+)}
+
+{/* ================================
+    ITEMS
+================================ */}
+
+{nonFeaturedItems.length > 0 && (
+  <section class="items-section flow">
+    <h2>Items</h2>
+
+    <div class="grid">
+
+      {nonFeaturedItems.map((p) => (
+        <a href={`/items/${p.slug}`} class="card card--item">
+
+          <div class="image">
+            <img
+              src={p.data.image}
+              alt={p.data.title}
+              loading="lazy"
+            />
+          </div>
+
+          <div class="meta">
+            <div class="title">{p.data.title}</div>
+          </div>
+
+        </a>
+      ))}
+
+    </div>
+  </section>
+)}
 {/* ================================
    FOLLOW ARTIST CTA
 ================================ */}
@@ -245,7 +405,6 @@ const pageSEO = {
   display: flex;
   gap: 12px;
   align-items: center;
-
   font-size: 14px;
   opacity: 0.7;
 }
@@ -257,7 +416,6 @@ const pageSEO = {
 .style {
   padding: 2px 8px;
   border-radius: 6px;
-
   background: rgba(0, 0, 0, 0.05);
 }
 
@@ -268,7 +426,6 @@ const pageSEO = {
 .instagram {
   text-decoration: none;
   color: inherit;
-
   border-bottom: 1px solid transparent;
 }
 
@@ -286,22 +443,116 @@ const pageSEO = {
 }
 
 /* ================================
-   SKETCHBOOKS
+   SECTIONS
 ================================ */
 
-.sketchbooks-section {
+.sketchbooks-section,
+.gallery-section,
+.featured-section,
+.collections-section,
+.items-section {
   margin-top: 40px;
 }
 
 /* ================================
-   GALLERY
+   MASONRY GRID (по умолчанию)
 ================================ */
 
-.gallery-section {
-  margin-top: 40px;
+.grid {
+  column-width: 200px;
+  column-gap: 16px;
+  max-width: 900px;
 }
 
+/* ================================
+   FEATURED — НЕ masonry
+================================ */
 
+
+.featured-section .grid {
+  column-width: unset;
+  column-gap: unset;
+
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 320px));
+  gap: 16px;
+
+  max-width: 900px;
+}
+
+/* ================================
+   CARD
+================================ */
+
+.card {
+  display: inline-block; /* masonry */
+  width: 100%;
+  margin-bottom: 16px;
+
+  text-decoration: none;
+  color: inherit;
+
+  transition: transform 0.15s ease;
+}
+
+.featured-section .card {
+  display: block; /* 🔥 важно: убираем inline-block для grid */
+  margin-bottom: 0;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+}
+
+/* ================================
+   IMAGE
+================================ */
+
+.image {
+  border-radius: 10px;
+  overflow: hidden;
+  background: #f5f5f5;
+}
+
+.image img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* ================================
+   META
+================================ */
+
+.meta {
+  margin-top: 6px;
+}
+
+.title {
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.type {
+  font-size: 11px;
+  opacity: 0.5;
+}
+
+/* ================================
+   RESPONSIVE
+================================ */
+
+@media (min-width: 768px) {
+  .grid {
+    column-width: 220px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .grid {
+    column-width: 240px;
+  }
+}
 </style>
 
 <script is:inline>
