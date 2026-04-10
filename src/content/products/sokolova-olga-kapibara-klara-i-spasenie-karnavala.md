@@ -1,0 +1,17 @@
+---
+type: book
+
+title: «Капибара Клара и спасение карнавала» с автографом автора и иллюстратора
+
+price:
+  amount: 25
+  currency: GEL
+
+artist: sokolova-olga
+
+image: /images/icon-star-2.png
+
+status: available
+
+
+---

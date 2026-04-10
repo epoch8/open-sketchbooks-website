@@ -1,5 +1,12 @@
 ---
 title: Olga Sokolova
+
+paymentMethods:
+  - type: link
+    title: TBC
+    description: Money transfer via TBC
+    url: https://transfer.tbcbank.ge/?iban=1Z8rDVNup5D7KxL4iGtghl7t3FHGYsE+Fyp4CCgyDMhNuMgwVEwIFfobOYPOCk6AKjU=
+
 instagram: olri.geos
 style: Mixed media, collage, children’s illustration, abstraction
 ---
