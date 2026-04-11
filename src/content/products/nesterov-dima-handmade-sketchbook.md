@@ -1,13 +1,13 @@
 ---
 type: original
 
-title: “Symbols” (canvas, oil, mixed media, Tbilisi, 2024)
+title: Handmade Sketchbook (empty)
 
 price:
-  amount: 40
+  amount: 30
   currency: GEL
 
-artist: sokolova-olga
+artist: nesterov-dima
 
 image: /images/icon-star-2.png
 

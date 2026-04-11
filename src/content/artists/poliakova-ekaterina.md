@@ -2,6 +2,11 @@
 title: Ekaterina Poliakova
 instagram: katherine.poliakova
 style: naïve, mixed media 
+
+paymentMethods:
+  - type: account
+    title: BOG
+    accountNumber: GE30BG0000000538289548
 ---
 
 ### My work captures fleeting glimpses into imagined worlds – worlds that resemble our own, yet carry a subtle sense of duality and magic.

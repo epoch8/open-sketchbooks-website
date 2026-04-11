@@ -198,7 +198,126 @@ const pageSEO = {
 
     </div>
   </section>
+{/* ================================
+    FEATURED
+================================ */}
 
+{(featuredItems.length > 0 || featuredCollections.length > 0) && (
+  <section class="featured-section flow">
+    <h2>Available pieces</h2>
+
+    <div class="grid">
+
+      {/* SERIES */}
+      {featuredCollections.map((c) => (
+        <a href={`/series/${c.slug}`} class="card card--series">
+
+          {c.data.cover && (
+            <div class="image">
+              <img
+                src={c.data.cover}
+                alt={c.data.title}
+                loading="lazy"
+              />
+            </div>
+          )}
+
+          <div class="meta">
+            <div class="title">{c.data.title}</div>
+            <div class="type">series</div>
+          </div>
+
+        </a>
+      ))}
+
+      {/* ITEMS */}
+      {featuredItems.map((p) => (
+        <a href={`/items/${p.slug}`} class="card card--item">
+
+          <div class="image">
+            <img
+              src={p.data.image}
+              alt={p.data.title}
+              loading="lazy"
+            />
+          </div>
+
+          <div class="meta">
+            <div class="title">{p.data.title}</div>
+          </div>
+
+        </a>
+      ))}
+
+    </div>
+  </section>
+)}
+
+{/* ================================
+    COLLECTIONS
+================================ */}
+
+{nonFeaturedCollections.length > 0 && (
+  <section class="collections-section flow">
+    <h2>Series</h2>
+
+    <div class="grid">
+
+      {nonFeaturedCollections.map((c) => (
+        <a href={`/series/${c.slug}`} class="card card--series">
+
+          {c.data.cover && (
+            <div class="image">
+              <img
+                src={c.data.cover}
+                alt={c.data.title}
+                loading="lazy"
+              />
+            </div>
+          )}
+
+          <div class="meta">
+            <div class="title">{c.data.title}</div>
+          </div>
+
+        </a>
+      ))}
+
+    </div>
+  </section>
+)}
+
+{/* ================================
+    ITEMS
+================================ */}
+
+{nonFeaturedItems.length > 0 && (
+  <section class="items-section flow">
+    <h2>Items</h2>
+
+    <div class="grid">
+
+      {nonFeaturedItems.map((p) => (
+        <a href={`/items/${p.slug}`} class="card card--item">
+
+          <div class="image">
+            <img
+              src={p.data.image}
+              alt={p.data.title}
+              loading="lazy"
+            />
+          </div>
+
+          <div class="meta">
+            <div class="title">{p.data.title}</div>
+          </div>
+
+        </a>
+      ))}
+
+    </div>
+  </section>
+)}
 {/* ================================
    FOLLOW ARTIST CTA
 ================================ */}

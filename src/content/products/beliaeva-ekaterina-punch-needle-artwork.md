@@ -1,13 +1,13 @@
 ---
 type: original
 
-title: “Symbols” (canvas, oil, mixed media, Tbilisi, 2024)
+title: Punch-needle artwork
 
 price:
-  amount: 40
+  amount: 30
   currency: GEL
 
-artist: sokolova-olga
+artist: beliaeva-ekaterina
 
 image: /images/icon-star-2.png
 

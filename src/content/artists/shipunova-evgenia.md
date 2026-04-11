@@ -1,6 +1,13 @@
 ---
 title: Evgenia Shipunova
 instagram: on_cloud.illustrator
+
+paymentMethods:
+  - type: link
+    title: TBC
+    description: Money transfer via TBC
+    url: https://transfer.tbcbank.ge/?iban=1Xr9M4c8F9dLBeKYmCuRUNs31F+EUktl3kT/CJOIgxtDh2I5TZ5GCPgH58uuvi1hmek=
+
 ---
 
 ### Artist, illustrator, and art historian. 

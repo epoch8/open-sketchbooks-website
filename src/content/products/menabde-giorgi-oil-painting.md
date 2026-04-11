@@ -1,13 +1,13 @@
 ---
 type: original
 
-title: “Symbols” (canvas, oil, mixed media, Tbilisi, 2024)
+title: Oil Painting
 
 price:
-  amount: 40
+  amount: 100
   currency: GEL
 
-artist: sokolova-olga
+artist: menabde-giorgi
 
 image: /images/icon-star-2.png
 

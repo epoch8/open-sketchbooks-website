@@ -1,13 +1,13 @@
 ---
 type: original
 
-title: “Symbols” (canvas, oil, mixed media, Tbilisi, 2024)
+title: Flower (embroidered panel)
 
 price:
-  amount: 40
+  amount: 35
   currency: GEL
 
-artist: sokolova-olga
+artist: radkevich-kristina
 
 image: /images/icon-star-2.png
 

@@ -1,13 +1,13 @@
 ---
 type: original
 
-title: “Symbols” (canvas, oil, mixed media, Tbilisi, 2024)
+title: Original paintings 
 
 price:
-  amount: 40
+  amount: 50
   currency: GEL
 
-artist: sokolova-olga
+artist: shipunova-evgenia
 
 image: /images/icon-star-2.png
 

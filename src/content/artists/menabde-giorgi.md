@@ -1,6 +1,11 @@
 ---
 title: Giorgi Menabde
 instagram: georgart88
+
+paymentMethods:
+  - type: account
+    title: TBC
+    accountNumber: "35001044835"
 ---
 
 ### A self-taught artist from Rustavi. 

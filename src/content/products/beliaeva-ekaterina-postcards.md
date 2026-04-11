@@ -1,13 +1,13 @@
 ---
 type: original
 
-title: “Symbols” (canvas, oil, mixed media, Tbilisi, 2024)
+title: Postcards
 
 price:
-  amount: 40
+  amount: 7
   currency: GEL
 
-artist: sokolova-olga
+artist: beliaeva-ekaterina
 
 image: /images/icon-star-2.png
 

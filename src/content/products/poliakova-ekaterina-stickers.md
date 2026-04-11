@@ -1,13 +1,13 @@
 ---
 type: original
 
-title: “Symbols” (canvas, oil, mixed media, Tbilisi, 2024)
+title: Stickers
 
 price:
-  amount: 40
+  amount: 10
   currency: GEL
 
-artist: sokolova-olga
+artist: poliakova-ekaterina
 
 image: /images/icon-star-2.png
 

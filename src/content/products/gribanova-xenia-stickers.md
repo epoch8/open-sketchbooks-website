@@ -1,13 +1,13 @@
 ---
 type: original
 
-title: “Symbols” (canvas, oil, mixed media, Tbilisi, 2024)
+title: Stickers (for donation, any amount)
 
 price:
-  amount: 40
+  amount: 1
   currency: GEL
 
-artist: sokolova-olga
+artist: gribanova-xenia
 
 image: /images/icon-star-2.png
 

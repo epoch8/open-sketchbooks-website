@@ -1,6 +1,11 @@
 ---
 title: Xenia Gribanova
 style: mixed media, collage, illustration
+
+paymentMethods:
+  - type: account
+    title: Credo
+    accountNumber: GE15CD0360000042837334
 ---
 
 ### In my artistic practice, I explore the subtle boundary between the mystical and the everyday, finding magic in familiar scenes. 

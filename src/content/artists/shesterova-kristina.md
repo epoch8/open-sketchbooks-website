@@ -11,3 +11,7 @@ I started this series in 2021, when I was 20. I kept these sketchbooks very acti
 When I returned home, it was difficult for me to come back to drawing, and I stopped until 2026. Recently, I decided to finish my third sketchbook and begin a fourth one, which will be dedicated to my life in Georgia.
 
 On the back of each drawing, there are small notes about what happened that day.
+
+### About the sketchbooks
+
+A series of sketchbooks from 2021–2025 – an illustrated personal diary depicting various scenes from life.

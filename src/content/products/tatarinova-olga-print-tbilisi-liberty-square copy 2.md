@@ -1,7 +1,7 @@
 ---
 type: print
 
-title: Liberty Square in Tbilisi, 2024
+title: Tbilisi, pencil on watercolor paper, limited prints 2024
 
 price:
   amount: 75
@@ -14,12 +14,7 @@ image: /images/products/tatarinova-olga/3.jpg
 status: available
 
 
-relations:
-  # 🔴 сильная связь (происхождение)
-  - type: from
-    target: sketchbook
-    slug: tatarinova-olga-tbilisi-sketches
-    page: 17
+
 
 
 ---

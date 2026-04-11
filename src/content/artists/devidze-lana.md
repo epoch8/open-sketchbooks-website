@@ -1,6 +1,11 @@
 ---
 title: Lana Devidze
 instagram: lana_the_artist_
+
+paymentMethods:
+  - type: account
+    title: BOG
+    accountNumber: GE78BG0000000574791433 
 ---
 
 ### I’m an artist from Georgia, exploring everyday life through form, texture, and association. 

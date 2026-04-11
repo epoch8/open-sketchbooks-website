@@ -1,13 +1,13 @@
 ---
 type: original
 
-title: “Symbols” (canvas, oil, mixed media, Tbilisi, 2024)
+title: Original Painting on paper (A4)
 
 price:
-  amount: 40
+  amount: 20
   currency: GEL
 
-artist: sokolova-olga
+artist: devidze-lana
 
 image: /images/icon-star-2.png
 

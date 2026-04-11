@@ -1,10 +1,10 @@
 ---
 type: original
 
-title: “Symbols” (canvas, oil, mixed media, Tbilisi, 2024)
+title: Series “In Search of Home”, “Light” (canvas, oil, mixed media, Tbilisi, 2026)
 
 price:
-  amount: 40
+  amount: 30
   currency: GEL
 
 artist: sokolova-olga

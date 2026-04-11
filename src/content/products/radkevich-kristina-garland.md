@@ -1,13 +1,13 @@
 ---
 type: original
 
-title: “Symbols” (canvas, oil, mixed media, Tbilisi, 2024)
+title: Garland
 
 price:
-  amount: 40
+  amount: 15
   currency: GEL
 
-artist: sokolova-olga
+artist: radkevich-kristina
 
 image: /images/icon-star-2.png
 
