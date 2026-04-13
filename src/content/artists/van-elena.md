@@ -1,7 +1,12 @@
 ---
 title: Elena Van
 instagram: elena_van_art
-style: illustration, landscape drawing
+style: illustration, landscape 
+
+paymentMethods:
+  - type: account
+    title: Tatiana Van
+    accountNumber: GE88BG0000000162082055
 
 ---
 
