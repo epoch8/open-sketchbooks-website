@@ -1,9 +1,9 @@
 ---
 title: "Sketchbook 1"
 
-author: "r"
+author: "radkevich-kristina_"
 
-published: false
+published: true
 
 year: 2025
 tags:

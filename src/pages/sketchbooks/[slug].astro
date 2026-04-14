@@ -2,6 +2,8 @@
 import InternalLayout from "@/layouts/InternalLayout.astro";
 import { getCollection } from "astro:content";
 
+import { SEOBase } from "@/content/template/seo/seo";
+
 import {
   mainNav,
   footerNav,
@@ -9,44 +11,31 @@ import {
 } from "@/content/template/navigation/navigation";
 
 import BrandLogo from "@/components/products/open-sketchbooks/logo/BrandLogo.astro";
-import { SEOBase } from "@/content/template/seo/seo";
-
-/* ================================
-   STATIC PATHS
-================================ */
 
 export async function getStaticPaths() {
   const sketchbooks = await getCollection("sketchbooks");
 
-  return sketchbooks.map((book) => ({
-    params: { slug: book.slug },
-    props: { book },
-  }));
+  return sketchbooks
+    .filter((book) => book.data.published === true)
+    .map((book) => ({
+      params: { slug: book.slug },
+      props: { book },
+    }));
 }
 
-/* ================================
-   DATA
-================================ */
-
 const { book } = Astro.props;
-const { Content } = await book.render();
 
-const basePath = `/images/sketchbooks/${book.slug}`;
+/* 👤 author */
+const artists = await getCollection("artists");
 
-const pages = book.data.pages.map((p, i) => ({
-  src: `${p.src}`,
-  caption: p.caption,
-  aspect: p.aspect ?? book.data.defaultAspect ?? "portrait",
-  index: i + 1,
-}));
+const artist = book.data.author
+  ? artists.find((a) => a.slug === book.data.author)
+  : null;
 
-const isAvailable = book.data.format?.digital ?? false;
-const pageCount = pages.length;
+/* 📂 pages */
+const pages = book.data.pages ?? [];
 
-/* ================================
-   SEO
-================================ */
-
+/* SEO */
 const pageSEO = {
   title: book.data.title,
   description: book.data.seoDescription ?? book.data.title,
@@ -61,208 +50,265 @@ const pageSEO = {
   footerMeta={footerMeta}
   logo={BrandLogo}
 >
-  <section class="section">
-    <div class="container flow">
+  <main class="sketchbook">
 
-      {/* HEADER */}
-      <header class="header flow">
-        <h1>{book.data.title}</h1>
-      </header>
+    {/* =========================
+        HERO
+    ========================= */}
 
-      {/* COVER */}
-      <div class="cover">
-        <img
-          src={`${book.data.cover}`}
-          alt={book.data.title}
-        />
+    <section class="sketchbook-hero">
+      <div class="sketchbook-hero__grid">
+
+      <div class="sketchbook-hero__info">
+        <h1 class="sketchbook-hero__title">{book.data.title}</h1>
+
+        {artist && (
+          <div class="sketchbook-hero__author">
+            by {artist.data.title}
+          </div>
+        )}
+
+        <div class="sketchbook-hero__meta">
+          {pages.length} pages
+        </div>
+
+        <div class="sketchbook-hero__divider" />
       </div>
 
-      {/* DESCRIPTION */}
-      <div class="description">
-        <Content />
+        <div class="sketchbook-hero__cover">
+          {book.data.cover && (
+            <img src={book.data.cover} alt={book.data.title} />
+          )}
+        </div>
+
       </div>
+    </section>
 
-      {isAvailable ? (
 
-        <section
-          class="viewer"
-          style={`height: ${pageCount * 100}vh`}
-        >
+    {/* =========================
+        VIEWER
+    ========================= */}
 
-          <div class="sticky">
-            <div class="track">
+    <section class="sketchbook-viewer">
 
-              {pages.map((page) => (
-                <div class={`page ${page.aspect}`}>
-                  <img src={page.src} alt="" />
+      {/* LEFT */}
+      <aside class="sketchbook-viewer__sidebar">
+        <div class="sketchbook-viewer__sidebar-inner">
 
-                  {book.data.settings?.showCaptions && page.caption && (
-                    <div class="caption">
-                      {page.caption}
-                    </div>
-                  )}
-                </div>
-              ))}
-
-            </div>
+          <div class="sketchbook-viewer__block">
+            <div class="sketchbook-viewer__label">Description</div>
+            <p>{book.data.seoDescription ?? "No description yet."}</p>
           </div>
 
-        </section>
+          <div class="sketchbook-viewer__block">
+            <div class="sketchbook-viewer__label">Info</div>
+            <p>
+              {book.data.year} <br />
+              {pages.length} pages
+            </p>
+          </div>
 
-      ) : (
+        </div>
+      </aside>
 
-        <section class="coming-soon">
-          <p>
-            This sketchbook exists as a physical object.
-            Digital version will be available soon.
-          </p>
-        </section>
 
-      )}
+      {/* RIGHT */}
+      <div class="sketchbook-viewer__content">
 
-    </div>
-  </section>
+        <div class="sketchbook-viewer__topbar">
+          <button class="sketchbook-viewer__cta">
+            View full sketchbook
+          </button>
+        </div>
+
+        <div class="sketchbook-pages">
+          {pages.map((p) => (
+            <div class="sketchbook-page">
+              <img src={p.src} alt="" loading="lazy" />
+            </div>
+          ))}
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
 </InternalLayout>
 
-<script>
-  window.addEventListener('DOMContentLoaded', () => {
-    const viewer = document.querySelector('.viewer');
-    if (!(viewer instanceof HTMLElement)) return;
-
-    const sticky = viewer.querySelector('.sticky');
-    if (!(sticky instanceof HTMLElement)) return;
-
-    const track = viewer.querySelector('.track');
-    if (!(track instanceof HTMLElement)) return;
-
-    window.addEventListener('scroll', () => {
-      const rect = viewer.getBoundingClientRect();
-
-      const scrollStart = rect.top;
-      const scrollEnd = rect.height - window.innerHeight;
-
-      if (scrollEnd <= 0) return;
-
-      const progress = Math.min(
-        Math.max(-scrollStart / scrollEnd, 0),
-        1
-      );
-
-      const maxTranslate =
-        track.scrollWidth - sticky.clientWidth;
-
-      track.style.transform =
-        `translateX(${-maxTranslate * progress}px)`;
-    });
-  });
-</script>
 
 <style>
-/* HEADER */
-.header {
-  margin-bottom: 24px;
-}
 
-/* COVER */
-.cover img {
-  width: 100%;
-  max-width: 600px;
-  border-radius: 12px;
-}
+/* =========================
+   GLOBAL
+========================= */
 
-/* DESCRIPTION */
-.description {
-  max-width: 600px;
-  opacity: 0.8;
-}
-
-/* ================================
-   VIEWER
-================================ */
-
-.viewer {
-  position: relative;
-  margin-top: 40px;
-}
-
-/* sticky viewport */
-.sticky {
-  position: sticky;
-  top: 0;
-
-  height: 100vh;
-  overflow: hidden;
-
-  display: flex;
-  align-items: center;
-}
-
-/* ================================
-   TRACK
-================================ */
-
-.track {
-  display: flex;
-  align-items: center;
-  gap: 32px; /* 👈 регулируешь плотность */
-  will-change: transform;
-}
-
-/* ================================
-   PAGE (КЛЮЧЕВОЕ ИЗМЕНЕНИЕ)
-================================ */
-
-.page {
-  flex: 0 0 auto;
-
+.sketchbook {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
 }
 
-/* ================================
-   IMAGE
-================================ */
 
-.page img {
-  display: block;
+/* =========================
+   HERO (COMPACT)
+========================= */
 
-  max-height: 75vh;
-  width: auto;
-
-  border-radius: 8px;
+.sketchbook-hero {
+  padding: 64px 0 32px; /* было implicit через vh */
 }
 
-/* аспекты */
-
-.page.landscape img {
-  max-width: 80vw;
-  height: auto;
+/* ❌ удаляем */
+.sketchbook-hero__divider {
+  display: none;
 }
 
-.page.square img {
-  max-height: 65vh;
+.sketchbook-hero__grid {
+  display: grid;
+grid-template-columns: 2fr 2fr 2fr;
+  gap: 8px;
+  align-items: end;
+  width: 100%;
 }
 
-/* ================================
-   CAPTION
-================================ */
+.sketchbook-hero__info {
+  grid-column: span 2; /* 🔥 занимает 1+2 колонку */
+  display: flex;
+  flex-direction: column;
+}
 
-.caption {
-  margin-top: 10px;
+/* 👇 уменьшили заголовок */
+.sketchbook-hero__title {
+  font-size: clamp(36px, 4.5vw, 72px);
+  line-height: 1;
+  font-weight: 700;
+}
+
+/* 👇 tighter stack */
+.sketchbook-hero__author {
+  margin-top: 8px;
+  font-size: 16px;
+  opacity: 0.7;
+}
+
+.sketchbook-hero__meta {
+  margin-top: 4px;
   font-size: 14px;
-  opacity: 0.7;
-  text-align: center;
-  max-width: 320px;
+  opacity: 0.5;
 }
 
-/* ================================
-   COMING SOON
-================================ */
-
-.coming-soon {
-  margin-top: 40px;
-  opacity: 0.7;
+/* 👇 ещё компактнее */
+.sketchbook-hero__divider {
+  height: 1px;
+  background: black;
+  margin: 16px 0;
+  width: 100%;
 }
+
+.sketchbook-hero__cover {
+  grid-column: 3;
+}
+
+/* 👇 уменьшаем и поджимаем обложку */
+.sketchbook-hero__cover img {
+  width: 100%;
+  max-width: 240px;
+  display: block;
+  /* ❌ margin-left: auto; убрали */
+}
+
+
+/* =========================
+   VIEWER
+========================= */
+
+.sketchbook-viewer {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 16px;
+}
+
+.sketchbook-viewer__topbar {
+  position: sticky;
+  top: 0;
+  height: 66px;              /* 🔥 фиксируем */
+  display: flex;
+  align-items: center;       /* центрируем кнопку по вертикали */
+  justify-content: flex-end;
+
+  padding: 0;                /* убираем padding */
+  background: white;
+  border-bottom: 1px solid #eee;
+  z-index: 10;
+}
+.sketchbook-viewer__sidebar {
+  border-top: 1px solid #000; /* 🔥 новая линия */
+  padding-top: 24px;          /* чтобы не прилипало */
+}
+
+.sketchbook-viewer__content {
+  border-top: 1px solid #000; /* 🔥 новая линия */
+}
+
+/* =========================
+   SIDEBAR
+========================= */
+
+.sketchbook-viewer__sidebar-inner {
+  position: sticky;
+  top: 100px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.sketchbook-viewer__label {
+  font-size: 11px;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+  opacity: 0.5;
+}
+
+
+/* =========================
+   CONTENT
+========================= */
+
+.sketchbook-viewer__topbar {
+  position: sticky;
+  top: 0;
+  background: white;
+  z-index: 10;
+
+  display: flex;
+  justify-content: flex-end;
+
+  padding: 16px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.sketchbook-viewer__cta {
+  padding: 16px 28px;
+  font-size: 16px;
+  background: black;
+  color: white;
+  border: none;
+}
+
+
+/* =========================
+   PAGES
+========================= */
+
+.sketchbook-pages {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  padding: 24px 0 48px;
+}
+
+.sketchbook-page img {
+  width: 100%;
+  display: block;
+}
+
 </style>
