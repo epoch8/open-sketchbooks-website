@@ -1,0 +1,313 @@
+---
+import styles from "./SketchbookViewer.module.css";
+
+interface PageItem {
+  src: string;
+  caption?: string;
+  aspect: "portrait" | "landscape" | "square";
+}
+
+interface ViewerProps {
+  pages: PageItem[];
+  viewerId: string;
+  initialIndex?: number;
+  title?: string;
+}
+
+const {
+  pages = [],
+  viewerId,
+  initialIndex = 0,
+  title = "Sketchbook",
+} = Astro.props as ViewerProps;
+
+if (!viewerId) {
+  throw new Error("SketchbookViewer: viewerId is required");
+}
+
+const safeInitialIndex =
+  pages.length > 0
+    ? Math.min(Math.max(initialIndex, 0), pages.length - 1)
+    : 0;
+---
+
+<div
+  id={viewerId}
+  class={styles.viewer}
+  hidden
+  aria-hidden="true"
+  role="dialog"
+  aria-modal="true"
+  tabindex="-1"
+>
+  <div class={styles.viewer__backdrop} data-close></div>
+
+  <div class={styles.viewer__panel}>
+    <header class={styles.viewer__header}>
+      <div>
+        <div class={styles.viewer__title}>{title}</div>
+        <div class={styles.viewer__counter} data-counter></div>
+      </div>
+
+      <button
+        class={styles.viewer__close}
+        data-action="close"
+        type="button"
+        aria-label="Close viewer"
+      >
+        ×
+      </button>
+    </header>
+
+    <div class={styles.viewer__viewport} data-viewport>
+      <div class={styles.viewer__track} data-track>
+        {pages.map((p, i) => (
+          <div
+            class={`${styles.page} ${styles[`page--${p.aspect}`]}`}
+            data-page
+            >
+            <img
+              class={styles.page__image}
+              src={p.src}
+              alt={`Page ${i + 1}`}
+            />
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <div class={styles.viewer__caption} data-caption></div>
+
+    <div class={styles.viewer__controls}>
+      <button type="button" data-action="first">First</button>
+      <button type="button" data-action="prev">Prev</button>
+      <button type="button" data-action="next">Next</button>
+      <button type="button" data-action="last">Last</button>
+      <button type="button" data-action="random">Random</button>
+    </div>
+  </div>
+</div>
+
+<script is:inline define:vars={{ viewerId, pages, safeInitialIndex }}>
+  (() => {
+    const root = document.getElementById(viewerId);
+    if (!root) return;
+
+    window.SketchbookViewer = window.SketchbookViewer || {
+      _registry: {},
+
+      register(id, api) {
+        this._registry[id] = api;
+      },
+
+      open(id, i = 0) {
+        this._registry[id]?.open(i);
+      },
+
+      close(id) {
+        this._registry[id]?.close();
+      },
+
+      next(id) {
+        this._registry[id]?.next();
+      },
+
+      prev(id) {
+        this._registry[id]?.prev();
+      },
+    };
+
+    const viewport = root.querySelector("[data-viewport]");
+    const counter = root.querySelector("[data-counter]");
+    const caption = root.querySelector("[data-caption]");
+    const backdrop = root.querySelector("[data-close]");
+    const track = root.querySelector("[data-track]");
+
+    if (!(viewport instanceof HTMLElement)) return;
+    if (!(counter instanceof HTMLElement)) return;
+    if (!(caption instanceof HTMLElement)) return;
+    if (!(backdrop instanceof HTMLElement)) return;
+
+    const getPages = () => Array.from(root.querySelectorAll("[data-page]"));
+
+    const pageCount = pages.length;
+
+    const state = {
+      isOpen: false,
+      currentIndex: safeInitialIndex,
+    };
+
+    function clamp(i) {
+      return Math.max(0, Math.min(i, pageCount - 1));
+    }
+
+    function updateHeader() {
+      counter.textContent = `${state.currentIndex + 1} / ${pageCount}`;
+      caption.textContent = pages[state.currentIndex]?.caption || "";
+    }
+
+    function getClosestPageIndex() {
+      const pageEls = getPages();
+      if (!pageEls.length) return 0;
+
+      const viewportRect = viewport.getBoundingClientRect();
+      const viewportCenter = viewportRect.left + viewportRect.width / 2;
+
+      let closestIndex = 0;
+      let closestDistance = Infinity;
+
+      pageEls.forEach((pageEl, index) => {
+        const rect = pageEl.getBoundingClientRect();
+        const pageCenter = rect.left + rect.width / 2;
+        const distance = Math.abs(pageCenter - viewportCenter);
+
+        if (distance < closestDistance) {
+          closestDistance = distance;
+          closestIndex = index;
+        }
+      });
+
+      return closestIndex;
+    }
+
+    function scrollToIndex(i, smooth = true) {
+      const index = clamp(i);
+      const pageEls = getPages();
+      const target = pageEls[index];
+
+      if (!(target instanceof HTMLElement)) return;
+
+      state.currentIndex = index;
+
+      target.scrollIntoView({
+        behavior: smooth ? "smooth" : "auto",
+        inline: "center",
+        block: "nearest",
+      });
+
+      updateHeader();
+      history.replaceState(null, "", `?page=${index + 1}`);
+    }
+
+    function open(i = 0) {
+      if (!pageCount) return;
+
+      state.isOpen = true;
+
+      document.body.style.overflow = "hidden";
+      root.hidden = false;
+      root.setAttribute("aria-hidden", "false");
+
+      scrollToIndex(i, false);
+    }
+
+    function close() {
+      state.isOpen = false;
+
+      root.hidden = true;
+      root.setAttribute("aria-hidden", "true");
+      document.body.style.overflow = "";
+
+      history.replaceState(null, "", location.pathname);
+    }
+
+    function next() {
+      scrollToIndex(state.currentIndex + 1);
+    }
+
+    function prev() {
+      scrollToIndex(state.currentIndex - 1);
+    }
+
+    function first() {
+      scrollToIndex(0);
+    }
+
+    function last() {
+      scrollToIndex(pageCount - 1);
+    }
+
+    function random() {
+      if (pageCount <= 1) {
+        scrollToIndex(0);
+        return;
+      }
+
+      let nextIndex = state.currentIndex;
+      while (nextIndex === state.currentIndex) {
+        nextIndex = Math.floor(Math.random() * pageCount);
+      }
+
+      scrollToIndex(nextIndex);
+    }
+
+    let scrollRaf = null;
+
+    viewport.addEventListener("scroll", () => {
+      if (!state.isOpen) return;
+
+      if (scrollRaf) cancelAnimationFrame(scrollRaf);
+
+      scrollRaf = requestAnimationFrame(() => {
+        const i = getClosestPageIndex();
+
+        if (i !== state.currentIndex) {
+          state.currentIndex = i;
+          updateHeader();
+          history.replaceState(null, "", `?page=${i + 1}`);
+        }
+      });
+    });
+
+    window.addEventListener("resize", () => {
+      if (!state.isOpen) return;
+      scrollToIndex(state.currentIndex, false);
+    });
+
+    window.addEventListener("keydown", (e) => {
+      if (!state.isOpen) return;
+
+      if (e.key === "Escape") close();
+      if (e.key === "ArrowRight") next();
+      if (e.key === "ArrowLeft") prev();
+    });
+
+    root.addEventListener("click", (e) => {
+      const el = e.target;
+      if (!(el instanceof HTMLElement)) return;
+
+      const button = el.closest("[data-action]");
+      if (!(button instanceof HTMLElement)) return;
+
+      const action = button.dataset.action;
+
+      if (action === "close") close();
+      if (action === "next") next();
+      if (action === "prev") prev();
+      if (action === "first") first();
+      if (action === "last") last();
+      if (action === "random") random();
+    });
+
+    backdrop.addEventListener("click", close);
+
+    const params = new URLSearchParams(location.search);
+    const page = Number(params.get("page"));
+
+    if (page) {
+      open(page - 1);
+    }
+
+    updateHeader();
+
+    window.SketchbookViewer.register(viewerId, {
+      open,
+      close,
+      next,
+      prev,
+      first,
+      last,
+      random,
+    });
+  })();
+</script>

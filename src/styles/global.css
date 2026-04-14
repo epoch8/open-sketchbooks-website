@@ -19,6 +19,13 @@ html, body {
   padding: 0;
 }
 
+:root {
+  --z-base: 0;
+  --z-header: 100;
+  --z-overlay: 1000;
+  --z-modal: 2000;
+}
+
 /* Body defaults */
 
 body {

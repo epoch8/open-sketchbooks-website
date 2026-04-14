@@ -11,6 +11,7 @@ import {
 } from "@/content/template/navigation/navigation";
 
 import BrandLogo from "@/components/products/open-sketchbooks/logo/BrandLogo.astro";
+import SketchbookViewer from "@/components/blocks/sketchbook-viewer/SketchbookViewer.astro";
 
 export async function getStaticPaths() {
   const sketchbooks = await getCollection("sketchbooks");
@@ -42,6 +43,7 @@ const pageSEO = {
 };
 ---
 
+
 <InternalLayout
   baseSEO={SEOBase}
   pageSEO={pageSEO}
@@ -52,49 +54,35 @@ const pageSEO = {
 >
   <main class="sketchbook">
 
-    {/* =========================
-        HERO
-    ========================= */}
-
     <section class="sketchbook-hero">
       <div class="sketchbook-hero__grid">
+        <div class="sketchbook-hero__info">
+          <h1 class="sketchbook-hero__title">{book.data.title}</h1>
 
-      <div class="sketchbook-hero__info">
-        <h1 class="sketchbook-hero__title">{book.data.title}</h1>
+          {artist && (
+            <div class="sketchbook-hero__author">
+              by {artist.data.title}
+            </div>
+          )}
 
-        {artist && (
-          <div class="sketchbook-hero__author">
-            by {artist.data.title}
+          <div class="sketchbook-hero__meta">
+            {pages.length} pages
           </div>
-        )}
 
-        <div class="sketchbook-hero__meta">
-          {pages.length} pages
+          <div class="sketchbook-hero__divider" />
         </div>
-
-        <div class="sketchbook-hero__divider" />
-      </div>
 
         <div class="sketchbook-hero__cover">
           {book.data.cover && (
             <img src={book.data.cover} alt={book.data.title} />
           )}
         </div>
-
       </div>
     </section>
 
-
-    {/* =========================
-        VIEWER
-    ========================= */}
-
     <section class="sketchbook-viewer">
-
-      {/* LEFT */}
       <aside class="sketchbook-viewer__sidebar">
         <div class="sketchbook-viewer__sidebar-inner">
-
           <div class="sketchbook-viewer__block">
             <div class="sketchbook-viewer__label">Description</div>
             <p>{book.data.seoDescription ?? "No description yet."}</p>
@@ -107,16 +95,14 @@ const pageSEO = {
               {pages.length} pages
             </p>
           </div>
-
         </div>
       </aside>
 
-
-      {/* RIGHT */}
       <div class="sketchbook-viewer__content">
-
         <div class="sketchbook-viewer__topbar">
-          <button class="sketchbook-viewer__cta">
+          <button
+            onclick={`window.SketchbookViewer.open('sketchbook-${book.slug}', 0)`}
+          >
             View full sketchbook
           </button>
         </div>
@@ -128,12 +114,17 @@ const pageSEO = {
             </div>
           ))}
         </div>
-
       </div>
-
     </section>
 
   </main>
+
+  <SketchbookViewer
+    slot="overlay"
+    viewerId={`sketchbook-${book.slug}`}
+    pages={pages}
+    title={book.data.title}
+  />
 </InternalLayout>
 
 
@@ -230,7 +221,7 @@ grid-template-columns: 2fr 2fr 2fr;
 .sketchbook-viewer__topbar {
   position: sticky;
   top: 0;
-  height: 66px;              /* 🔥 фиксируем */
+  height: 80px;              /* 🔥 фиксируем */
   display: flex;
   align-items: center;       /* центрируем кнопку по вертикали */
   justify-content: flex-end;

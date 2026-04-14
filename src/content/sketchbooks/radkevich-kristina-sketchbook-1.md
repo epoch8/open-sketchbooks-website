@@ -1,7 +1,7 @@
 ---
-title: "Sketchbook 1"
+title: "Sketches of random people"
 
-author: "radkevich-kristina_"
+author: "radkevich-kristina-"
 
 published: true
 
@@ -13,7 +13,7 @@ format:
   physical: true
   digital: true
 
-seoDescription: "People sketches"
+seoDescription: "Sketches of random people"
 
 cover: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/radkevich-kristina/sketchbook-1/resize_web/1600/101.jpg"
 
@@ -123,7 +123,6 @@ pages:
   - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/radkevich-kristina/sketchbook-1/resize_web/1600/098.jpg"
   - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/radkevich-kristina/sketchbook-1/resize_web/1600/099.jpg"
   - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/radkevich-kristina/sketchbook-1/resize_web/1600/100.jpg"
-  - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/radkevich-kristina/sketchbook-1/resize_web/1600/101.jpg"
 
 # 👇 настройки отображения (UI)
 settings:

@@ -226,6 +226,9 @@ const allStructuredData = [
       <slot />
     </main>
 
+      <slot name="overlay" />
+
+
     {showFooter && footerSections.length > 0 && (
       <Footer
         sections={footerSections}
