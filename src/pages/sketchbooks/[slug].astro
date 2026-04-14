@@ -36,6 +36,8 @@ const artist = book.data.author
 /* 📂 pages */
 const pages = book.data.pages ?? [];
 
+const featured = book.data.featured ?? [];
+
 /* SEO */
 const pageSEO = {
   title: book.data.title,
@@ -108,7 +110,7 @@ const pageSEO = {
         </div>
 
         <div class="sketchbook-pages">
-          {pages.map((p) => (
+          {featured.map((p) => (
             <div class="sketchbook-page">
               <img src={p.src} alt="" loading="lazy" />
             </div>

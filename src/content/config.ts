@@ -114,7 +114,7 @@ const sketchbooks = defineCollection({
     published: z.boolean().default(false),
 
     /* 📅 */
-    year: z.number().int(),
+    year: z.number().int().optional(),
 
     /* 🏷 */
     tags: z.array(z.string()).default([]),
@@ -138,6 +138,19 @@ const sketchbooks = defineCollection({
 
     /* 📄 страницы */
     pages: z
+      .array(
+        z.object({
+          src: z.string().min(1),
+          caption: z.string().optional(),
+          aspect: z
+            .enum(["portrait", "square", "landscape"])
+            .optional(),
+        })
+      )
+      .optional()
+      .default([]),
+
+    featured: z
       .array(
         z.object({
           src: z.string().min(1),

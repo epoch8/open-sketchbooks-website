@@ -1,5 +1,5 @@
 ---
-title: "Sketches of random people"
+title: "Local sketches"
 
 author: "radkevich-kristina-"
 
@@ -13,7 +13,7 @@ format:
   physical: true
   digital: true
 
-seoDescription: "Sketches of random people"
+seoDescription: "Sketches of locals by Kristina Radkevich"
 
 cover: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/radkevich-kristina/sketchbook-1/resize_web/1600/101.jpg"
 
@@ -123,6 +123,21 @@ pages:
   - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/radkevich-kristina/sketchbook-1/resize_web/1600/098.jpg"
   - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/radkevich-kristina/sketchbook-1/resize_web/1600/099.jpg"
   - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/radkevich-kristina/sketchbook-1/resize_web/1600/100.jpg"
+
+featured:
+  - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/radkevich-kristina/sketchbook-1/resize_web/1600/001.jpg"
+  - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/radkevich-kristina/sketchbook-1/resize_web/1600/019.jpg"
+  - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/radkevich-kristina/sketchbook-1/resize_web/1600/020.jpg"
+  - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/radkevich-kristina/sketchbook-1/resize_web/1600/029.jpg"
+  - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/radkevich-kristina/sketchbook-1/resize_web/1600/042.jpg"
+  - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/radkevich-kristina/sketchbook-1/resize_web/1600/046.jpg"
+  - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/radkevich-kristina/sketchbook-1/resize_web/1600/056.jpg"
+  - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/radkevich-kristina/sketchbook-1/resize_web/1600/082.jpg"
+  - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/radkevich-kristina/sketchbook-1/resize_web/1600/088.jpg"
+  - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/radkevich-kristina/sketchbook-1/resize_web/1600/091.jpg"
+  - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/radkevich-kristina/sketchbook-1/resize_web/1600/092.jpg"
+  - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/radkevich-kristina/sketchbook-1/resize_web/1600/096.jpg"
+
 
 # 👇 настройки отображения (UI)
 settings:
