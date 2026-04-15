@@ -231,32 +231,59 @@
 ========================================================= */
 
 @media (max-width: 767px) and (orientation: portrait) {
+
+  /* =========================
+     ROOT / GLOBAL LOCK
+  ========================= */
+
+  html, body {
+    overflow-x: hidden;              /* 🔥 убирает сдвиг страницы */
+  }
+
   .viewer {
     overflow: hidden;
+    overscroll-behavior: contain;    /* 🔥 блокирует резиновый скролл */
   }
 
   .viewer__panel {
+    position: fixed;                /* 🔥 фиксирует относительно viewport */
+    inset: 0;
+
     height: 100dvh;
     overflow: hidden;
+
     display: grid;
     grid-template-rows: auto 1fr auto auto;
   }
 
+  /* =========================
+     VIEWPORT
+  ========================= */
+
   .viewer__viewport {
     overflow-x: auto;
     overflow-y: hidden;
-    touch-action: pan-x;
+
+    touch-action: pan-x;            /* 🔥 только горизонталь */
+
     padding-bottom: 8px;
     min-height: 0;
   }
 
+  /* =========================
+     HEADER (железобетонный)
+  ========================= */
+
   .viewer__header {
+    position: relative;             /* 🔥 стабилизирует */
+
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 12px;
 
     width: 100%;
+    max-width: 100%;                /* 🔥 не даём расширяться */
     box-sizing: border-box;
     overflow: hidden;
 
@@ -273,6 +300,7 @@
 
   .viewer__title {
     display: block;
+
     font-size: 15px;
     line-height: 1.15;
 
@@ -289,8 +317,10 @@
 
   .viewer__close {
     flex: 0 0 auto;
+
     width: 32px;
     min-width: 32px;
+
     text-align: center;
 
     font-size: 32px;
@@ -308,27 +338,51 @@
     white-space: nowrap;
   }
 
+  /* =========================
+     TRACK
+  ========================= */
+
   .viewer__track {
     display: flex;
     gap: 16px;
+
     padding: 0 16px;
     box-sizing: border-box;
+
+    max-width: 100%;
   }
+
+  /* =========================
+     PAGE
+  ========================= */
 
   .page {
     padding: 8px;
     box-sizing: border-box;
+
     max-width: 100%;
+    overflow: hidden;
   }
+
+  /* =========================
+     IMAGE
+  ========================= */
 
   .page__image {
     display: block;
+
     max-width: 100%;
     max-height: calc(100dvh - 180px);
+
     width: auto;
     height: auto;
+
     object-fit: contain;
   }
+
+  /* =========================
+     CAPTION
+  ========================= */
 
   .viewer__caption {
     min-height: 20px;
@@ -336,20 +390,32 @@
     font-size: 12px;
   }
 
+  /* =========================
+     CONTROLS
+  ========================= */
+
   .viewer__controls {
     display: flex;
     gap: 8px;
+
     padding: 0 16px 16px;
 
     overflow-x: auto;
     flex-wrap: nowrap;
+
+    max-width: 100%;
   }
 
   .viewer__controls button {
     flex: 0 0 auto;
+
     padding: 9px 12px;
     font-size: 14px;
   }
+
+  /* =========================
+     SCROLLBAR
+  ========================= */
 
   .viewer__viewport::-webkit-scrollbar {
     height: 6px;
@@ -362,9 +428,22 @@
 ========================================================= */
 
 @media (max-width: 1024px) and (orientation: landscape) {
+
+  html, body {
+    overflow-x: hidden;
+  }
+
+  .viewer {
+    overscroll-behavior: contain;
+  }
+
   .viewer__panel {
+    position: fixed;
+    inset: 0;
+
     height: 100dvh;
     overflow: hidden;
+
     grid-template-rows: auto 1fr auto auto;
   }
 
@@ -372,18 +451,21 @@
     overflow-x: auto;
     overflow-y: hidden;
     touch-action: pan-x;
+
     padding-bottom: 4px;
     min-height: 0;
   }
 
   .viewer__header {
+    position: relative;
+
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 10px;
 
     width: 100%;
-    box-sizing: border-box;
+    max-width: 100%;
     overflow: hidden;
 
     padding: 10px 12px 6px;
@@ -399,8 +481,8 @@
 
   .viewer__title {
     display: block;
+
     font-size: 13px;
-    line-height: 1.1;
 
     white-space: nowrap;
     overflow: hidden;
@@ -414,13 +496,13 @@
 
   .viewer__close {
     flex: 0 0 auto;
+
     width: 28px;
     min-width: 28px;
+
     text-align: center;
 
     font-size: 28px;
-    line-height: 1;
-    padding: 0;
   }
 
   .viewer__track {
@@ -440,6 +522,7 @@
   .viewer__controls {
     gap: 6px;
     padding: 0 12px 10px;
+
     flex-wrap: nowrap;
     overflow-x: auto;
   }
