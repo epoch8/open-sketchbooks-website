@@ -231,25 +231,45 @@
 ========================================================= */
 
 @media (max-width: 767px) and (orientation: portrait) {
+
+  /* =========================
+     PANEL
+  ========================= */
+
   .viewer__panel {
-    height: 100dvh;                /* 🔥 фикс vh бага */
+    height: 100dvh;
     overflow: hidden;
     grid-template-rows: auto 1fr auto auto;
   }
 
+
+  /* =========================
+     HEADER (фикс крестика)
+  ========================= */
+
   .viewer__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
     gap: 12px;
+
     padding: 14px 16px 8px;
 
-    /* 🔥 safe area */
     padding-left: max(16px, env(safe-area-inset-left));
     padding-right: max(16px, env(safe-area-inset-right));
+  }
+
+  .viewer__header > div {
+    flex: 1 1 auto;
+    min-width: 0;                 /* 🔥 критично */
   }
 
   .viewer__title {
     font-size: 15px;
     line-height: 1.15;
-    word-break: break-word;        /* 🔥 чтобы не резалось */
+
+    overflow: hidden;             /* 🔥 фикс уезда */
+    text-overflow: ellipsis;
   }
 
   .viewer__counter {
@@ -258,6 +278,7 @@
   }
 
   .viewer__close {
+    flex: 0 0 auto;               /* 🔥 не даём сжиматься */
     font-size: 32px;
     padding: 0;
   }
@@ -270,26 +291,60 @@
     margin-left: 3px;
   }
 
+
+  /* =========================
+     VIEWPORT
+  ========================= */
+
   .viewer__viewport {
     padding-bottom: 8px;
-    min-height: 0;                /* 🔥 критично для grid */
+    min-height: 0;
   }
 
+
+  /* =========================
+     TRACK
+  ========================= */
+
   .viewer__track {
+    display: flex;
     gap: 16px;
     padding: 0 16px;
+    box-sizing: border-box;
   }
+
+
+  /* =========================
+     PAGE
+  ========================= */
 
   .page {
     padding: 8px;
+    box-sizing: border-box;
+
+    max-width: 100%;             /* 🔥 вместо vw */
   }
+
+
+  /* =========================
+     IMAGE (главный фикс)
+  ========================= */
 
   .page__image {
-    max-width: calc(100vw - 48px);
+    display: block;
 
-    /* 🔥 учитываем header + controls */
-    max-height: calc(100dvh - 190px);
+    max-width: 100%;             /* 🔥 ключевой фикс */
+    max-height: calc(100dvh - 180px);
+
+    width: auto;
+    height: auto;
+    object-fit: contain;
   }
+
+
+  /* =========================
+     CAPTION
+  ========================= */
 
   .viewer__caption {
     min-height: 20px;
@@ -297,15 +352,31 @@
     font-size: 12px;
   }
 
+
+  /* =========================
+     CONTROLS (фикс съезда)
+  ========================= */
+
   .viewer__controls {
+    display: flex;
     gap: 8px;
+
     padding: 0 16px 16px;
+
+    overflow-x: auto;            /* 🔥 */
+    flex-wrap: nowrap;           /* 🔥 */
   }
 
   .viewer__controls button {
+    flex: 0 0 auto;              /* 🔥 */
     padding: 9px 12px;
     font-size: 14px;
   }
+
+
+  /* =========================
+     SCROLLBAR
+  ========================= */
 
   .viewer__viewport::-webkit-scrollbar {
     height: 6px;
