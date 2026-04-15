@@ -231,11 +231,6 @@
 ========================================================= */
 
 @media (max-width: 767px) and (orientation: portrait) {
-
-  /* =========================
-     ROOT / PANEL
-  ========================= */
-
   .viewer {
     overflow: hidden;
   }
@@ -247,73 +242,71 @@
     grid-template-rows: auto 1fr auto auto;
   }
 
-  /* =========================
-     VIEWPORT
-  ========================= */
-
   .viewer__viewport {
     overflow-x: auto;
     overflow-y: hidden;
-
-    touch-action: pan-x;     /* 🔥 блок вертикали */
-
+    touch-action: pan-x;
     padding-bottom: 8px;
-    min-height: 0;           /* 🔥 grid fix */
+    min-height: 0;
   }
-
-  /* =========================
-     HEADER (главный фикс)
-  ========================= */
 
   .viewer__header {
     display: flex;
-    align-items: center;     /* 🔥 было flex-start — ломало вертикально */
+    align-items: center;
     justify-content: space-between;
     gap: 12px;
 
-    padding: 14px 16px 8px;
+    width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
 
+    padding: 14px 16px 8px;
     padding-left: max(16px, env(safe-area-inset-left));
     padding-right: max(16px, env(safe-area-inset-right));
   }
 
   .viewer__header > div {
     flex: 1 1 auto;
-    min-width: 0;            /* 🔥 ключ */
+    min-width: 0;
+    overflow: hidden;
   }
 
   .viewer__title {
+    display: block;
     font-size: 15px;
     line-height: 1.15;
 
-    white-space: nowrap;     /* 🔥 НЕ переносим */
+    white-space: nowrap;
     overflow: hidden;
-    text-overflow: ellipsis; /* 🔥 ... */
+    text-overflow: ellipsis;
   }
 
   .viewer__counter {
     margin-top: 4px;
     font-size: 12px;
+    white-space: nowrap;
   }
 
   .viewer__close {
-    flex: 0 0 auto;          /* 🔥 фикс */
+    flex: 0 0 auto;
+    width: 32px;
+    min-width: 32px;
+    text-align: center;
+
     font-size: 32px;
+    line-height: 1;
     padding: 0;
   }
 
   .viewer__by {
     margin-left: 6px;
+    opacity: 0.5;
   }
 
   .viewer__author {
     margin-left: 3px;
-    white-space: nowrap;     /* 🔥 */
+    white-space: nowrap;
   }
-
-  /* =========================
-     TRACK
-  ========================= */
 
   .viewer__track {
     display: flex;
@@ -322,34 +315,20 @@
     box-sizing: border-box;
   }
 
-  /* =========================
-     PAGE
-  ========================= */
-
   .page {
     padding: 8px;
     box-sizing: border-box;
     max-width: 100%;
   }
 
-  /* =========================
-     IMAGE
-  ========================= */
-
   .page__image {
     display: block;
-
-    max-width: 100%;                 /* 🔥 вместо vw */
+    max-width: 100%;
     max-height: calc(100dvh - 180px);
-
     width: auto;
     height: auto;
     object-fit: contain;
   }
-
-  /* =========================
-     CAPTION
-  ========================= */
 
   .viewer__caption {
     min-height: 20px;
@@ -357,17 +336,12 @@
     font-size: 12px;
   }
 
-  /* =========================
-     CONTROLS
-  ========================= */
-
   .viewer__controls {
     display: flex;
     gap: 8px;
-
     padding: 0 16px 16px;
 
-    overflow-x: auto;        /* 🔥 фикс обрезания */
+    overflow-x: auto;
     flex-wrap: nowrap;
   }
 
@@ -376,10 +350,6 @@
     padding: 9px 12px;
     font-size: 14px;
   }
-
-  /* =========================
-     SCROLLBAR
-  ========================= */
 
   .viewer__viewport::-webkit-scrollbar {
     height: 6px;
@@ -392,7 +362,6 @@
 ========================================================= */
 
 @media (max-width: 1024px) and (orientation: landscape) {
-
   .viewer__panel {
     height: 100dvh;
     overflow: hidden;
@@ -403,7 +372,6 @@
     overflow-x: auto;
     overflow-y: hidden;
     touch-action: pan-x;
-
     padding-bottom: 4px;
     min-height: 0;
   }
@@ -414,8 +382,11 @@
     justify-content: space-between;
     gap: 10px;
 
-    padding: 10px 12px 6px;
+    width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
 
+    padding: 10px 12px 6px;
     padding-left: max(12px, env(safe-area-inset-left));
     padding-right: max(12px, env(safe-area-inset-right));
   }
@@ -423,10 +394,13 @@
   .viewer__header > div {
     flex: 1 1 auto;
     min-width: 0;
+    overflow: hidden;
   }
 
   .viewer__title {
+    display: block;
     font-size: 13px;
+    line-height: 1.1;
 
     white-space: nowrap;
     overflow: hidden;
@@ -435,11 +409,18 @@
 
   .viewer__counter {
     font-size: 11px;
+    white-space: nowrap;
   }
 
   .viewer__close {
     flex: 0 0 auto;
+    width: 28px;
+    min-width: 28px;
+    text-align: center;
+
     font-size: 28px;
+    line-height: 1;
+    padding: 0;
   }
 
   .viewer__track {
@@ -459,7 +440,6 @@
   .viewer__controls {
     gap: 6px;
     padding: 0 12px 10px;
-
     flex-wrap: nowrap;
     overflow-x: auto;
   }
