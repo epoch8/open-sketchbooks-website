@@ -13,18 +13,29 @@ import {
 import BrandLogo from "@/components/products/open-sketchbooks/logo/BrandLogo.astro";
 import SketchbookViewer from "@/components/blocks/sketchbook-viewer/SketchbookViewer.astro";
 
+/* =========================
+   STATIC PATHS
+========================= */
+
 export async function getStaticPaths() {
   const sketchbooks = await getCollection("sketchbooks");
 
-  return sketchbooks
-    .filter((book) => book.data.published === true)
-    .map((book) => ({
-      params: { slug: book.slug },
-      props: { book },
-    }));
+  const published = sketchbooks.filter((b) => b.data.published === true);
+
+  return published.map((book) => ({
+    params: { slug: book.slug },
+    props: {
+      book,
+      allSketchbooks: published,
+    },
+  }));
 }
 
-const { book } = Astro.props;
+/* =========================
+   DATA
+========================= */
+
+const { book, allSketchbooks } = Astro.props;
 
 /* 👤 author */
 const artists = await getCollection("artists");
@@ -33,9 +44,24 @@ const artist = book.data.author
   ? artists.find((a) => a.slug === book.data.author)
   : null;
 
+/* 📚 same author */
+const sameAuthorSketchbooks =
+  book.data.author
+    ? allSketchbooks
+        .filter(
+          (b) =>
+            b.slug !== book.slug &&
+            b.data.author &&
+            b.data.author === book.data.author
+        )
+        .sort((a, b) => (b.data.year ?? 0) - (a.data.year ?? 0))
+        .slice(0, 4)
+    : [];
+
+const hasSameAuthor = sameAuthorSketchbooks.length > 0;
+
 /* 📂 pages */
 const pages = book.data.pages ?? [];
-
 const featured = book.data.featured ?? [];
 
 /* SEO */
@@ -44,7 +70,6 @@ const pageSEO = {
   description: book.data.seoDescription ?? book.data.title,
 };
 ---
-
 
 <InternalLayout
   baseSEO={SEOBase}
@@ -56,8 +81,13 @@ const pageSEO = {
 >
   <main class="sketchbook">
 
+    {/* =========================
+        HERO
+    ========================= */}
+
     <section class="sketchbook-hero">
       <div class="sketchbook-hero__grid">
+
         <div class="sketchbook-hero__info">
           <h1 class="sketchbook-hero__title">{book.data.title}</h1>
 
@@ -75,21 +105,34 @@ const pageSEO = {
         </div>
 
         <div class="sketchbook-hero__cover">
-          {book.data.cover && (
-            <img src={book.data.cover} alt={book.data.title} />
-          )}
+            <div class="book">
+              {book.data.cover && (
+                <img src={book.data.cover} alt={book.data.title} />
+              )}
+            </div>
         </div>
+
       </div>
     </section>
 
+
+    {/* =========================
+        VIEWER
+    ========================= */}
+
     <section class="sketchbook-viewer">
+
+      {/* SIDEBAR */}
       <aside class="sketchbook-viewer__sidebar">
         <div class="sketchbook-viewer__sidebar-inner">
+
+          {/* DESCRIPTION */}
           <div class="sketchbook-viewer__block">
             <div class="sketchbook-viewer__label">Description</div>
             <p>{book.data.seoDescription ?? "No description yet."}</p>
           </div>
 
+          {/* INFO */}
           <div class="sketchbook-viewer__block">
             <div class="sketchbook-viewer__label">Info</div>
             <p>
@@ -97,10 +140,53 @@ const pageSEO = {
               {pages.length} pages
             </p>
           </div>
+
+          {/* SAME AUTHOR */}
+          {hasSameAuthor && (
+            <div class="sketchbook-viewer__block">
+              
+              <div class="sketchbook-viewer__label">
+                Other sketchbooks by {artist?.data.title}
+
+              </div>
+
+              <div class="sketchbook-related-list">
+                {sameAuthorSketchbooks.map((b) => (
+                  <a
+                    href={`/sketchbooks/${b.slug}`}
+                    class="sketchbook-related-item"
+                  >
+
+                    {b.data.cover && (
+                      <img 
+                        src={b.data.cover}
+                        alt={b.data.title}
+                        loading="lazy"
+                      />
+                    )}
+
+
+                    <div class="meta">
+                      <div class="title">{b.data.title}</div>
+                      <div class="info">
+                        {b.data.year ?? ""} · {b.data.pages?.length ?? 0}p
+                      </div>
+                    </div>
+
+                  </a>
+                ))}
+              </div>
+
+            </div>
+          )}
+
         </div>
       </aside>
 
+
+      {/* CONTENT */}
       <div class="sketchbook-viewer__content">
+
         <div class="sketchbook-viewer__topbar">
           <button
             onclick={`window.SketchbookViewer.open('sketchbook-${book.slug}', 0)`}
@@ -116,10 +202,17 @@ const pageSEO = {
             </div>
           ))}
         </div>
+
       </div>
+
     </section>
 
   </main>
+
+
+  {/* =========================
+      VIEWER OVERLAY
+  ========================= */}
 
   <SketchbookViewer
     slot="overlay"
@@ -152,40 +245,33 @@ const pageSEO = {
 
 
 /* =========================
-   HERO (COMPACT)
+   HERO
 ========================= */
 
 .sketchbook-hero {
-  padding: 64px 0 32px; /* было implicit через vh */
-}
-
-/* ❌ удаляем */
-.sketchbook-hero__divider {
-  display: none;
+  padding: 64px 0 32px;
 }
 
 .sketchbook-hero__grid {
   display: grid;
-grid-template-columns: 2fr 2fr 2fr;
+  grid-template-columns: 2fr 2fr 2fr;
   gap: 8px;
   align-items: end;
   width: 100%;
 }
 
 .sketchbook-hero__info {
-  grid-column: span 2; /* 🔥 занимает 1+2 колонку */
+  grid-column: span 2;
   display: flex;
   flex-direction: column;
 }
 
-/* 👇 уменьшили заголовок */
 .sketchbook-hero__title {
   font-size: clamp(36px, 4.5vw, 72px);
   line-height: 1;
   font-weight: 700;
 }
 
-/* 👇 tighter stack */
 .sketchbook-hero__author {
   margin-top: 8px;
   font-size: 16px;
@@ -198,29 +284,132 @@ grid-template-columns: 2fr 2fr 2fr;
   opacity: 0.5;
 }
 
-/* 👇 ещё компактнее */
-.sketchbook-hero__divider {
-  height: 1px;
-  background: black;
-  margin: 16px 0;
-  width: 100%;
-}
+
+
+/* =========================
+   BOOK OBJECT
+========================= */
 
 .sketchbook-hero__cover {
   grid-column: 3;
-}
 
-/* 👇 уменьшаем и поджимаем обложку */
-.sketchbook-hero__cover img {
-  width: 100%;
-  max-width: 240px;
-  display: block;
-  /* ❌ margin-left: auto; убрали */
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
 }
 
 
 /* =========================
-   VIEWER
+   BOOK (MAIN)
+========================= */
+
+.sketchbook-hero__cover .book {
+  position: relative;
+
+  width: 100%;
+  max-width: 180px;
+
+  /* ключ к отсутствию артефактов */
+  border-radius: 10px;
+  overflow: hidden;
+
+  transform: perspective(1200px) rotateY(-6deg) rotateX(2deg);
+  transform-origin: center;
+
+  box-shadow:
+    0 30px 60px rgba(0, 0, 0, 0.18),
+    0 8px 12px rgba(0, 0, 0, 0.12);
+
+  background: #dcd6cb; /* страховка от антиалиасинга */
+
+  transition: transform 0.25s ease;
+}
+
+
+/* =========================
+   COVER IMAGE
+========================= */
+
+.sketchbook-hero__cover .book img {
+  width: 100%;
+  display: block;
+
+  /* УБРАЛИ border-radius — теперь он у контейнера */
+  border-radius: 0;
+
+  filter: contrast(1.03) saturate(0.97);
+}
+
+
+/* =========================
+   SPINE (ЛЕВАЯ СТОРОНА)
+========================= */
+
+.sketchbook-hero__cover .book::before {
+  content: "";
+
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -10px;
+
+  width: 10px;
+
+  background: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0.18),
+    rgba(0, 0, 0, 0.06)
+  );
+
+  border-radius: 6px 0 0 6px;
+}
+
+
+/* =========================
+   PAGES (ПРАВАЯ СТОРОНА)
+========================= */
+
+.sketchbook-hero__cover .book::after {
+  content: "";
+
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: -6px;
+
+  width: 6px;
+
+  background: rgba(0, 0, 0, 0.08);
+
+  border-radius: 0 6px 6px 0;
+}
+
+
+/* =========================
+   INNER DEPTH
+========================= */
+
+.sketchbook-hero__cover .book .book__inner {
+  position: absolute;
+  inset: 0;
+
+  border-radius: 10px;
+
+  box-shadow: inset 0 0 18px rgba(0, 0, 0, 0.05);
+  pointer-events: none;
+}
+
+
+/* =========================
+   HOVER
+========================= */
+
+.sketchbook-hero__cover .book:hover {
+  transform: perspective(1200px) rotateY(-3deg) rotateX(1deg);
+}
+
+/* =========================
+   VIEWER LAYOUT
 ========================= */
 
 .sketchbook-viewer {
@@ -229,27 +418,15 @@ grid-template-columns: 2fr 2fr 2fr;
   gap: 16px;
 }
 
-.sketchbook-viewer__topbar {
-  position: sticky;
-  top: 0;
-  height: 80px;              /* 🔥 фиксируем */
-  display: flex;
-  align-items: center;       /* центрируем кнопку по вертикали */
-  justify-content: flex-end;
-
-  padding: 0;                /* убираем padding */
-  background: white;
-  border-bottom: 1px solid #eee;
-  z-index: 10;
-}
 .sketchbook-viewer__sidebar {
-  border-top: 1px solid #000; /* 🔥 новая линия */
-  padding-top: 24px;          /* чтобы не прилипало */
+  border-top: 1px solid #000;
+  padding-top: 24px;
 }
 
 .sketchbook-viewer__content {
-  border-top: 1px solid #000; /* 🔥 новая линия */
+  border-top: 1px solid #000;
 }
+
 
 /* =========================
    SIDEBAR
@@ -263,11 +440,63 @@ grid-template-columns: 2fr 2fr 2fr;
   gap: 24px;
 }
 
+.sketchbook-viewer__block {
+  display: flex;
+  flex-direction: column;
+}
+
 .sketchbook-viewer__label {
   font-size: 11px;
   text-transform: uppercase;
   margin-bottom: 6px;
   opacity: 0.5;
+}
+
+
+/* =========================
+   SAME AUTHOR (CARDS)
+========================= */
+
+.sketchbook-related-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+.sketchbook-related-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  text-decoration: none;
+  color: inherit;
+}
+
+/* 👇 обложка становится заметной */
+.sketchbook-related-item img {
+  width: 100%;
+  max-width: 140px;   /* регулируй 120–160 */
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+
+  border: 1px solid rgba(0,0,0,0.1);
+}
+
+/* 👇 текст теперь под картинкой */
+.sketchbook-related-item .meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.sketchbook-related-item .title {
+  font-size: 14px;
+  line-height: 1.2;
+}
+
+.sketchbook-related-item .info {
+  font-size: 12px;
+  opacity: 0.6;
 }
 
 
@@ -278,14 +507,15 @@ grid-template-columns: 2fr 2fr 2fr;
 .sketchbook-viewer__topbar {
   position: sticky;
   top: 0;
-  background: white;
-  z-index: 10;
+  height: 80px;
 
   display: flex;
+  align-items: center;
   justify-content: flex-end;
 
-  padding: 16px 0;
+  background: white;
   border-bottom: 1px solid #eee;
+  z-index: 10;
 }
 
 .sketchbook-viewer__cta {
@@ -294,6 +524,7 @@ grid-template-columns: 2fr 2fr 2fr;
   background: black;
   color: white;
   border: none;
+  cursor: pointer;
 }
 
 
@@ -311,6 +542,29 @@ grid-template-columns: 2fr 2fr 2fr;
 .sketchbook-page img {
   width: 100%;
   display: block;
+}
+
+
+/* =========================
+   MOBILE (ВАЖНО)
+========================= */
+
+@media (max-width: 900px) {
+  .sketchbook-viewer {
+    grid-template-columns: 1fr;
+  }
+
+  .sketchbook-viewer__sidebar {
+    order: 2;
+  }
+
+  .sketchbook-viewer__content {
+    order: 1;
+  }
+
+  .sketchbook-viewer__sidebar-inner {
+    position: static;
+  }
 }
 
 </style>
