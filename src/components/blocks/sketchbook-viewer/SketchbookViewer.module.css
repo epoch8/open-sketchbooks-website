@@ -233,33 +233,41 @@
 @media (max-width: 767px) and (orientation: portrait) {
 
   /* =========================
-     PANEL
+     ROOT / PANEL
   ========================= */
 
   .viewer {
-  overflow: hidden;
-}
-
-.viewer__viewport {
-  overflow-x: auto;
-  overflow-y: hidden;     /* 🔥 ключ */
-  touch-action: pan-x;    /* 🔥 КРИТ для мобилок */
-}
+    overflow: hidden;
+  }
 
   .viewer__panel {
     height: 100dvh;
     overflow: hidden;
+    display: grid;
     grid-template-rows: auto 1fr auto auto;
   }
 
+  /* =========================
+     VIEWPORT
+  ========================= */
+
+  .viewer__viewport {
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    touch-action: pan-x;     /* 🔥 блок вертикали */
+
+    padding-bottom: 8px;
+    min-height: 0;           /* 🔥 grid fix */
+  }
 
   /* =========================
-     HEADER (фикс крестика)
+     HEADER (главный фикс)
   ========================= */
 
   .viewer__header {
     display: flex;
-    align-items: flex-start;
+    align-items: center;     /* 🔥 было flex-start — ломало вертикально */
     justify-content: space-between;
     gap: 12px;
 
@@ -271,15 +279,16 @@
 
   .viewer__header > div {
     flex: 1 1 auto;
-    min-width: 0;                 /* 🔥 критично */
+    min-width: 0;            /* 🔥 ключ */
   }
 
   .viewer__title {
     font-size: 15px;
     line-height: 1.15;
 
-    overflow: hidden;             /* 🔥 фикс уезда */
-    text-overflow: ellipsis;
+    white-space: nowrap;     /* 🔥 НЕ переносим */
+    overflow: hidden;
+    text-overflow: ellipsis; /* 🔥 ... */
   }
 
   .viewer__counter {
@@ -288,7 +297,7 @@
   }
 
   .viewer__close {
-    flex: 0 0 auto;               /* 🔥 не даём сжиматься */
+    flex: 0 0 auto;          /* 🔥 фикс */
     font-size: 32px;
     padding: 0;
   }
@@ -299,18 +308,8 @@
 
   .viewer__author {
     margin-left: 3px;
+    white-space: nowrap;     /* 🔥 */
   }
-
-
-  /* =========================
-     VIEWPORT
-  ========================= */
-
-  .viewer__viewport {
-    padding-bottom: 8px;
-    min-height: 0;
-  }
-
 
   /* =========================
      TRACK
@@ -323,7 +322,6 @@
     box-sizing: border-box;
   }
 
-
   /* =========================
      PAGE
   ========================= */
@@ -331,26 +329,23 @@
   .page {
     padding: 8px;
     box-sizing: border-box;
-
-    max-width: 100%;             /* 🔥 вместо vw */
+    max-width: 100%;
   }
 
-
   /* =========================
-     IMAGE (главный фикс)
+     IMAGE
   ========================= */
 
   .page__image {
     display: block;
 
-    max-width: 100%;             /* 🔥 ключевой фикс */
+    max-width: 100%;                 /* 🔥 вместо vw */
     max-height: calc(100dvh - 180px);
 
     width: auto;
     height: auto;
     object-fit: contain;
   }
-
 
   /* =========================
      CAPTION
@@ -362,9 +357,8 @@
     font-size: 12px;
   }
 
-
   /* =========================
-     CONTROLS (фикс съезда)
+     CONTROLS
   ========================= */
 
   .viewer__controls {
@@ -373,16 +367,15 @@
 
     padding: 0 16px 16px;
 
-    overflow-x: auto;            /* 🔥 */
-    flex-wrap: nowrap;           /* 🔥 */
+    overflow-x: auto;        /* 🔥 фикс обрезания */
+    flex-wrap: nowrap;
   }
 
   .viewer__controls button {
-    flex: 0 0 auto;              /* 🔥 */
+    flex: 0 0 auto;
     padding: 9px 12px;
     font-size: 14px;
   }
-
 
   /* =========================
      SCROLLBAR
@@ -399,49 +392,54 @@
 ========================================================= */
 
 @media (max-width: 1024px) and (orientation: landscape) {
+
   .viewer__panel {
-    height: 100dvh;               /* 🔥 фикс vh */
+    height: 100dvh;
     overflow: hidden;
     grid-template-rows: auto 1fr auto auto;
   }
 
+  .viewer__viewport {
+    overflow-x: auto;
+    overflow-y: hidden;
+    touch-action: pan-x;
+
+    padding-bottom: 4px;
+    min-height: 0;
+  }
+
   .viewer__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     gap: 10px;
+
     padding: 10px 12px 6px;
 
-    /* 🔥 safe area */
     padding-left: max(12px, env(safe-area-inset-left));
     padding-right: max(12px, env(safe-area-inset-right));
   }
 
+  .viewer__header > div {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
   .viewer__title {
     font-size: 13px;
-    line-height: 1.1;
-    word-break: break-word;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .viewer__counter {
-    margin-top: 2px;
     font-size: 11px;
   }
 
   .viewer__close {
+    flex: 0 0 auto;
     font-size: 28px;
-    padding: 0;
-  }
-
-  .viewer__by {
-    margin-left: 6px;
-    opacity: 0.45;
-  }
-
-  .viewer__author {
-    margin-left: 3px;
-  }
-
-  .viewer__viewport {
-    padding-bottom: 4px;
-    min-height: 0;               /* 🔥 */
   }
 
   .viewer__track {
@@ -454,80 +452,25 @@
   }
 
   .page__image {
-    max-width: calc(100vw - 40px);
-
-    /* 🔥 главное отличие landscape */
+    max-width: 100%;
     max-height: calc(100dvh - 110px);
-  }
-
-  .viewer__caption {
-    min-height: 18px;
-    padding: 4px 12px 6px;
-    font-size: 11px;
   }
 
   .viewer__controls {
     gap: 6px;
     padding: 0 12px 10px;
 
-    /* 🔥 фикс обрезания */
     flex-wrap: nowrap;
     overflow-x: auto;
-    justify-content: flex-start;
   }
 
   .viewer__controls button {
+    flex: 0 0 auto;
     padding: 6px 10px;
     font-size: 13px;
-    flex: 0 0 auto;              /* 🔥 чтобы не сжимались */
   }
 
   .viewer__viewport::-webkit-scrollbar {
     height: 4px;
-  }
-}
-
-
-/* =========================================================
-   SMALL DESKTOP / TABLET
-========================================================= */
-
-@media (min-width: 768px) and (max-width: 1199px) {
-  .viewer__panel {
-    height: 100dvh;
-  }
-
-  .viewer__header {
-    padding: 18px 20px 10px;
-  }
-
-  .viewer__title {
-    font-size: 17px;
-  }
-
-  .viewer__counter {
-    font-size: 13px;
-  }
-
-  .viewer__track {
-    gap: 24px;
-    padding: 0 24px;
-  }
-
-  .page {
-    padding: 16px;
-  }
-
-  .page__image {
-    max-width: 86vw;
-    max-height: calc(100dvh - 200px);
-  }
-
-  .viewer__caption {
-    padding: 8px 20px 10px;
-  }
-
-  .viewer__controls {
-    padding: 0 20px 20px;
   }
 }
