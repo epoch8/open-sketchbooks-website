@@ -1,7 +1,7 @@
 ---
 title: "Local sketches"
 
-author: "radkevich-kristina-"
+author: "radkevich-kristina"
 
 published: true
 

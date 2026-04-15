@@ -126,7 +126,16 @@ const pageSEO = {
     viewerId={`sketchbook-${book.slug}`}
     pages={pages}
     title={book.data.title}
+    author={
+      artist
+        ? {
+            name: artist.data.title,
+            url: `/artists/${artist.slug}`,
+          }
+        : undefined
+    }
   />
+
 </InternalLayout>
 
 

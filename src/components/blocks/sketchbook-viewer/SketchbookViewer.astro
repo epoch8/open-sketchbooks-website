@@ -12,6 +12,11 @@ interface ViewerProps {
   viewerId: string;
   initialIndex?: number;
   title?: string;
+
+  author?: {
+    name: string;
+    url?: string;
+  };
 }
 
 const {
@@ -19,6 +24,7 @@ const {
   viewerId,
   initialIndex = 0,
   title = "Sketchbook",
+  author,
 } = Astro.props as ViewerProps;
 
 if (!viewerId) {
@@ -45,7 +51,31 @@ const safeInitialIndex =
   <div class={styles.viewer__panel}>
     <header class={styles.viewer__header}>
       <div>
-        <div class={styles.viewer__title}>{title}</div>
+
+        <div class={styles.viewer__title}>
+            {title}
+
+            {author && (
+                <>
+                {" "}
+                <span class={styles.viewer__by}>by </span>
+
+                {author.url ? (
+                    <a
+                    href={author.url}
+                    class={styles.viewer__author}
+                    >
+                    {author.name}
+                    </a>
+                ) : (
+                    <span class={styles.viewer__author}>
+                    {author.name}
+                    </span>
+                )}
+                </>
+            )}
+            </div>
+
         <div class={styles.viewer__counter} data-counter></div>
       </div>
 
