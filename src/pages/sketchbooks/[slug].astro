@@ -132,15 +132,6 @@ const pageSEO = {
             <p>{book.data.seoDescription ?? "No description yet."}</p>
           </div>
 
-          {/* INFO */}
-          <div class="sketchbook-viewer__block">
-            <div class="sketchbook-viewer__label">Info</div>
-            <p>
-              {book.data.year} <br />
-              {pages.length} pages
-            </p>
-          </div>
-
           {/* SAME AUTHOR */}
           {hasSameAuthor && (
             <div class="sketchbook-viewer__block">
