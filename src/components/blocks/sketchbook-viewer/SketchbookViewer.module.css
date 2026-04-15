@@ -7,6 +7,7 @@
   inset: 0;
   z-index: var(--z-overlay);
   background: black;
+  overscroll-behavior: contain;
 }
 
 
@@ -17,7 +18,7 @@
 .viewer__backdrop {
   position: absolute;
   inset: 0;
-    z-index: var(--z-overlay);
+  z-index: var(--z-overlay);
 }
 
 
@@ -27,8 +28,8 @@
 
 .viewer__panel {
   position: relative;
-
   z-index: var(--z-overlay);
+
   width: 100%;
   height: 100%;
 
@@ -51,10 +52,16 @@
   color: white;
 }
 
+.viewer__header > div {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
 .viewer__title {
   font-size: 18px;
   font-weight: 600;
   line-height: 1.2;
+  overflow-wrap: anywhere;
 }
 
 .viewer__counter {
@@ -70,6 +77,7 @@
   color: white;
   cursor: pointer;
 
+  flex: 0 0 auto;
   font-size: 40px;
   line-height: 1;
   padding: 0 4px;
@@ -93,6 +101,7 @@
   border-bottom-color: white;
 }
 
+
 /* =========================
    VIEWPORT
 ========================= */
@@ -104,7 +113,6 @@
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
 
-  /* чтобы не прилипало к краям */
   padding-bottom: 16px;
 }
 
@@ -116,8 +124,6 @@
 .viewer__track {
   display: flex;
   height: 100%;
-
-  /* 🔥 ключевые штуки */
   gap: 32px;
   padding: 0 48px;
 }
@@ -137,8 +143,6 @@
 
   padding: 24px;
   box-sizing: border-box;
-
-  /* центрируем текущую */
   scroll-snap-align: center;
 }
 
@@ -150,16 +154,13 @@
 .page__image {
   display: block;
 
-  /* 🔥 ключевая логика */
   max-width: 80vw;
   max-height: calc(100vh - 220px);
 
   width: auto;
   height: auto;
-
   object-fit: contain;
 }
-
 
 
 /* =========================
@@ -222,4 +223,202 @@
 
 .viewer__viewport::-webkit-scrollbar-track {
   background: transparent;
+}
+
+
+/* =========================================================
+   MOBILE PORTRAIT
+========================================================= */
+
+@media (max-width: 767px) and (orientation: portrait) {
+  .viewer__panel {
+    grid-template-rows: auto 1fr auto auto;
+  }
+
+  .viewer__header {
+    gap: 12px;
+    padding: 14px 16px 8px;
+  }
+
+  .viewer__title {
+    font-size: 15px;
+    line-height: 1.15;
+  }
+
+  .viewer__counter {
+    margin-top: 4px;
+    font-size: 12px;
+  }
+
+  .viewer__close {
+    font-size: 32px;
+    padding: 0;
+  }
+
+  .viewer__by {
+    margin-left: 6px;
+  }
+
+  .viewer__author {
+    margin-left: 3px;
+  }
+
+  .viewer__viewport {
+    padding-bottom: 8px;
+  }
+
+  .viewer__track {
+    gap: 16px;
+    padding: 0 16px;
+  }
+
+  .page {
+    padding: 8px;
+  }
+
+  .page__image {
+    max-width: calc(100vw - 48px);
+    max-height: calc(100vh - 210px);
+  }
+
+  .viewer__caption {
+    min-height: 20px;
+    padding: 6px 16px 8px;
+    font-size: 12px;
+  }
+
+  .viewer__controls {
+    gap: 8px;
+    padding: 0 16px 16px;
+  }
+
+  .viewer__controls button {
+    padding: 9px 12px;
+    font-size: 14px;
+  }
+
+  .viewer__viewport::-webkit-scrollbar {
+    height: 6px;
+  }
+}
+
+
+/* =========================================================
+   MOBILE LANDSCAPE
+========================================================= */
+
+@media (max-width: 1024px) and (orientation: landscape) {
+  .viewer__panel {
+    grid-template-rows: auto 1fr auto auto;
+  }
+
+  .viewer__header {
+    gap: 10px;
+    padding: 10px 14px 6px;
+    align-items: flex-start;
+  }
+
+  .viewer__title {
+    font-size: 13px;
+    line-height: 1.1;
+  }
+
+  .viewer__counter {
+    margin-top: 2px;
+    font-size: 11px;
+  }
+
+  .viewer__close {
+    font-size: 28px;
+    padding: 0;
+  }
+
+  .viewer__by {
+    margin-left: 6px;
+    opacity: 0.45;
+  }
+
+  .viewer__author {
+    margin-left: 3px;
+    border-bottom-width: 1px;
+  }
+
+  .viewer__viewport {
+    padding-bottom: 4px;
+  }
+
+  .viewer__track {
+    gap: 12px;
+    padding: 0 12px;
+  }
+
+  .page {
+    padding: 4px;
+  }
+
+  .page__image {
+    max-width: calc(100vw - 40px);
+    max-height: calc(100vh - 120px);
+  }
+
+  .viewer__caption {
+    min-height: 18px;
+    padding: 4px 12px 6px;
+    font-size: 11px;
+  }
+
+  .viewer__controls {
+    gap: 6px;
+    padding: 0 12px 10px;
+  }
+
+  .viewer__controls button {
+    padding: 6px 10px;
+    font-size: 13px;
+  }
+
+  .viewer__viewport::-webkit-scrollbar {
+    height: 4px;
+  }
+}
+
+
+/* =========================================================
+   SMALL DESKTOP / TABLET
+========================================================= */
+
+@media (min-width: 768px) and (max-width: 1199px) {
+  .viewer__header {
+    padding: 18px 20px 10px;
+  }
+
+  .viewer__title {
+    font-size: 17px;
+  }
+
+  .viewer__counter {
+    font-size: 13px;
+  }
+
+  .viewer__track {
+    gap: 24px;
+    padding: 0 24px;
+  }
+
+  .page {
+    padding: 16px;
+  }
+
+  .page__image {
+    max-width: 86vw;
+    max-height: calc(100vh - 200px);
+  }
+
+  .viewer__caption {
+    padding: 8px 20px 10px;
+  }
+
+  .viewer__controls {
+    padding: 0 20px 20px;
+  }
 }
