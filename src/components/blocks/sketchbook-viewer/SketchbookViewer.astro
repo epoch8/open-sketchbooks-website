@@ -166,7 +166,6 @@ const safeInitialIndex =
   if (!(backdrop instanceof HTMLElement)) return;
 
   const getPages = () => Array.from(root.querySelectorAll("[data-page]"));
-
   const pageCount = pages.length;
 
   const state = {
@@ -192,29 +191,29 @@ const safeInitialIndex =
     if (!pageEls.length) return 0;
 
     const viewportRect = viewport.getBoundingClientRect();
-    const viewportCenter = viewportRect.left + viewportRect.width / 2;
+    const center = viewportRect.left + viewportRect.width / 2;
 
-    let closestIndex = 0;
-    let closestDistance = Infinity;
+    let closest = 0;
+    let dist = Infinity;
 
-    pageEls.forEach((pageEl, index) => {
-      const rect = pageEl.getBoundingClientRect();
-      const pageCenter = rect.left + rect.width / 2;
-      const distance = Math.abs(pageCenter - viewportCenter);
+    pageEls.forEach((el, i) => {
+      const rect = el.getBoundingClientRect();
+      const c = rect.left + rect.width / 2;
+      const d = Math.abs(c - center);
 
-      if (distance < closestDistance) {
-        closestDistance = distance;
-        closestIndex = index;
+      if (d < dist) {
+        dist = d;
+        closest = i;
       }
     });
 
-    return closestIndex;
+    return closest;
   }
 
   function scrollToIndex(i, smooth = true) {
     const index = clamp(i);
-    const pageEls = getPages();
-    const target = pageEls[index];
+    const pagesEls = getPages();
+    const target = pagesEls[index];
 
     if (!(target instanceof HTMLElement)) return;
 
@@ -260,27 +259,13 @@ const safeInitialIndex =
   // NAVIGATION
   // =============================
 
-  function next() {
-    scrollToIndex(state.currentIndex + 1);
-  }
-
-  function prev() {
-    scrollToIndex(state.currentIndex - 1);
-  }
-
-  function first() {
-    scrollToIndex(0);
-  }
-
-  function last() {
-    scrollToIndex(pageCount - 1);
-  }
+  function next() { scrollToIndex(state.currentIndex + 1); }
+  function prev() { scrollToIndex(state.currentIndex - 1); }
+  function first() { scrollToIndex(0); }
+  function last() { scrollToIndex(pageCount - 1); }
 
   function random() {
-    if (pageCount <= 1) {
-      scrollToIndex(0);
-      return;
-    }
+    if (pageCount <= 1) return scrollToIndex(0);
 
     let nextIndex = state.currentIndex;
     while (nextIndex === state.currentIndex) {
@@ -303,7 +288,6 @@ const safeInitialIndex =
 
     scrollRaf = requestAnimationFrame(() => {
       const i = getClosestPageIndex();
-
       if (i !== state.currentIndex) {
         state.currentIndex = i;
         updateHeader();
@@ -313,34 +297,63 @@ const safeInitialIndex =
   });
 
   // =============================
-  // WHEEL → HORIZONTAL SCROLL
+  // WHEEL (desktop)
   // =============================
 
-    function handleWheel(e) {
+  function handleWheel(e) {
     if (!state.isOpen) return;
 
     const isVertical = Math.abs(e.deltaY) > Math.abs(e.deltaX);
 
     if (isVertical) {
-        // 👉 вертикальный → превращаем в горизонтальный + ускоряем
-        e.preventDefault();
+      e.preventDefault();
 
-        const multiplier = e.deltaMode === 1 ? 40 : 1.1;
+      const multiplier = e.deltaMode === 1 ? 40 : 1.1;
 
-        viewport.scrollBy({
+      viewport.scrollBy({
         left: e.deltaY * multiplier,
         behavior: "auto",
-        });
-
-    } else {
-        // 👉 горизонтальный → НЕ трогаем, нативный скролл
-        // но можно слегка помочь, если хочешь
-        // (обычно не нужно)
+      });
     }
-    }
+  }
 
   viewport.addEventListener("wheel", handleWheel, { passive: false });
   root.addEventListener("wheel", handleWheel, { passive: false });
+
+  // =============================
+  // TOUCH (mobile) 🔥 КЛЮЧЕВОЕ
+  // =============================
+
+  let startX = 0;
+  let startY = 0;
+
+  viewport.addEventListener("touchstart", (e) => {
+    if (!state.isOpen) return;
+
+    const t = e.touches[0];
+    startX = t.clientX;
+    startY = t.clientY;
+  });
+
+  viewport.addEventListener(
+    "touchmove",
+    (e) => {
+      if (!state.isOpen) return;
+
+      const t = e.touches[0];
+
+      const dx = t.clientX - startX;
+      const dy = t.clientY - startY;
+
+      const isVertical = Math.abs(dy) > Math.abs(dx);
+
+      if (isVertical) {
+        // 🔥 блокируем вертикальный скролл
+        e.preventDefault();
+      }
+    },
+    { passive: false }
+  );
 
   // =============================
   // EVENTS
@@ -363,10 +376,10 @@ const safeInitialIndex =
     const el = e.target;
     if (!(el instanceof HTMLElement)) return;
 
-    const button = el.closest("[data-action]");
-    if (!(button instanceof HTMLElement)) return;
+    const btn = el.closest("[data-action]");
+    if (!(btn instanceof HTMLElement)) return;
 
-    const action = button.dataset.action;
+    const action = btn.dataset.action;
 
     if (action === "close") close();
     if (action === "next") next();
@@ -385,9 +398,7 @@ const safeInitialIndex =
   const params = new URLSearchParams(location.search);
   const page = Number(params.get("page"));
 
-  if (page) {
-    open(page - 1);
-  }
+  if (page) open(page - 1);
 
   updateHeader();
 

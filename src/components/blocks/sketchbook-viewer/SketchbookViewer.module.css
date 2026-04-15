@@ -236,6 +236,16 @@
      PANEL
   ========================= */
 
+  .viewer {
+  overflow: hidden;
+}
+
+.viewer__viewport {
+  overflow-x: auto;
+  overflow-y: hidden;     /* 🔥 ключ */
+  touch-action: pan-x;    /* 🔥 КРИТ для мобилок */
+}
+
   .viewer__panel {
     height: 100dvh;
     overflow: hidden;
