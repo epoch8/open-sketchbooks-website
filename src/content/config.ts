@@ -131,6 +131,12 @@ const sketchbooks = defineCollection({
     /* 🎨 обложка */
     cover: z.string().min(1).optional(),
 
+    /* 🔥 НОВОЕ: реальное соотношение сторон */
+    aspectRatio: z
+      .number()
+      .positive()
+      .optional(),
+
     /* 📐 дефолт */
     defaultAspect: z
       .enum(["portrait", "square", "landscape"])

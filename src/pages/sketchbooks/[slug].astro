@@ -11,6 +11,8 @@ import {
 } from "@/content/template/navigation/navigation";
 
 import BrandLogo from "@/components/products/open-sketchbooks/logo/BrandLogo.astro";
+import Book from "@/components/blocks/book/book.astro";
+
 import SketchbookViewer from "@/components/blocks/sketchbook-viewer/SketchbookViewer.astro";
 
 /* =========================
@@ -108,11 +110,12 @@ const pageSEO = {
         </div>
 
         <div class="sketchbook-hero__cover">
-          <div class="book">
-            {book.data.cover && (
-              <img src={book.data.cover} alt={book.data.title} />
-            )}
-          </div>
+          <Book
+            cover={book.data.cover}
+            title={book.data.title}
+            pagesCount={pages.length}
+            aspectRatio={book.data.aspectRatio}
+          />
         </div>
 
       </div>
@@ -324,7 +327,7 @@ const pageSEO = {
   position: relative;
 
   width: 100%;
-  max-width: 180px;
+  max-height: 100px;
 
   /* ключ к отсутствию артефактов */
   border-radius: 10px;

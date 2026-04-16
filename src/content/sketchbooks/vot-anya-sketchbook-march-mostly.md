@@ -20,6 +20,7 @@ size:
   height: 21
   unit: cm
 
+
 format:
   physical: true
   digital: true
@@ -27,6 +28,7 @@ format:
 seoDescription: "March mostly by Anya Vot"
 
 cover: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/vot-anya/march-mostly/resize_web/1600/001.jpg"
+aspectRatio: 1.34
 
 
 # 👇 дефолт для страниц

@@ -1,0 +1,156 @@
+---
+interface Props {
+  cover?: string;
+  title?: string;
+  pagesCount?: number;
+}
+
+const {
+  cover = "https://via.placeholder.com/200x300",
+  title = "",
+  pagesCount = 100,
+} = Astro.props;
+
+// 🔥 нормализуем толщину (чтобы не было адского разлёта)
+const thickness = Math.min(80, Math.max(20, pagesCount * 0.4));
+---
+
+<div class="book">
+  <div
+    class="book__wrapper"
+    style={`--thickness: ${thickness}px;`}
+  >
+    <img
+      class="book__cover"
+      src={cover}
+      alt={title}
+    />
+  </div>
+</div>
+
+<style>
+
+/* =========================
+   BASE
+========================= */
+
+.book {
+  width: 200px;
+  height: 300px;
+  margin: 30px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  perspective: 1000px; /* 🔥 было 400 — слишком мало */
+}
+
+
+/* =========================
+   WRAPPER
+========================= */
+
+.book__wrapper {
+  position: relative;
+
+  width: 200px;
+  height: 300px;
+
+  transform-style: preserve-3d;
+
+  /* 🔥 сильнее поворачиваем */
+  transform: rotateY(-20deg) rotateX(2deg);
+
+  transition: transform 0.6s ease;
+}
+
+
+/* =========================
+   COVER
+========================= */
+
+.book__cover {
+  position: absolute;
+
+  width: 200px;
+  height: 300px;
+
+  object-fit: cover;
+
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+
+  /* 🔥 добавляем свет */
+  box-shadow:
+    8px 8px 30px rgba(0,0,0,0.4),
+    inset -2px 0 6px rgba(0,0,0,0.2);
+}
+
+
+/* =========================
+   PAGES (SIDE)
+========================= */
+
+.book__wrapper::before {
+  content: "";
+
+  position: absolute;
+  top: 3px;
+
+  height: calc(300px - 6px);
+  width: var(--thickness);
+
+  /* 🔥 не просто белый */
+  background: linear-gradient(
+    to right,
+    #ffffff,
+    #f0f0f0 40%,
+    #e0e0e0
+  );
+
+  transform:
+    translateX(calc(200px - var(--thickness) / 2 - 3px))
+    rotateY(90deg)
+    translateX(calc(var(--thickness) / 2));
+
+  /* 🔥 добавляем разделение страниц */
+  box-shadow:
+    inset 0 0 2px rgba(0,0,0,0.2);
+}
+
+
+/* =========================
+   BACK COVER
+========================= */
+
+.book__wrapper::after {
+  content: "";
+
+  position: absolute;
+  left: 0;
+
+  width: 200px;
+  height: 300px;
+
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+
+  /* 🔥 не чёрный — иначе умирает */
+  background: linear-gradient(
+    to right,
+    #0a0a0a,
+    #1a1a1a
+  );
+
+  transform: translateZ(calc(-1 * var(--thickness)));
+
+  box-shadow:
+    -20px 0 60px rgba(0,0,0,0.6);
+}
+
+.book:hover .book__wrapper {
+  transform: rotateY(-20deg) rotateX(4deg) scale(1.02);
+}
+
+</style>
