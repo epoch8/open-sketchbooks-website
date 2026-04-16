@@ -178,13 +178,20 @@ const pageSEO = {
       {/* CONTENT */}
       <div class="sketchbook-viewer__content">
 
-        <div class="sketchbook-viewer__topbar">
+      <div class="sketchbook-viewer__topbar" id="topbar">
+        <div class="sketchbook-viewer__topbar-inner">
+          <div class="sketchbook-viewer__topbar-label">
+            A selection of pages from the sketchbook
+          </div>
+
           <button
+            class="sketchbook-viewer__topbar-button"
             onclick={`window.SketchbookViewer.open('sketchbook-${book.slug}', 0)`}
           >
             View full sketchbook
           </button>
         </div>
+      </div>
 
         <div class="sketchbook-pages">
           {featured.map((p) => (
@@ -221,7 +228,6 @@ const pageSEO = {
   />
 
 </InternalLayout>
-
 
 <style>
 
@@ -415,7 +421,7 @@ const pageSEO = {
 }
 
 .sketchbook-viewer__content {
-  border-top: 1px solid #000;
+  border-top: none;
 }
 
 
@@ -495,29 +501,166 @@ const pageSEO = {
    CONTENT
 ========================= */
 
+/* =========================
+   TOPBAR
+========================= */
+
 .sketchbook-viewer__topbar {
   position: sticky;
-  top: 0;
-  height: 80px;
+  top: 0px;
+  z-index: 30;
 
+  background: var(--color-bg);
+
+  /* только нижняя линия */
+  border-bottom: 1px solid #000;
+  border-top: 1px solid #000;
+
+}
+
+
+/* =========================
+   INNER LAYOUT
+========================= */
+
+.sketchbook-viewer__topbar-inner {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: stretch;
+
+  min-height: 60px;
+}
+
+
+/* =========================
+   LABEL (LEFT)
+========================= */
+
+.sketchbook-viewer__topbar-label {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
 
-  background: white;
-  border-bottom: 1px solid #eee;
-  z-index: 10;
+  min-width: 0;
+  padding-right: 32px;
+
+  font-size: 14px;
+  line-height: 1.4;
+  opacity: 0.6;
+
+  white-space: nowrap;
 }
 
-.sketchbook-viewer__cta {
-  padding: 16px 28px;
-  font-size: 16px;
-  background: black;
-  color: white;
+
+/* =========================
+   BUTTON
+========================= */
+
+.sketchbook-viewer__topbar-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 360px;
+  max-width: 40vw;
+  padding: 0 32px;
+
+  background: #fff;
+  color: #000;
+
+  /* только боковые линии */
   border: none;
+  border-left: 1px solid #000;
+  border-right: 1px solid #000;
+
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1;
+  text-align: center;
+
   cursor: pointer;
+  box-sizing: border-box;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
 }
 
+
+/* =========================
+   HOVER
+========================= */
+
+.sketchbook-viewer__topbar-button:hover {
+  background: #000;
+  color: #fff;
+}
+
+
+/* =========================
+   STICKY STATE
+========================= */
+
+.sketchbook-viewer__topbar.is-sticky .sketchbook-viewer__topbar-button {
+  background: #000;
+  color: #fff;
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 900px) {
+  .sketchbook-viewer__topbar-inner {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+
+  .sketchbook-viewer__topbar-label {
+    padding: 12px 0;
+    white-space: normal;
+  }
+
+  .sketchbook-viewer__topbar-button {
+    width: 100%;
+    max-width: none;
+    min-height: 72px;
+
+    border-left: none;
+    border-right: none;
+  }
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 900px) {
+  .sketchbook-viewer__topbar-inner {
+    grid-template-columns: 1fr;
+    gap: 0;
+    min-height: auto;
+  }
+
+  .sketchbook-viewer__topbar-spacer {
+    display: none;
+  }
+
+  .sketchbook-viewer__topbar-button {
+    width: 100%;
+    min-width: 0;
+    min-height: 88px;
+
+    border-left: none;
+    border-right: none;
+    border-top: none;
+    border-bottom: none;
+
+    font-size: 24px;
+  }
+}
 
 /* =========================
    PAGES
