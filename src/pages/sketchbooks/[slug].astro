@@ -37,6 +37,9 @@ export async function getStaticPaths() {
 
 const { book, allSketchbooks } = Astro.props;
 
+/* 🔥 ВАЖНО: рендер markdown */
+const { Content } = await book.render();
+
 /* 👤 author */
 const artists = await getCollection("artists");
 
@@ -64,7 +67,7 @@ const hasSameAuthor = sameAuthorSketchbooks.length > 0;
 const pages = book.data.pages ?? [];
 const featured = book.data.featured ?? [];
 
-/* SEO */
+/* SEO оставляем как есть */
 const pageSEO = {
   title: book.data.title,
   description: book.data.seoDescription ?? book.data.title,
@@ -105,11 +108,11 @@ const pageSEO = {
         </div>
 
         <div class="sketchbook-hero__cover">
-            <div class="book">
-              {book.data.cover && (
-                <img src={book.data.cover} alt={book.data.title} />
-              )}
-            </div>
+          <div class="book">
+            {book.data.cover && (
+              <img src={book.data.cover} alt={book.data.title} />
+            )}
+          </div>
         </div>
 
       </div>
@@ -126,10 +129,14 @@ const pageSEO = {
       <aside class="sketchbook-viewer__sidebar">
         <div class="sketchbook-viewer__sidebar-inner">
 
-          {/* DESCRIPTION */}
+          {/* 🔥 DESCRIPTION ИЗ MD */}
           <div class="sketchbook-viewer__block">
             <div class="sketchbook-viewer__label">Description</div>
-            <p>{book.data.seoDescription ?? "No description yet."}</p>
+
+            <div class="sketchbook-viewer__description">
+              <Content />
+            </div>
+
           </div>
 
           {/* SAME AUTHOR */}
@@ -138,7 +145,6 @@ const pageSEO = {
               
               <div class="sketchbook-viewer__label">
                 Other sketchbooks by {artist?.data.title}
-
               </div>
 
               <div class="sketchbook-related-list">
@@ -156,11 +162,10 @@ const pageSEO = {
                       />
                     )}
 
-
                     <div class="meta">
                       <div class="title">{b.data.title}</div>
                       <div class="info">
-                        {b.data.year ?? ""} · {b.data.pages?.length ?? 0}p
+                        {b.data.year ?? ""} · {b.data.pages?.length ?? 0} pages
                       </div>
                     </div>
 
@@ -178,20 +183,20 @@ const pageSEO = {
       {/* CONTENT */}
       <div class="sketchbook-viewer__content">
 
-      <div class="sketchbook-viewer__topbar" id="topbar">
-        <div class="sketchbook-viewer__topbar-inner">
-          <div class="sketchbook-viewer__topbar-label">
-            A selection of pages from the sketchbook
-          </div>
+        <div class="sketchbook-viewer__topbar" id="topbar">
+          <div class="sketchbook-viewer__topbar-inner">
+            <div class="sketchbook-viewer__topbar-label">
+              A selection of pages from the sketchbook
+            </div>
 
-          <button
-            class="sketchbook-viewer__topbar-button"
-            onclick={`window.SketchbookViewer.open('sketchbook-${book.slug}', 0)`}
-          >
-            View full sketchbook
-          </button>
+            <button
+              class="sketchbook-viewer__topbar-button"
+              onclick={`window.SketchbookViewer.open('sketchbook-${book.slug}', 0)`}
+            >
+              View full sketchbook
+            </button>
+          </div>
         </div>
-      </div>
 
         <div class="sketchbook-pages">
           {featured.map((p) => (
@@ -206,7 +211,7 @@ const pageSEO = {
     </section>
 
   </main>
-
+</InternalLayout>
 
   {/* =========================
       VIEWER OVERLAY
@@ -240,6 +245,21 @@ const pageSEO = {
   flex-direction: column;
 }
 
+.sketchbook-viewer__description {
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.sketchbook-viewer__description h1,
+.sketchbook-viewer__description h2,
+.sketchbook-viewer__description h3 {
+  font-size: 16px;
+  margin: 12px 0 6px;
+}
+
+.sketchbook-viewer__description p {
+  margin: 0 0 10px;
+}
 
 /* =========================
    HERO
