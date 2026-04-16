@@ -502,6 +502,35 @@ const pageSEO = {
 ========================= */
 
 @media (max-width: 900px) {
+
+    /* =========================
+     HERO FIX
+  ========================= */
+
+  .sketchbook-hero__grid {
+    grid-template-columns: 1fr; /* 🔥 убили 3 колонки */
+    gap: 24px;
+  }
+
+  .sketchbook-hero__info {
+    grid-column: auto;
+  }
+
+  .sketchbook-hero__cover {
+    grid-column: auto;
+
+    /* 🔥 ставим под текст */
+    order: 2;
+
+    justify-content: flex-start;
+    align-items: flex-start;
+  }
+
+  /* 🔥 опционально — чтобы не прилипал */
+  .sketchbook-hero__cover .book {
+    margin-top: 8px;
+  }
+
   .sketchbook-viewer {
     grid-template-columns: 1fr;
   }
