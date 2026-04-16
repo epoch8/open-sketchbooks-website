@@ -18,6 +18,7 @@ format:
 seoDescription: "Скетчбук про весну, тревогу и попытки собраться"
 
 cover: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/tatarinova-olga/the-self-aware-dudes-ru/resize_web/1600/001.jpg"
+aspectRatio: 1.07
 
 # 👇 дефолт для страниц
 defaultAspect: "portrait" # portrait | square | landscape
