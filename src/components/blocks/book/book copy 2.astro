@@ -162,18 +162,18 @@ const shadow = Math.min(Math.max(rawShadow ?? 1, 0), 1);
     calc(4px * var(--shadow))
     calc(6px * var(--shadow))
     calc(18px * var(--shadow))
-    rgba(0, 0, 0, calc(0.18 * var(--shadow))),
+    rgba(0,0,0,0.18),
 
     inset
     calc(-1px * var(--shadow))
     0
     calc(3px * var(--shadow))
-    rgba(0, 0, 0, calc(0.12 * var(--shadow)));
+    rgba(0,0,0,0.12);
 }
 
 
 /* =========================
-   PAGES (SPINE)
+   PAGES
 ========================= */
 
 .book__wrapper::before {
@@ -198,8 +198,7 @@ const shadow = Math.min(Math.max(rawShadow ?? 1, 0), 1);
     translateX(calc(var(--thickness) / 2));
 
   box-shadow:
-    inset 0 0 calc(1px * var(--shadow))
-    rgba(0, 0, 0, calc(0.12 * var(--shadow)));
+    inset 0 0 calc(1px * var(--shadow)) rgba(0,0,0,0.12);
 }
 
 
@@ -231,7 +230,7 @@ const shadow = Math.min(Math.max(rawShadow ?? 1, 0), 1);
     calc(-8px * var(--shadow))
     0
     calc(25px * var(--shadow))
-    rgba(0, 0, 0, calc(0.25 * var(--shadow)));
+    rgba(0,0,0,0.25);
 }
 
 

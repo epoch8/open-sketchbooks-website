@@ -3,58 +3,49 @@ interface Props {
   cover?: string;
   title?: string;
   pagesCount?: number;
-  aspectRatio?: number; // width / height
+
+  width?: number;
+  height?: number;
+
+  scale?: number;
+
+  tilt?: number; // 0..1
 }
 
 const {
   cover = "https://via.placeholder.com/200x300",
   title = "",
   pagesCount = 100,
-  aspectRatio: rawAspect,
+
+  width: rawW,
+  height: rawH,
+
+  scale = 1,
+  tilt: rawTilt,
 } = Astro.props;
 
 
 /* =========================
-   ASPECT RATIO (SAFE)
+   SIZE (SINGLE SOURCE OF TRUTH)
 ========================= */
 
-// 🔥 защита от мусора
-const DEFAULT_ASPECT = 0.707; // A4 portrait
+const DEFAULT_W = 148;
+const DEFAULT_H = 210;
 
-const aspectRatio =
-  rawAspect && rawAspect > 0
-    ? rawAspect
-    : DEFAULT_ASPECT;
+const width = rawW && rawW > 0 ? rawW : DEFAULT_W;
+const height = rawH && rawH > 0 ? rawH : DEFAULT_H;
+
+const aspectRatio = width / height;
 
 
 /* =========================
-   NORMALIZED SIZE
-========================= */
-
-const MAX_W = 148;
-const MAX_H = 210;
-
-let width, height;
-
-if (aspectRatio >= 1) {
-  // landscape
-  width = MAX_W;
-  height = MAX_W / aspectRatio;
-} else {
-  // portrait
-  height = MAX_H;
-  width = MAX_H * aspectRatio;
-}
-
-
-/* =========================
-   THICKNESS (ADAPTIVE)
+   THICKNESS
 ========================= */
 
 const baseThickness = pagesCount * 0.35;
 
 const thickness = Math.min(
-  Math.max(16, baseThickness),
+  Math.max(14, baseThickness),
   Math.min(width, height) * 0.22
 );
 
@@ -65,8 +56,20 @@ const thickness = Math.min(
 
 const isLandscape = aspectRatio >= 1;
 
-// 🔥 чуть разные углы
-const rotateY = isLandscape ? -28 : -42;
+/* =========================
+   TILT (MAIN CONTROL)
+========================= */
+
+// нормализация 0..1
+const tilt = Math.min(Math.max(rawTilt ?? 1, 0), 1);
+
+// максимальный угол (как раньше было)
+const maxTilt = isLandscape ? -28 : -42;
+
+// итоговый угол
+const rotateY = tilt * maxTilt;
+
+/* небольшая "жизнь" по X */
 const rotateX = isLandscape ? 1 : 2;
 ---
 
@@ -75,6 +78,7 @@ const rotateX = isLandscape ? 1 : 2;
   style={`
     --w: ${width}px;
     --h: ${height}px;
+    --scale: ${scale};
   `}
 >
   <div
@@ -105,10 +109,10 @@ const rotateX = isLandscape ? 1 : 2;
   align-items: center;
   justify-content: center;
 
-  width: var(--w);
-  height: var(--h);
+  width: calc(var(--w) * var(--scale));
+  height: calc(var(--h) * var(--scale));
 
-  perspective: 1200px; /* чуть глубже, но мягче эффект */
+  perspective: 1200px;
 }
 
 
@@ -124,9 +128,9 @@ const rotateX = isLandscape ? 1 : 2;
 
   transform-style: preserve-3d;
 
-  /* 🔥 ближе к зрителю */
   transform:
-    rotateY(calc(var(--rotateY) + 22deg))
+    scale(var(--scale))
+    rotateY(var(--rotateY))
     rotateX(var(--rotateX));
 
   transition: transform 0.35s ease;
@@ -148,7 +152,6 @@ const rotateX = isLandscape ? 1 : 2;
   border-top-right-radius: 4px;
   border-bottom-right-radius: 4px;
 
-  /* 🔥 аккуратная тень */
   box-shadow:
     4px 6px 18px rgba(0,0,0,0.18),
     inset -1px 0 3px rgba(0,0,0,0.12);
@@ -180,7 +183,6 @@ const rotateX = isLandscape ? 1 : 2;
     rotateY(90deg)
     translateX(calc(var(--thickness) / 2));
 
-  /* 🔥 почти незаметное разделение */
   box-shadow:
     inset 0 0 1px rgba(0,0,0,0.12);
 }
@@ -210,7 +212,6 @@ const rotateX = isLandscape ? 1 : 2;
 
   transform: translateZ(calc(-1 * var(--thickness)));
 
-  /* 🔥 сильно уменьшили */
   box-shadow:
     -8px 0 25px rgba(0,0,0,0.25);
 }
@@ -222,9 +223,9 @@ const rotateX = isLandscape ? 1 : 2;
 
 .book:hover .book__wrapper {
   transform:
-    rotateY(calc(var(--rotateY) + 18deg)) /* было +10 → стало мягче относительно новой базы */
-    rotateX(calc(var(--rotateX) + 1deg))
-    scale(1.015); /* почти без зума */
+    scale(var(--scale))
+    rotateY(calc(var(--rotateY) + 6deg))
+    rotateX(calc(var(--rotateX) + 1deg));
 }
 
 </style>

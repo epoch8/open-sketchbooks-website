@@ -116,6 +116,7 @@ const pageSEO = {
             pagesCount={pages.length}
             height={book.data.size_mm?.height ?? 210}
             width={book.data.size_mm?.width ?? 148}
+            tilt={0.5}
           />
         </div>
 
@@ -167,6 +168,8 @@ const pageSEO = {
       width={b.data.size_mm?.width ?? 148}
       height={b.data.size_mm?.height ?? 210}
       scale={1}
+      tilt={0.2}
+      shadow={0}
     />
   </div>
 )}
