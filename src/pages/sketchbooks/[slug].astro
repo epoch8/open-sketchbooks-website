@@ -158,13 +158,18 @@ const pageSEO = {
                     class="sketchbook-related-item"
                   >
 
-                    {b.data.cover && (
-                      <img 
-                        src={b.data.cover}
-                        alt={b.data.title}
-                        loading="lazy"
-                      />
-                    )}
+{b.data.cover && (
+  <div class="sketchbook-related-item__book">
+    <Book
+      cover={b.data.cover}
+      title={b.data.title}
+      pagesCount={b.data.pages?.length ?? 0}
+      width={b.data.size_mm?.width ?? 148}
+      height={b.data.size_mm?.height ?? 210}
+      scale={1}
+    />
+  </div>
+)}
 
                     <div class="meta">
                       <div class="title">{b.data.title}</div>
