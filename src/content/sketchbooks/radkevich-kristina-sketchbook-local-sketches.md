@@ -8,16 +8,6 @@ published: true
 tags:
   - "people"
 
-size:
-  type: standard # или custom
-
-  # если standard
-  standard: A5
-
-  # если custom
-  width: 13
-  height: 21
-  unit: cm
 
 format:
   physical: true

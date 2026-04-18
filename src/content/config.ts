@@ -113,6 +113,11 @@ const sketchbooks = defineCollection({
 
     published: z.boolean().default(false),
 
+    size_mm: z.object({
+      width: z.number().positive().optional(),
+      height: z.number().positive().optional(),
+    }).optional(),
+
     /* 📅 */
     year: z.number().int().optional(),
 
@@ -131,16 +136,7 @@ const sketchbooks = defineCollection({
     /* 🎨 обложка */
     cover: z.string().min(1).optional(),
 
-    /* 🔥 НОВОЕ: реальное соотношение сторон */
-    aspectRatio: z
-      .number()
-      .positive()
-      .optional(),
 
-    /* 📐 дефолт */
-    defaultAspect: z
-      .enum(["portrait", "square", "landscape"])
-      .default("portrait"),
 
     /* 📄 страницы */
     pages: z

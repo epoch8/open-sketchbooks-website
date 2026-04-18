@@ -114,7 +114,8 @@ const pageSEO = {
             cover={book.data.cover}
             title={book.data.title}
             pagesCount={pages.length}
-            aspectRatio={book.data.aspectRatio}
+            height={book.data.size_mm?.height ?? 210}
+            width={book.data.size_mm?.width ?? 148}
           />
         </div>
 

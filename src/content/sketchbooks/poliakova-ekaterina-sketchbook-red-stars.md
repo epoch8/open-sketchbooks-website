@@ -8,16 +8,9 @@ published: true
 tags:
   - "city"
 
-size:
-  type: standard # или custom
-
-  # если standard
-  standard: A5
-
-  # если custom
-  width: 13
-  height: 21
-  unit: cm
+size_mm:
+  width: 150
+  height: 180
 
 format:
   physical: true

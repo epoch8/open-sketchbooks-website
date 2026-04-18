@@ -3,60 +3,114 @@ interface Props {
   cover?: string;
   title?: string;
   pagesCount?: number;
+  aspectRatio?: number; // width / height
 }
 
-const { cover, title, pagesCount = 80 } = Astro.props;
+const {
+  cover = "https://via.placeholder.com/200x300",
+  title = "",
+  pagesCount = 100,
+  aspectRatio: rawAspect,
+} = Astro.props;
 
-/* 👉 толщина */
-const thickness = Math.max(
-  8,
-  Math.min(40, Math.round(Math.sqrt(pagesCount) * 2))
+
+/* =========================
+   ASPECT RATIO (SAFE)
+========================= */
+
+// 🔥 защита от мусора
+const DEFAULT_ASPECT = 0.707; // A4 portrait
+
+const aspectRatio =
+  rawAspect && rawAspect > 0
+    ? rawAspect
+    : DEFAULT_ASPECT;
+
+
+/* =========================
+   NORMALIZED SIZE
+========================= */
+
+const MAX_W = 148;
+const MAX_H = 210;
+
+let width, height;
+
+if (aspectRatio >= 1) {
+  // landscape
+  width = MAX_W;
+  height = MAX_W / aspectRatio;
+} else {
+  // portrait
+  height = MAX_H;
+  width = MAX_H * aspectRatio;
+}
+
+
+/* =========================
+   THICKNESS (ADAPTIVE)
+========================= */
+
+const baseThickness = pagesCount * 0.35;
+
+const thickness = Math.min(
+  Math.max(16, baseThickness),
+  Math.min(width, height) * 0.22
 );
+
+
+/* =========================
+   ORIENTATION
+========================= */
+
+const isLandscape = aspectRatio >= 1;
+
+// 🔥 чуть разные углы
+const rotateY = isLandscape ? -28 : -42;
+const rotateX = isLandscape ? 1 : 2;
 ---
 
-<div class="book">
+<div
+  class="book"
+  style={`
+    --w: ${width}px;
+    --h: ${height}px;
+  `}
+>
   <div
     class="book__wrapper"
-    style={`--thickness: ${thickness}px`}
+    style={`
+      --thickness: ${thickness}px;
+      --rotateY: ${rotateY}deg;
+      --rotateX: ${rotateX}deg;
+    `}
   >
-
-    {/* COVER (теперь у корешка) */}
-    {cover && (
-      <img
-        class="book__cover"
-        src={cover}
-        alt={title ?? ""}
-      />
-    )}
-
-    {/* PAGES */}
-    <div class="book__pages" />
-
-    {/* BACK */}
-    <div class="book__back" />
-
-    {/* SPINE */}
-    <div class="book__spine" />
-
+    <img
+      class="book__cover"
+      src={cover}
+      alt={title}
+      loading="lazy"
+    />
   </div>
 </div>
 
 <style>
 
 /* =========================
-   SCENE
+   BASE
 ========================= */
 
 .book {
-  width: 200px;
-  height: 300px;
-
   display: flex;
   align-items: center;
   justify-content: center;
 
-  perspective: 900px;
+  width: var(--w);
+  height: var(--h);
+
+  perspective: 1200px; /* чуть глубже, но мягче эффект */
 }
+
 
 /* =========================
    WRAPPER
@@ -65,119 +119,112 @@ const thickness = Math.max(
 .book__wrapper {
   position: relative;
 
-  width: 200px;
-  height: 300px;
+  width: var(--w);
+  height: var(--h);
 
   transform-style: preserve-3d;
 
-  transform: rotateY(-18deg) rotateX(2deg);
+  /* 🔥 ближе к зрителю */
+  transform:
+    rotateY(calc(var(--rotateY) + 22deg))
+    rotateX(var(--rotateX));
 
-  transition: transform 0.5s ease;
+  transition: transform 0.35s ease;
 }
 
+
 /* =========================
-   COVER (ПЕРЕДНЯЯ ГРАНЬ)
+   COVER
 ========================= */
 
 .book__cover {
   position: absolute;
-  inset: 0;
 
-  width: 100%;
-  height: 100%;
+  width: var(--w);
+  height: var(--h);
 
   object-fit: cover;
 
-  border-radius: 4px;
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
 
-  /* 👇 ключ: теперь НЕ центр, а перед */
-  transform: translateZ(0);
-
+  /* 🔥 аккуратная тень */
   box-shadow:
-    8px 10px 25px rgba(0,0,0,0.25),
-    2px 2px 6px rgba(0,0,0,0.1);
+    4px 6px 18px rgba(0,0,0,0.18),
+    inset -1px 0 3px rgba(0,0,0,0.12);
 }
 
-/* =========================
-   PAGES (ТЕЛО КНИГИ)
-========================= */
-
-.book__pages {
-  position: absolute;
-  inset: 0;
-
-  background: repeating-linear-gradient(
-    to bottom,
-    #fafafa,
-    #fafafa 2px,
-    #e6e6e6 3px
-  );
-
-  transform:
-    translateZ(calc(-1 * var(--thickness)));
-
-  transform-origin: left;
-
-  border-radius: 4px;
-
-  box-shadow:
-    inset 0 0 10px rgba(0,0,0,0.1);
-}
 
 /* =========================
-   BACK
+   PAGES
 ========================= */
 
-.book__back {
+.book__wrapper::before {
+  content: "";
+
   position: absolute;
-  inset: 0;
+  top: 3px;
 
-  background: #0f0f0f;
-
-  border-radius: 4px;
-
-  transform:
-    translateZ(calc(-1 * var(--thickness)));
-
-  box-shadow:
-    -10px 0 40px rgba(0,0,0,0.4);
-}
-
-/* =========================
-   SPINE (ОСЬ)
-========================= */
-
-.book__spine {
-  position: absolute;
-  top: 0;
-  left: 0;
-
+  height: calc(var(--h) - 6px);
   width: var(--thickness);
-  height: 100%;
 
   background: linear-gradient(
     to right,
-    #f5f5f5,
-    #dcdcdc,
-    #bfbfbf
+    #ffffff,
+    #f5f5f5 50%,
+    #eaeaea
   );
 
   transform:
-    rotateY(-90deg)
-    translateZ(0);
+    translateX(calc(var(--w) - var(--thickness) / 2 - 3px))
+    rotateY(90deg)
+    translateX(calc(var(--thickness) / 2));
 
-  transform-origin: left;
-
+  /* 🔥 почти незаметное разделение */
   box-shadow:
-    inset 0 0 6px rgba(0,0,0,0.25);
+    inset 0 0 1px rgba(0,0,0,0.12);
 }
+
+
+/* =========================
+   BACK COVER
+========================= */
+
+.book__wrapper::after {
+  content: "";
+
+  position: absolute;
+  left: 0;
+
+  width: var(--w);
+  height: var(--h);
+
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+
+  background: linear-gradient(
+    to right,
+    #121212,
+    #1c1c1c
+  );
+
+  transform: translateZ(calc(-1 * var(--thickness)));
+
+  /* 🔥 сильно уменьшили */
+  box-shadow:
+    -8px 0 25px rgba(0,0,0,0.25);
+}
+
 
 /* =========================
    HOVER
 ========================= */
 
 .book:hover .book__wrapper {
-  transform: rotateY(-8deg) rotateX(1deg);
+  transform:
+    rotateY(calc(var(--rotateY) + 18deg)) /* было +10 → стало мягче относительно новой базы */
+    rotateX(calc(var(--rotateX) + 1deg))
+    scale(1.015); /* почти без зума */
 }
 
 </style>
