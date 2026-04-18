@@ -3,6 +3,8 @@ import InternalLayout from "@/layouts/InternalLayout.astro";
 import Gallery from "@/components/blocks/gallery/Gallery.astro";
 import CardGrid from "@/components/blocks/card-grid/CardGrid.astro";
 import CardGridItem from "@/components/blocks/card-grid/CardGridItem.astro";
+import Book from "@/components/blocks/book/book.astro";
+
 
 import { getCollection } from "astro:content";
 
@@ -59,15 +61,7 @@ const artistSketchbooks = sketchbooks
       book.data.author === artist.slug &&
       book.data.published === true
   )
-  .sort((a, b) => b.data.year - a.data.year);
-
-const sketchbookCards = artistSketchbooks.map((b) => ({
-  title: b.data.title,
-  slug: b.slug,
-  cover: `/images/sketchbooks/${b.slug}/${b.data.cover}`,
-  year: b.data.year,
-  isAvailable: b.data.format?.digital ?? false,
-}));
+  .sort((a, b) => (b.data.year ?? 0) - (a.data.year ?? 0));
 
 /* ================================
    ITEMS & COLLECTIONS
@@ -170,23 +164,55 @@ const pageSEO = {
       {/* 👉 BIO */}
       <Content />
 
-    {/* 👉 SKETCHBOOKS */}
-    {sketchbookCards.length > 0 && (
-      <section class="sketchbooks-section flow">
-        <h2>Sketchbooks</h2>
+{/* 👉 SKETCHBOOKS */}
+{artistSketchbooks.length > 0 && (
+  <section class="sketchbooks-section flow">
+    <h2>Sketchbooks</h2>
 
-        <CardGrid>
-          {sketchbookCards.map((book) => (
-            <CardGridItem
-              title={book.title}
-              href={`/sketchbooks/${book.slug}`}
-              text={book.year ? `${book.year}` : ""}
-              buttonLabel=""
-            />
-          ))}
-        </CardGrid>
-      </section>
-    )}
+    <div class="artist-sketchbooks">
+      {artistSketchbooks.map((book) => {
+        const pageCount = book.data.pages?.length ?? 0;
+        const width = book.data.size_mm?.width ?? 148;
+        const height = book.data.size_mm?.height ?? 210;
+
+        return (
+          <a
+            class="artist-sketchbook"
+            href={`/sketchbooks/${book.slug}`}
+          >
+            <div class="artist-sketchbook__book">
+              <Book
+                cover={book.data.cover}
+                title={book.data.title}
+                pagesCount={pageCount}
+                width={width}
+                height={height}
+                scale={1}
+                tilt={0.45}
+                shadow={0.25}
+              />
+            </div>
+
+            <div class="artist-sketchbook__meta">
+              <div class="artist-sketchbook__title">
+                {book.data.title}
+              </div>
+
+              <div class="artist-sketchbook__info">
+                {[
+                  book.data.year ? String(book.data.year) : null,
+                  pageCount > 0 ? `${pageCount} pages` : null,
+                ]
+                  .filter(Boolean)
+                  .join(" · ")}
+              </div>
+            </div>
+          </a>
+        );
+      })}
+    </div>
+  </section>
+)}
 
       {/* 👉 WORKS */}
       {galleryWorks.length > 0 && (
@@ -419,6 +445,134 @@ const pageSEO = {
   opacity: 0.5;
 }
 
+.sketchbooks-section {
+  margin-top: 48px;
+}
+
+
+/* =========================
+   GRID
+========================= */
+
+.sketchbooks-section {
+  margin-top: 48px;
+}
+
+
+/* =========================
+   GRID (фиксируем ширину сцены)
+========================= */
+
+.artist-sketchbooks {
+  display: grid;
+
+  grid-template-columns: repeat(auto-fit, minmax(160px, 220px));
+  gap: 16px 20px;
+
+  justify-content: start; /* 🔥 не растягиваем */
+  align-items: end;
+
+  max-width: 900px; /* 🔥 ограничили сцену */
+}
+
+
+/* =========================
+   ITEM
+========================= */
+
+.artist-sketchbook {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+
+  gap: 8px;
+
+  text-decoration: none;
+  color: inherit;
+}
+
+
+/* =========================
+   BOOK (полка)
+========================= */
+
+.artist-sketchbook__book {
+  position: relative;
+
+  display: flex;
+  align-items: flex-end;
+
+  min-height: 150px;
+}
+
+.artist-sketchbook__book::after {
+  content: "";
+
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -6px;
+
+  height: 1px;
+  background: rgba(0,0,0,0.15);
+}
+
+
+/* =========================
+   META
+========================= */
+
+.artist-sketchbook__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.artist-sketchbook__title {
+  font-size: 15px;
+  line-height: 1.2;
+  font-weight: 500;
+}
+
+.artist-sketchbook__info {
+  font-size: 13px;
+  opacity: 0.6;
+}
+
+
+/* =========================
+   HOVER
+========================= */
+
+.artist-sketchbook:hover .artist-sketchbook__title {
+  text-decoration: underline;
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 700px) {
+  .artist-sketchbooks {
+    grid-template-columns: repeat(2, minmax(140px, 1fr));
+    gap: 14px 14px;
+  }
+
+  .artist-sketchbook__book {
+    min-height: 120px;
+  }
+}
+
+@media (max-width: 480px) {
+  .artist-sketchbooks {
+    grid-template-columns: 1fr;
+  }
+
+  .artist-sketchbook__book {
+    min-height: auto;
+  }
+}
 /* ================================
    RESPONSIVE
 ================================ */
