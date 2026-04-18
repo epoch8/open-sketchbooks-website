@@ -304,7 +304,46 @@ const pageSEO = {
   </main>
 </InternalLayout>
 
+<script>
+  const sidebar = document.getElementById("sidebarInner");
+  const pages = document.getElementById("pages");
 
+  if (!(sidebar instanceof HTMLElement) || !(pages instanceof HTMLElement)) {
+    console.warn("Sidebar or pages element not found");
+  } else {
+    function updateSidebarScroll() {
+      const scrollTop = window.scrollY;
+
+      const pagesTop = pages.offsetTop;
+      const pagesHeight = pages.offsetHeight;
+
+      const viewportHeight = window.innerHeight;
+      const sidebarHeight = sidebar.offsetHeight;
+
+      const scrollMax = pagesHeight - viewportHeight;
+      const leftMax = Math.max(0, sidebarHeight - viewportHeight);
+
+      if (scrollMax <= 0 || leftMax <= 0) {
+        sidebar.style.transform = "";
+        return;
+      }
+
+      const progress = Math.min(
+        1,
+        Math.max(0, (scrollTop - pagesTop) / scrollMax)
+      );
+
+      const translateY = progress * leftMax;
+
+      sidebar.style.transform = `translateY(${translateY}px)`;
+    }
+
+    window.addEventListener("scroll", updateSidebarScroll, { passive: true });
+    window.addEventListener("resize", updateSidebarScroll);
+
+    updateSidebarScroll();
+  }
+</script>
 
   {/* =========================
       VIEWER OVERLAY
@@ -336,6 +375,30 @@ const pageSEO = {
 .sketchbook {
   display: flex;
   flex-direction: column;
+}
+
+.sketchbook-viewer {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 64px;
+
+  position: relative; /* 🔥 КЛЮЧ */
+}
+
+.sketchbook-viewer__description {
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.sketchbook-viewer__description h1,
+.sketchbook-viewer__description h2,
+.sketchbook-viewer__description h3 {
+  font-size: 16px;
+  margin: 12px 0 6px;
+}
+
+.sketchbook-viewer__description p {
+  margin: 0 0 10px;
 }
 
 
@@ -381,7 +444,7 @@ const pageSEO = {
 
 
 /* =========================
-   BOOK
+   BOOK CONTAINER (FIXED)
 ========================= */
 
 .sketchbook-hero__cover {
@@ -391,9 +454,11 @@ const pageSEO = {
   justify-content: flex-end;
   align-items: flex-end;
 
+  /* 🔥 теперь размер контролируется здесь */
   --book-size: 100px;
 }
 
+/* 🔥 единственное место управления размером */
 .sketchbook-hero__cover .book {
   width: var(--book-size);
   height: auto;
@@ -421,14 +486,27 @@ const pageSEO = {
 
 
 /* =========================
-   SIDEBAR (NO STICKY)
+   SIDEBAR
 ========================= */
 
 .sketchbook-viewer__sidebar-inner {
+  top: 100px;
   display: flex;
   flex-direction: column;
   gap: 32px;
+
+  /* 🔥 чтобы не растягивался и корректно "заканчивался" */
+  align-self: start;
 }
+
+.sketchbook-viewer__sidebar {
+  position: relative;
+}
+
+.sketchbook-viewer__sidebar-inner {
+  will-change: transform;
+}
+
 
 .sketchbook-viewer__block {
   display: flex;
@@ -440,27 +518,6 @@ const pageSEO = {
   text-transform: uppercase;
   margin-bottom: 6px;
   opacity: 0.5;
-}
-
-
-/* =========================
-   DESCRIPTION
-========================= */
-
-.sketchbook-viewer__description {
-  font-size: 14px;
-  line-height: 1.5;
-}
-
-.sketchbook-viewer__description h1,
-.sketchbook-viewer__description h2,
-.sketchbook-viewer__description h3 {
-  font-size: 16px;
-  margin: 12px 0 6px;
-}
-
-.sketchbook-viewer__description p {
-  margin: 0 0 10px;
 }
 
 
@@ -486,6 +543,7 @@ const pageSEO = {
   max-width: 140px;
   aspect-ratio: 3 / 4;
   object-fit: cover;
+
   border: 1px solid rgba(0,0,0,0.1);
 }
 
@@ -530,10 +588,12 @@ const pageSEO = {
 .sketchbook-viewer__topbar-label {
   display: flex;
   align-items: center;
+
   padding-right: 32px;
 
   font-size: 14px;
   opacity: 0.6;
+
   white-space: nowrap;
 }
 
@@ -558,6 +618,7 @@ const pageSEO = {
   font-weight: 600;
 
   cursor: pointer;
+
   transition: 0.2s;
 }
 
@@ -581,6 +642,75 @@ const pageSEO = {
 .sketchbook-page img {
   width: 100%;
   display: block;
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 900px) {
+
+    /* =========================
+     HERO FIX
+  ========================= */
+
+  .sketchbook-hero__grid {
+    grid-template-columns: 1fr; /* 🔥 убили 3 колонки */
+    gap: 24px;
+  }
+
+  .sketchbook-hero__info {
+    grid-column: auto;
+  }
+
+  .sketchbook-hero__cover {
+    grid-column: auto;
+
+    /* 🔥 ставим под текст */
+    order: 2;
+
+    justify-content: flex-start;
+    align-items: flex-start;
+  }
+
+  /* 🔥 опционально — чтобы не прилипал */
+  .sketchbook-hero__cover .book {
+    margin-top: 8px;
+  }
+
+  .sketchbook-viewer {
+    grid-template-columns: 1fr;
+  }
+
+  .sketchbook-viewer__sidebar {
+    order: 2;
+  }
+
+  .sketchbook-viewer__content {
+    order: 1;
+  }
+
+  .sketchbook-viewer__sidebar-inner {
+    position: static;
+  }
+
+  .sketchbook-viewer__topbar-inner {
+    grid-template-columns: 1fr;
+  }
+
+  .sketchbook-viewer__topbar-label {
+    padding: 12px 0;
+    white-space: normal;
+  }
+
+  .sketchbook-viewer__topbar-button {
+    width: 100%;
+    max-width: none;
+    min-height: 80px;
+    border-left: none;
+    border-right: none;
+  }
 }
 
 /* =========================
@@ -713,110 +843,25 @@ const pageSEO = {
 ========================= */
 
 @media (max-width: 900px) {
-  /* =========================
-     EXPLORE (MOBILE FIX)
-  ========================= */
 
   .sketchbook-explore {
     margin-top: 48px;
     margin-bottom: 48px;
   }
 
+  .sketchbook-explore__grid {
+    gap: 16px;
+    padding-bottom: 8px;
+  }
+
+  .sketchbook-explore__book {
+    height: 140px;
+  }
+
   .sketchbook-explore__title {
     font-size: 18px;
   }
 
-  /* 🔥 убиваем горизонтальную полку */
-  .sketchbook-explore__grid {
-    display: flex;
-    flex-direction: column; /* 👈 ключ */
-    gap: 20px;
-
-    overflow: visible; /* 👈 критично */
-    padding-bottom: 0;
-  }
-
-  .sketchbook-explore__inner {
-  align-items: flex-start; /* 👈 ключ */
-}
-
-  /* 🔥 item становится строкой */
-  .sketchbook-explore__item {
-    flex-direction: row;
-    align-items: center;
-    gap: 16px;
-
-    min-width: 0; /* 👈 убираем фикс */
-  }
-
-  /* 🔥 книжка слева */
-  .sketchbook-explore__book {
-    min-height: 0;
-    height: auto;
-
-    flex: 0 0 80px; /* 👈 фикс ширины */
-    display: flex;
-    align-items: flex-end;
-  }
-
-  .sketchbook-explore__book .book {
-    width: 100%;
-    height: auto;
-  }
-
-  /* 🔥 текст справа */
-  .sketchbook-explore__item .meta {
-    flex: 1;
-  }
-
-  /* HERO */
-  .sketchbook-hero__grid {
-    grid-template-columns: 1fr;
-    gap: 24px;
-  }
-
-  .sketchbook-hero__cover {
-    order: 2;
-    justify-content: flex-start;
-    align-items: flex-start;
-  }
-
-  .sketchbook-hero__cover .book {
-    margin-top: 8px;
-  }
-
-  /* VIEWER STACK */
-  .sketchbook-viewer {
-    grid-template-columns: 1fr;
-    gap: 32px;
-  }
-
-  .sketchbook-viewer__content {
-    order: 1;
-  }
-
-  .sketchbook-viewer__sidebar {
-    order: 2;
-  }
-
-  /* TOPBAR */
-  .sketchbook-viewer__topbar-inner {
-    grid-template-columns: 1fr;
-  }
-
-  .sketchbook-viewer__topbar-label {
-    padding: 12px 0;
-    white-space: normal;
-  }
-
-  .sketchbook-viewer__topbar-button {
-    width: 100%;
-    max-width: none;
-    min-height: 72px;
-
-    border-left: none;
-    border-right: none;
-  }
 }
 
 </style>
