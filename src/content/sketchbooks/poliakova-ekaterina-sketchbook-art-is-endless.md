@@ -25,6 +25,11 @@ cover: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/poliakova-ek
 # 👇 дефолт для страниц
 defaultAspect: "portrait" # portrait | square | landscape
 
+related:
+  - slug: radkevich-kristina-sketchbook-local-sketches
+    type: similar
+  - slug: radkevich-kristina-sketchbook-sketching-people-tbilisi
+    type: similar
 
 # 👇 страницы
 pages:
@@ -127,15 +132,12 @@ pages:
 featured:
   - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/poliakova-ekaterina/art-is-endless/resize_web/1600/075.jpg"
   - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/poliakova-ekaterina/art-is-endless/resize_web/1600/016.jpg"
-  - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/poliakova-ekaterina/art-is-endless/resize_web/1600/021.jpg"
   - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/poliakova-ekaterina/art-is-endless/resize_web/1600/024.jpg"
   - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/poliakova-ekaterina/art-is-endless/resize_web/1600/025.jpg"
   - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/poliakova-ekaterina/art-is-endless/resize_web/1600/028.jpg"
   - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/poliakova-ekaterina/art-is-endless/resize_web/1600/031.jpg"
   - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/poliakova-ekaterina/art-is-endless/resize_web/1600/042.jpg"
   - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/poliakova-ekaterina/art-is-endless/resize_web/1600/050.jpg"
-  - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/poliakova-ekaterina/art-is-endless/resize_web/1600/057.jpg"
-  - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/poliakova-ekaterina/art-is-endless/resize_web/1600/058.jpg"
   - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/poliakova-ekaterina/art-is-endless/resize_web/1600/067.jpg"
   - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/poliakova-ekaterina/art-is-endless/resize_web/1600/084.jpg"
   - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/poliakova-ekaterina/art-is-endless/resize_web/1600/093.jpg"

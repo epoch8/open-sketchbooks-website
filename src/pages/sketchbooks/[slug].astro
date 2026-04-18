@@ -65,6 +65,21 @@ const sameAuthorSketchbooks =
 
 const hasSameAuthor = sameAuthorSketchbooks.length > 0;
 
+/* =========================
+   RELATED (FROM FRONTMATTER)
+========================= */
+
+const relatedSketchbooks = (book.data.related ?? [])
+  .map((rel) =>
+    allSketchbooks.find((b) => b.slug === rel.slug)
+  )
+  .filter((b): b is (typeof allSketchbooks)[number] => Boolean(b))
+  .slice(0, 6);
+  
+const artistMap = Object.fromEntries(
+  artists.map((a) => [a.slug, a])
+);
+
 /* 📂 pages */
 const pages = book.data.pages ?? [];
 const featured = book.data.featured ?? [];
@@ -221,6 +236,70 @@ const pageSEO = {
       </div>
 
     </section>
+
+    {/* =========================
+    EXPLORE
+========================= */}
+
+{relatedSketchbooks.length > 0 && (
+  <section class="sketchbook-explore">
+
+    <div class="sketchbook-explore__divider" />
+
+    <div class="sketchbook-explore__inner">
+
+      <h2 class="sketchbook-explore__title">
+        More sketchbooks to explore
+      </h2>
+
+      <div class="sketchbook-explore__grid">
+        {relatedSketchbooks.map((b) => {
+          const author =
+            b.data.author
+              ? artistMap[b.data.author]
+              : undefined;
+
+          const pagesCount = b.data.pages?.length ?? 0;
+
+          return (
+            <a
+              href={`/sketchbooks/${b.slug}`}
+              class="sketchbook-explore__item"
+            >
+              {b.data.cover && (
+                <div class="sketchbook-explore__book">
+                  <Book
+                    cover={b.data.cover}
+                    title={b.data.title}
+                    pagesCount={pagesCount}
+                    width={b.data.size_mm?.width ?? 148}
+                    height={b.data.size_mm?.height ?? 210}
+                    scale={1}
+                    tilt={0.2}
+                    shadow={0}
+                  />
+                </div>
+              )}
+
+              <div class="meta">
+                <div class="title">{b.data.title}</div>
+
+                <div class="info">
+                  {author?.data.title
+                    ? `by ${author.data.title} · `
+                    : ""}
+                  {pagesCount} pages
+                </div>
+              </div>
+            </a>
+          );
+        })}
+      </div>
+
+    </div>
+
+  </section>
+)}
 
   </main>
 </InternalLayout>
@@ -572,6 +651,157 @@ const pageSEO = {
     border-left: none;
     border-right: none;
   }
+}
+
+/* =========================
+   EXPLORE BLOCK
+========================= */
+
+.sketchbook-explore {
+  margin-top: 80px;
+  margin-bottom: 80px;
+}
+
+/* линия сверху */
+.sketchbook-explore__divider {
+  width: 100%;
+  height: 1px;
+  background: #000;
+  margin-bottom: 32px;
+}
+
+.sketchbook-explore__inner {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* заголовок */
+.sketchbook-explore__title {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+
+/* =========================
+   SHELF (ГЛАВНОЕ)
+========================= */
+
+.sketchbook-explore__grid {
+  display: flex;
+  gap: 28px;
+
+  align-items: flex-end;
+
+  /* 🔥 горизонтальный скролл */
+  overflow-x: auto;
+  overflow-y: hidden;
+
+  padding-bottom: 12px;
+}
+
+/* 🔥 “полка” */
+.sketchbook-explore__grid::after {
+  content: "";
+  position: sticky;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  height: 1px;
+  background: rgba(0,0,0,0.2);
+}
+
+
+/* =========================
+   ITEM
+========================= */
+
+.sketchbook-explore__item {
+  flex: 0 0 auto;
+
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  text-decoration: none;
+  color: inherit;
+
+  min-width: 120px;
+}
+
+
+/* книга стоит на “полке” */
+.sketchbook-explore__book {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+
+  min-height: 160px; /* 👈 вместо height */
+}
+
+/* ограничиваем размер книги */
+.sketchbook-explore__book .book {
+  height: 100%;
+  width: auto;
+}
+
+
+/* =========================
+   META
+========================= */
+
+.sketchbook-explore__item .meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.sketchbook-explore__item .title {
+  font-size: 14px;
+  line-height: 1.2;
+}
+
+.sketchbook-explore__item .info {
+  font-size: 12px;
+  opacity: 0.6;
+}
+
+
+/* =========================
+   HOVER (чуть жизни)
+========================= */
+
+.sketchbook-explore__item:hover .book {
+  transform: translateY(-4px);
+  transition: transform 0.2s ease;
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 900px) {
+
+  .sketchbook-explore {
+    margin-top: 48px;
+    margin-bottom: 48px;
+  }
+
+  .sketchbook-explore__grid {
+    gap: 16px;
+    padding-bottom: 8px;
+  }
+
+  .sketchbook-explore__book {
+    height: 140px;
+  }
+
+  .sketchbook-explore__title {
+    font-size: 18px;
+  }
+
 }
 
 </style>

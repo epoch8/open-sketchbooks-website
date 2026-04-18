@@ -165,6 +165,20 @@ const sketchbooks = defineCollection({
       .optional()
       .default([]),
 
+    related: z
+  .array(
+    z.object({
+      slug: z.string().min(1),
+      type: z
+        .enum([
+          "similar",       // просто похожее
+        ])
+        .default("similar"),
+    })
+  )
+  .optional()
+  .default([]),
+
     /* ⚙️ UI */
     settings: z
       .object({
