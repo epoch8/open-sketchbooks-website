@@ -30,9 +30,9 @@ cover: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/poliakova-ek
 defaultAspect: "portrait" # portrait | square | landscape
 
 related:
-  - slug: radkevich-kristina-sketchbook-local-sketches
-    type: similar
   - slug: radkevich-kristina-sketchbook-sketching-people-tbilisi
+    type: similar
+  - slug: radkevich-kristina-sketchbook-local-sketches
     type: similar
 
 # 👇 страницы

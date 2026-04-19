@@ -19,7 +19,7 @@ format:
 
 seoDescription: "Craft by Ekaterina Poliakova"
 
-cover: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/poliakova-ekaterina/craft/resize_web/1600/001.jpg"
+cover: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/poliakova-ekaterina/craft/resize_web/800/001.jpg"
 
 
 # 👇 дефолт для страниц

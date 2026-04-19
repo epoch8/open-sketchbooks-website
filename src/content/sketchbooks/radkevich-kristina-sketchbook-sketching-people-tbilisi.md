@@ -25,7 +25,7 @@ format:
 
 seoDescription: "Sketches of locals by Kristina Radkevich"
 
-cover: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/radkevich-kristina/sketchbook-2/resize_web/1600/118.jpg"
+cover: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/radkevich-kristina/sketchbook-2/resize_web/800/118.jpg"
 
 # 👇 дефолт для страниц
 defaultAspect: "portrait" # portrait | square | landscape
