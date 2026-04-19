@@ -7,6 +7,7 @@ published: true
 
 tags:
   - "botanical"
+  - "birds"
 
 size_mm:
   width: 148
