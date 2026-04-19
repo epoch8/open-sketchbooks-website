@@ -8,16 +8,9 @@ published: true
 tags:
   - "botanical"
 
-size:
-  type: standard # или custom
-
-  # если standard
-  standard: A5
-
-  # если custom
-  width: 13
-  height: 21
-  unit: cm
+size_mm:
+  width: 148
+  height: 210
 
 format:
   physical: true
@@ -91,13 +84,13 @@ pages:
   - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/shipunova-evgenia/flower-no2/resize_web/1600/055.jpg"
 
 featured:
-  - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/shipunova-evgenia/flower-no2/resize_web/1600/055.jpg"
-  - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/shipunova-evgenia/flower-no2/resize_web/1600/045.jpg"
-  - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/shipunova-evgenia/flower-no2/resize_web/1600/039.jpg"
-  - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/shipunova-evgenia/flower-no2/resize_web/1600/023.jpg"
-  - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/shipunova-evgenia/flower-no2/resize_web/1600/012.jpg"
-  - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/shipunova-evgenia/flower-no2/resize_web/1600/010.jpg"
-  - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/shipunova-evgenia/flower-no2/resize_web/1600/008.jpg"
+  - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/shipunova-evgenia/flower-no2/resize_web/800/055.jpg"
+  - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/shipunova-evgenia/flower-no2/resize_web/800/045.jpg"
+  - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/shipunova-evgenia/flower-no2/resize_web/800/039.jpg"
+  - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/shipunova-evgenia/flower-no2/resize_web/800/023.jpg"
+  - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/shipunova-evgenia/flower-no2/resize_web/800/012.jpg"
+  - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/shipunova-evgenia/flower-no2/resize_web/800/010.jpg"
+  - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/shipunova-evgenia/flower-no2/resize_web/800/008.jpg"
 
 # 👇 настройки отображения (UI)
 settings:
