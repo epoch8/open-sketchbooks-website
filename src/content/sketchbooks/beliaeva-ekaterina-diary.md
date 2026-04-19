@@ -9,8 +9,8 @@ tags:
   - "diary"
 
 size_mm:
-  width: 148
-  height: 210
+  width: 210
+  height: 297
 
 format:
   physical: true
@@ -81,7 +81,12 @@ pages:
 featured:
   - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/beliaeva-ekaterina/diary/resize_web/800/003.jpg"
   - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/beliaeva-ekaterina/diary/resize_web/800/004.jpg"
-  
+  - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/beliaeva-ekaterina/diary/resize_web/800/032.jpg"
+  - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/beliaeva-ekaterina/diary/resize_web/800/034.jpg"
+  - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/beliaeva-ekaterina/diary/resize_web/800/036.jpg"
+  - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/beliaeva-ekaterina/diary/resize_web/800/037.jpg"
+
+
 # 👇 настройки отображения (UI)
 settings:
   showCaptions: true
@@ -90,4 +95,4 @@ settings:
 
 ---
 
-I use an A5 sketchbook for city sketches, character exploration, and as a drawing diary. I like to draw with broad, loose strokes, so I need a slightly larger format.
+I use bigger sketchbook for city sketches, character exploration, and as a drawing diary. I like to draw with broad, loose strokes, so I need a slightly larger format.
