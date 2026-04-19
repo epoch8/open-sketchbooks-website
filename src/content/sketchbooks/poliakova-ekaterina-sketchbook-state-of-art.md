@@ -6,7 +6,9 @@ author: "poliakova-ekaterina"
 published: true
 
 tags:
-  - "city"
+  - "characters"
+  - "fairy-tales"
+  - "food"
 
 size_mm:
   width: 150
@@ -76,3 +78,4 @@ settings:
 
 ---
 
+Sketchbooks starting from summer 2022: city sketches, characters, experiments with various techniques, abstractions, fairy-tale scenes, food.

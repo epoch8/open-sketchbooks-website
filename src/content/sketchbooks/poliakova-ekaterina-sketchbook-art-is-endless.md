@@ -8,6 +8,10 @@ published: true
 
 tags:
   - "city"
+  - "Tbilisi"
+  - "characters"
+  - "fairy-tales"
+  - "food"
 
 size_mm:
   width: 125
@@ -19,7 +23,7 @@ format:
 
 seoDescription: "Art is Endless by Ekaterina Poliakova"
 
-cover: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/poliakova-ekaterina/art-is-endless/resize_web/1600/001.jpg"
+cover: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/poliakova-ekaterina/art-is-endless/resize_web/800/001.jpg"
 
 
 # 👇 дефолт для страниц
@@ -152,3 +156,4 @@ settings:
 
 ---
 
+Sketchbooks starting from summer 2022: city sketches, characters, experiments with various techniques, abstractions, fairy-tale scenes, food.
