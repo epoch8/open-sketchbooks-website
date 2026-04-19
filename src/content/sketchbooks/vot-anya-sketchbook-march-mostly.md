@@ -9,17 +9,9 @@ published: true
 tags:
   - "abstraction"
 
-size:
-  type: standard # или custom
-
-  # если standard
-  standard: A5
-
-  # если custom
-  width: 13
-  height: 21
-  unit: cm
-
+size_mm:
+  width: 210
+  height: 148
 
 format:
   physical: true
@@ -27,8 +19,7 @@ format:
 
 seoDescription: "March mostly by Anya Vot"
 
-cover: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/vot-anya/march-mostly/resize_web/1600/001.jpg"
-aspectRatio: 1.34
+cover: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/vot-anya/march-mostly/resize_web/800/001.jpg"
 
 
 # 👇 дефолт для страниц
