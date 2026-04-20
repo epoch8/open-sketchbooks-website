@@ -9,8 +9,8 @@ tags:
   - "botanical"
 
 size_mm:
-  width: 148
-  height: 210
+  width: 100
+  height: 150
 
 format:
   physical: true
@@ -99,4 +99,6 @@ settings:
 
 ---
 
-Sketches of plants of Georgia
+At some point, I caught myself thinking that I didn’t know how to draw flowers – and that I was afraid of making mistakes. This “floral” sketchbook became a kind of training ground. I drew without corrections: whatever came out was exactly how it was meant to be.
+
+I started with flowers in Finland, photographing everything I saw, and then reinterpreting them in a decorative style.

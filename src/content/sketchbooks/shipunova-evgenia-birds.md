@@ -8,10 +8,12 @@ published: true
 tags:
   - "botanical"
   - "birds"
+  - "oil pastels"
+
 
 size_mm:
-  width: 148
-  height: 210
+  width: 200
+  height: 200
 
 format:
   physical: true
@@ -107,4 +109,6 @@ settings:
 
 ---
 
-Sketches of birds
+This sketchbook is dedicated to rare bird species. Some of them are on the verge of extinction. Others, while not listed in the Red Book, have suffered significant population losses due to the oil spill in the Kerch Strait.
+
+The choice of technique was intentional – I wanted to move away from detailed rendering while keeping the illustrations quick and vivid. In my view, oil pastels worked perfectly for this purpose.

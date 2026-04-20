@@ -7,11 +7,13 @@ published: true
 
 tags:
   - "botanical"
+  - "Georgia"
+
 
 size_mm:
-  width: 148
-  height: 210
-
+  width: 100
+  height: 150
+  
 format:
   physical: true
   digital: true
@@ -90,7 +92,7 @@ featured:
   - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/shipunova-evgenia/flower-no2/resize_web/800/023.jpg"
   - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/shipunova-evgenia/flower-no2/resize_web/800/012.jpg"
   - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/shipunova-evgenia/flower-no2/resize_web/800/010.jpg"
-  - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/shipunova-evgenia/flower-no2/resize_web/800/008.jpg"
+  - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/shipunova-evgenia/flower-no2/resize_web/8go00/008.jpg"
 
 # 👇 настройки отображения (UI)
 settings:
@@ -100,4 +102,4 @@ settings:
 
 ---
 
-Sketches of plants of Georgia
+The second sketchbook devoted to flowers. This time it features the flowers and plants of Georgia. The variety here is incredible – a true gift for an artist.
