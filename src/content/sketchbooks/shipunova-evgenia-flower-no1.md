@@ -18,7 +18,7 @@ format:
 
 seoDescription: "Sketches of plants of Georgia by Shipunova Evgenia"
 
-cover: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/shipunova-evgenia/flower-no1/resize_web/1600/001.jpg"
+cover: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/shipunova-evgenia/flower-no1/resize_web/800/001.jpg"
 
 
 # 👇 дефолт для страниц

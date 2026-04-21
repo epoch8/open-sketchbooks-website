@@ -13,14 +13,14 @@ tags:
 size_mm:
   width: 100
   height: 150
-  
+
 format:
   physical: true
   digital: true
 
 seoDescription: "Sketches of plants of Georgia by Shipunova Evgenia"
 
-cover: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/shipunova-evgenia/flower-no2/resize_web/1600/001.jpg"
+cover: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/shipunova-evgenia/flower-no2/resize_web/800/001.jpg"
 
 
 # 👇 дефолт для страниц
