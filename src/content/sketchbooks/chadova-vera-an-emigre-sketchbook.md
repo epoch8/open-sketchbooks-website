@@ -31,6 +31,10 @@ related:
     type: similar
   - slug: radkevich-kristina-sketchbook-sketching-people-tbilisi
     type: similar
+  - slug: chernov-lis-2022
+    type: similar
+  - slug: nagornaya-ann-little-black-sketchbook
+    type: similar
 
 # 👇 страницы
 pages:
