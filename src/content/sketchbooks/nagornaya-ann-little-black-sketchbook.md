@@ -90,10 +90,6 @@ pages:
   - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/nagornaya-ann/little-black-sketchbook/resize_web/1600/058.jpg"
   - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/nagornaya-ann/little-black-sketchbook/resize_web/1600/059.jpg"
   - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/nagornaya-ann/little-black-sketchbook/resize_web/1600/060.jpg"
-  - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/nagornaya-ann/little-black-sketchbook/resize_web/1600/061.jpg"
-  - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/nagornaya-ann/little-black-sketchbook/resize_web/1600/062.jpg"
-  - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/nagornaya-ann/little-black-sketchbook/resize_web/1600/063.jpg"
-  - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/nagornaya-ann/little-black-sketchbook/resize_web/1600/064.jpg"
 
 featured:
   - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/nagornaya-ann/little-black-sketchbook/resize_web/800/007.jpg"
