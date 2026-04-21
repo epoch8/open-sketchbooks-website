@@ -80,6 +80,11 @@ settings:
   allowZoom: true
   background: "dark" # light | dark
 
+related:
+  - slug: devidze-lana-collage
+    type: similar
+  - slug: devidze-lana-garbage
+    type: similar
 ---
 
 As a teenager, I first realized that after death, all my memories would disappear forever. I was lying on the upper berth of a sleeper train from Siberia to Moscow, unable to fall asleep. I watched through the window as endless rows of apartment blocks – like anthills – rushed past across vast, snow-covered landscapes, and I could almost feel the lives unfolding in the few glowing windows.
