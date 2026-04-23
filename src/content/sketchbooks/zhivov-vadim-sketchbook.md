@@ -197,6 +197,7 @@ pages:
   - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/zhivov-vadim/sketchbook/resize_web/1600/168.jpg"
 
 featured:
+  - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/zhivov-vadim/sketchbook/resize_web/800/122.jpg"
   - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/zhivov-vadim/sketchbook/resize_web/800/111.jpg"
   - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/zhivov-vadim/sketchbook/resize_web/800/038.jpg"
   - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/zhivov-vadim/sketchbook/resize_web/800/073.jpg"
@@ -204,7 +205,6 @@ featured:
   - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/zhivov-vadim/sketchbook/resize_web/800/086.jpg"
   - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/zhivov-vadim/sketchbook/resize_web/800/094.jpg"
   - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/zhivov-vadim/sketchbook/resize_web/800/113.jpg"
-  - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/zhivov-vadim/sketchbook/resize_web/800/122.jpg"
 
 
 # 👇 настройки отображения (UI)
