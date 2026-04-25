@@ -27,7 +27,7 @@ export type FooterMeta = {
 
 export const footerMeta: FooterMeta = {
   tagline:
-    "",
+    "Initiated & community by<br><a href='/artists/poliakova-ekaterina/'>Katerina Poliakova</a><br>Platform by<br><a href='/artists/tatarinova-olga/'>Olga Tatarinova</a> × <a href='https://epoch8.co/'>Epoch8</a>",
   company: "",
 };
 

@@ -47,9 +47,10 @@ const year = new Date().getFullYear();
         {Logo && <Logo />}
 
         {meta.tagline && (
-          <p class={styles.tagline}>
-            {meta.tagline}
-          </p>
+          <p
+            class={styles.tagline}
+            set:html={meta.tagline}
+          />
         )}
       </div>
 
