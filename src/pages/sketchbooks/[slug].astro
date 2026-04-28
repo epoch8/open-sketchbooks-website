@@ -85,11 +85,13 @@ const pages = book.data.pages ?? [];
 const featured = book.data.featured ?? [];
 
 /* SEO оставляем как есть */
+const base = "https://open-sketchbook.place";
+
 const pageSEO = {
   title: book.data.title,
   description: book.data.seoDescription ?? book.data.title,
-  openGraph: {
-    images: [`/og/sketchbooks/${book.slug}.png`],
+  og: {
+    image: `${base}/og/sketchbooks/${book.slug}.png`,
   },
 };
 ---
