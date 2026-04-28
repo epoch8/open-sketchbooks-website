@@ -88,6 +88,9 @@ const featured = book.data.featured ?? [];
 const pageSEO = {
   title: book.data.title,
   description: book.data.seoDescription ?? book.data.title,
+  openGraph: {
+    images: [`/og/sketchbooks/${book.slug}.png`],
+  },
 };
 ---
 

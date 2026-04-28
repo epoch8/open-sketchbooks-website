@@ -5,7 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "dump:sketchbooks": "node scripts/dump-sketchbooks.mjs",
+    "generate:og": "node scripts/generate-og.js",
+    "build:og": "npm run dump:sketchbooks && npm run generate:og",
+    "build": "npm run build:og && astro build",
     "preview": "astro preview"
   },
   "dependencies": {
@@ -13,8 +16,10 @@
     "@astrojs/check": "^0.9.6",
     "@astrojs/mdx": "^4.3.14",
     "antd": "^5.20.0",
+    "canvas": "^3.2.3",
     "framer-motion": "^12.34.3",
     "gifenc": "^1.0.3",
+    "gray-matter": "^4.0.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "reactflow": "^11.11.4",
