@@ -8,7 +8,7 @@ const META_PATH = "./.cache/og-meta.json";
 const FORCE = process.argv.includes("--force");
 
 // 👉 меняешь layout → увеличиваешь версию
-const OG_VERSION = 2;
+const OG_VERSION = 1;
 
 registerFont(path.resolve("./scripts/fonts/BricolageGrotesque-Bold.ttf"), {
   family: "Bricolage",
@@ -34,8 +34,6 @@ const MAX_PAGES = 5;
 const BASE_IMAGE_HEIGHT = 350;
 const OVERLAP = 82;
 
-const MIN_LEFT = -5;
-
 async function generate() {
   const books = JSON.parse(
     fs.readFileSync("./.cache/sketchbooks.json", "utf-8")
@@ -50,17 +48,18 @@ async function generate() {
 
   for (const book of books) {
     const outPath = path.join(OUTPUT_DIR, `${book.slug}.png`);
+
     const hash = buildHash(book);
 
     if (
-      !FORCE &&
-      fs.existsSync(outPath) &&
-      meta[book.slug] &&
-      meta[book.slug].hash === hash
-    ) {
-      console.log("⏭ skip (hash)", book.slug);
-      continue;
-    }
+    !FORCE &&
+    fs.existsSync(outPath) && // 👈 ВОТ ЭТО КЛЮЧЕВОЕ
+    meta[book.slug] &&
+    meta[book.slug].hash === hash
+  ) {
+    console.log("⏭ skip (hash)", book.slug);
+    continue;
+  }
 
     const canvas = createCanvas(WIDTH, HEIGHT);
     const ctx = canvas.getContext("2d");
@@ -73,10 +72,10 @@ async function generate() {
       (book.featured || []).slice(0, MAX_PAGES)
     );
 
-    const layout = buildImageLayout(loadedImages, imageStartY);
+    const imageLayout = buildImageLayout(loadedImages, imageStartY);
 
-    if (layout.length > 0) {
-      drawImages(ctx, layout);
+    if (imageLayout.length > 0) {
+      drawImages(ctx, imageLayout);
     } else {
       drawFallback(ctx, imageStartY);
     }
@@ -92,16 +91,16 @@ async function generate() {
 }
 
 function buildHash(book) {
+  const data = {
+    version: OG_VERSION,
+    title: book.title,
+    author: book.authorName,
+    featured: (book.featured || []).map((p) => p.src),
+  };
+
   return crypto
     .createHash("md5")
-    .update(
-      JSON.stringify({
-        version: OG_VERSION,
-        title: book.title,
-        author: book.authorName,
-        featured: (book.featured || []).map((p) => p.src),
-      })
-    )
+    .update(JSON.stringify(data))
     .digest("hex");
 }
 
@@ -182,7 +181,6 @@ function buildImageLayout(images, startY) {
   const layout = [];
   let localX = 0;
 
-  // 1. локальная раскладка
   for (let i = 0; i < images.length; i++) {
     const item = images[i];
 
@@ -196,27 +194,15 @@ function buildImageLayout(images, startY) {
     localX += item.w - OVERLAP;
   }
 
-  // 2. центрирование
   const first = layout[0];
   const last = layout[layout.length - 1];
-  const totalWidth = last.x + last.w - first.x;
 
+  const totalWidth = last.x + last.w - first.x;
   const offsetX = (WIDTH - totalWidth) / 2;
 
   layout.forEach((item) => {
     item.x += offsetX;
   });
-
-  // 3. твоя логика: если уехали влево — сдвигаем вправо
-  const minX = Math.min(...layout.map((i) => i.x));
-
-  if (minX < MIN_LEFT) {
-    const shift = MIN_LEFT - minX;
-
-    layout.forEach((item) => {
-      item.x += shift;
-    });
-  }
 
   return layout;
 }
