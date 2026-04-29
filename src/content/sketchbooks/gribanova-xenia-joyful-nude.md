@@ -16,7 +16,7 @@ format:
   physical: true
   digital: true
 
-seoDescription: "Sketchbook by Gribanova Xenia featuring expressive nude studies, character sketches, and imaginative drawings. A visual exploration of the human form, memory, and artistic process."
+seoDescription: "Sketchbook by Xenia Gribanova featuring expressive nude studies, character sketches, and imaginative drawings. A visual exploration of the human form, memory, and artistic process."
 
 cover: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/gribanova-xenia/what-could-be-more-beautiful/resize_web/800/001.jpg"
 

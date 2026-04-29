@@ -87,12 +87,19 @@ const featured = book.data.featured ?? [];
 /* SEO оставляем как есть */
 const base = "https://open-sketchbook.place";
 
+const artistName = artist?.data.title;
+
 const pageSEO = {
-  title: book.data.title,
+  title: artistName
+    ? `${book.data.title} – Sketchbook by ${artistName}`
+    : book.data.title,
+
   description: book.data.seoDescription ?? book.data.title,
+
   og: {
     image: `${base}/og/sketchbooks/${book.slug}.png`,
   },
+
   twitter: {
     image: `${base}/og/sketchbooks/${book.slug}.png`,
   },
