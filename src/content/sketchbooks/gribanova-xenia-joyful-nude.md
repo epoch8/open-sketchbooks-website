@@ -99,8 +99,9 @@ pages:
 
 featured:
   - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/gribanova-xenia/what-could-be-more-beautiful/resize_web/800/033.jpg"
-  - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/gribanova-xenia/what-could-be-more-beautiful/resize_web/800/018.jpg"
+  - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/gribanova-xenia/what-could-be-more-beautiful/resize_web/800/031.jpg"
   - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/gribanova-xenia/what-could-be-more-beautiful/resize_web/800/037.jpg"
+  - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/gribanova-xenia/what-could-be-more-beautiful/resize_web/800/018.jpg"
   - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/gribanova-xenia/what-could-be-more-beautiful/resize_web/800/066.jpg"
   - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/gribanova-xenia/what-could-be-more-beautiful/resize_web/800/058.jpg"
   - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/gribanova-xenia/what-could-be-more-beautiful/resize_web/800/057.jpg"
