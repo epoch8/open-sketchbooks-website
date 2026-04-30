@@ -1437,5 +1437,29 @@
       }
     ],
     "mtime": 1777511418269.9832
+  },
+  {
+    "slug": "gribanova-xenia-studies",
+    "title": "Studies",
+    "authorSlug": "gribanova-xenia",
+    "authorName": "Xenia Gribanova",
+    "featured": [
+      {
+        "src": "https://storage.googleapis.com/open-sketchbooks/sketchbooks/gribanova-xenia/studies/resize_web/800/053.jpg"
+      },
+      {
+        "src": "https://storage.googleapis.com/open-sketchbooks/sketchbooks/gribanova-xenia/studies/resize_web/800/011.jpg"
+      },
+      {
+        "src": "https://storage.googleapis.com/open-sketchbooks/sketchbooks/gribanova-xenia/studies/resize_web/800/033.jpg"
+      },
+      {
+        "src": "https://storage.googleapis.com/open-sketchbooks/sketchbooks/gribanova-xenia/studies/resize_web/800/048.jpg"
+      },
+      {
+        "src": "https://storage.googleapis.com/open-sketchbooks/sketchbooks/gribanova-xenia/studies/resize_web/800/049.jpg"
+      }
+    ],
+    "mtime": 1777512540871.3767
   }
 ]
