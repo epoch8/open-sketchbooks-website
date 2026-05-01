@@ -16,7 +16,7 @@ format:
   physical: true
   digital: true
 
-seoDescription: "Sketches of Van Elena"
+seoDescription: "Explore Van Elena’s ordered sketchbook (2023-2025) – a curated sequence of character drawings and stylistic experiments forming a visual journey of artistic growth and creative search."
 
 cover: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/van-elena/ordered-sketchbook/resize_web/800/031.jpg"
 
