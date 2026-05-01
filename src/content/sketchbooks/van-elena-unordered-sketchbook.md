@@ -16,7 +16,7 @@ format:
   physical: true
   digital: true
 
-seoDescription: "Sketches of Alyosha Mordasha"
+seoDescription: "Sketches of Van Elena"
 
 cover: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/van-elena/unordered-sketchbook/resize_web/800/001.jpg"
 

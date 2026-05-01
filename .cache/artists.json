@@ -1,0 +1,855 @@
+[
+  {
+    "slug": "alyosha-mordasha",
+    "name": "Alyosha Mordasha",
+    "style": null,
+    "works": [
+      {
+        "image": "/images/works/alyosha-mordasha/1.jpeg",
+        "title": null,
+        "slug": "alyosha-mordasha-1"
+      },
+      {
+        "image": "/images/works/alyosha-mordasha/4.jpeg",
+        "title": null,
+        "slug": "alyosha-mordasha-2"
+      },
+      {
+        "image": "/images/works/alyosha-mordasha/3.png",
+        "title": null,
+        "slug": "alyosha-mordasha-3"
+      },
+      {
+        "image": "/images/works/alyosha-mordasha/2.jpeg",
+        "title": null,
+        "slug": "alyosha-mordasha-4"
+      }
+    ],
+    "mtime": 1774837732814.9558
+  },
+  {
+    "slug": "beliaeva-ekaterina",
+    "name": "Ekaterina Beliaeva",
+    "style": "naïve, graphics, mixed media",
+    "works": [
+      {
+        "image": "/images/works/beliaeva-ekaterina/1.jpeg",
+        "title": null,
+        "slug": "beliaeva-ekaterina-1"
+      },
+      {
+        "image": "/images/works/beliaeva-ekaterina/2.jpeg",
+        "title": null,
+        "slug": "beliaeva-ekaterina-2"
+      },
+      {
+        "image": "/images/works/beliaeva-ekaterina/3.jpeg",
+        "title": null,
+        "slug": "beliaeva-ekaterina-3"
+      },
+      {
+        "image": "/images/works/beliaeva-ekaterina/4.jpeg",
+        "title": null,
+        "slug": "beliaeva-ekaterina-4"
+      },
+      {
+        "image": "/images/works/beliaeva-ekaterina/5.jpeg",
+        "title": null,
+        "slug": "beliaeva-ekaterina-5"
+      }
+    ],
+    "mtime": 1775906501864.0356
+  },
+  {
+    "slug": "chadova-vera",
+    "name": "Vera Chadova",
+    "style": "sketching, mixed media",
+    "works": [
+      {
+        "image": "/images/works/chadova-vera/1.jpg",
+        "title": null,
+        "slug": "chadova-vera-1"
+      },
+      {
+        "image": "/images/works/chadova-vera/2.jpg",
+        "title": null,
+        "slug": "chadova-vera-2"
+      },
+      {
+        "image": "/images/works/chadova-vera/3.jpg",
+        "title": null,
+        "slug": "chadova-vera-3"
+      },
+      {
+        "image": "/images/works/chadova-vera/4.jpg",
+        "title": null,
+        "slug": "chadova-vera-4"
+      },
+      {
+        "image": "/images/works/chadova-vera/5.jpg",
+        "title": null,
+        "slug": "chadova-vera-5"
+      }
+    ],
+    "mtime": 1775981810607.4973
+  },
+  {
+    "slug": "chernov-lis",
+    "name": "Liza Chernova",
+    "style": "mixed media, graphics",
+    "works": [
+      {
+        "image": "/images/works/chernov-lis/1.jpeg",
+        "title": null,
+        "slug": "chernov-lis-1"
+      },
+      {
+        "image": "/images/works/chernov-lis/2.jpeg",
+        "title": null,
+        "slug": "chernov-lis-2"
+      },
+      {
+        "image": "/images/works/chernov-lis/3.jpeg",
+        "title": null,
+        "slug": "chernov-lis-3"
+      },
+      {
+        "image": "/images/works/chernov-lis/4.jpeg",
+        "title": null,
+        "slug": "chernov-lis-4"
+      },
+      {
+        "image": "/images/works/chernov-lis/5.jpeg",
+        "title": null,
+        "slug": "chernov-lis-5"
+      }
+    ],
+    "mtime": 1774836377436.9644
+  },
+  {
+    "slug": "deeva-sasha",
+    "name": "Sasha Deeva",
+    "style": null,
+    "works": [
+      {
+        "image": "/images/works/deeva-sasha/1.jpg",
+        "title": null,
+        "slug": "deeva-sasha-1"
+      },
+      {
+        "image": "/images/works/deeva-sasha/2.jpg",
+        "title": null,
+        "slug": "deeva-sasha-2"
+      },
+      {
+        "image": "/images/works/deeva-sasha/3.jpg",
+        "title": null,
+        "slug": "deeva-sasha-3"
+      },
+      {
+        "image": "/images/works/deeva-sasha/4.jpg",
+        "title": null,
+        "slug": "deeva-sasha-4"
+      }
+    ],
+    "mtime": 1774835604032.449
+  },
+  {
+    "slug": "devidze-lana",
+    "name": "Lana Devidze",
+    "style": null,
+    "works": [
+      {
+        "image": "/images/works/devidze-lana/1.jpeg",
+        "title": null,
+        "slug": "devidze-lana-1"
+      },
+      {
+        "image": "/images/works/devidze-lana/2.jpeg",
+        "title": null,
+        "slug": "devidze-lana-2"
+      },
+      {
+        "image": "/images/works/devidze-lana/3.jpeg",
+        "title": null,
+        "slug": "devidze-lana-3"
+      },
+      {
+        "image": "/images/works/devidze-lana/4.jpeg",
+        "title": null,
+        "slug": "devidze-lana-4"
+      },
+      {
+        "image": "/images/works/devidze-lana/5.jpeg",
+        "title": null,
+        "slug": "devidze-lana-5"
+      }
+    ],
+    "mtime": 1775893002108.398
+  },
+  {
+    "slug": "goriachev-larik",
+    "name": "Larik Goriachev",
+    "style": "urban sketching, abstraction, freestyle graffiti, experimental playful techniques",
+    "works": [
+      {
+        "image": "/images/works/goriachev-larik/1.jpg",
+        "title": null,
+        "slug": "goriachev-larik-1"
+      },
+      {
+        "image": "/images/works/goriachev-larik/2.jpg",
+        "title": null,
+        "slug": "goriachev-larik-2"
+      },
+      {
+        "image": "/images/works/goriachev-larik/3.jpg",
+        "title": null,
+        "slug": "goriachev-larik-3"
+      }
+    ],
+    "mtime": 1775181844969.4365
+  },
+  {
+    "slug": "gribanova-xenia",
+    "name": "Xenia Gribanova",
+    "style": "mixed media, collage, illustration",
+    "works": [
+      {
+        "image": "/images/works/gribanova-xenia/1.jpeg",
+        "title": null,
+        "slug": "gribanova-xenia-1"
+      },
+      {
+        "image": "/images/works/gribanova-xenia/2.jpeg",
+        "title": null,
+        "slug": "gribanova-xenia-2"
+      },
+      {
+        "image": "/images/works/gribanova-xenia/3.jpeg",
+        "title": null,
+        "slug": "gribanova-xenia-3"
+      },
+      {
+        "image": "/images/works/gribanova-xenia/4.jpeg",
+        "title": null,
+        "slug": "gribanova-xenia-4"
+      },
+      {
+        "image": "/images/works/gribanova-xenia/5.jpeg",
+        "title": null,
+        "slug": "gribanova-xenia-5"
+      }
+    ],
+    "mtime": 1775908485220.6367
+  },
+  {
+    "slug": "kirienkova-aleksandra",
+    "name": "Aleksandra Kirienkova",
+    "style": null,
+    "works": [
+      {
+        "image": "/images/works/kirienkova-aleksandra/1.png",
+        "title": null,
+        "slug": "kirienkova-aleksandra-1"
+      },
+      {
+        "image": "/images/works/kirienkova-aleksandra/2.jpg",
+        "title": null,
+        "slug": "kirienkova-aleksandra-2"
+      },
+      {
+        "image": "/images/works/kirienkova-aleksandra/3.jpg",
+        "title": null,
+        "slug": "kirienkova-aleksandra-3"
+      }
+    ],
+    "mtime": 1775182922914.8733
+  },
+  {
+    "slug": "kriskevich-annie",
+    "name": "Annie Kriskevich",
+    "style": "mixed media",
+    "works": [],
+    "mtime": 1775934551248.5642
+  },
+  {
+    "slug": "kulish-roman",
+    "name": "Roman Kulish",
+    "style": "collage",
+    "works": [
+      {
+        "image": "/images/works/kulish-roman/1.jpeg",
+        "title": null,
+        "slug": "kulish-roman-1"
+      },
+      {
+        "image": "/images/works/kulish-roman/2.jpeg",
+        "title": null,
+        "slug": "kulish-roman-2"
+      },
+      {
+        "image": "/images/works/kulish-roman/3.jpeg",
+        "title": null,
+        "slug": "kulish-roman-3"
+      }
+    ],
+    "mtime": 1774862728170.9382
+  },
+  {
+    "slug": "maizinger-anastasia",
+    "name": "Anastasia Maizinger",
+    "style": null,
+    "works": [
+      {
+        "image": "/images/works/maizinger-anastasia/1.jpg",
+        "title": null,
+        "slug": "maizinger-anastasia-1"
+      },
+      {
+        "image": "/images/works/maizinger-anastasia/2.jpg",
+        "title": null,
+        "slug": "maizinger-anastasia-2"
+      },
+      {
+        "image": "/images/works/maizinger-anastasia/3.jpg",
+        "title": null,
+        "slug": "maizinger-anastasia-3"
+      }
+    ],
+    "mtime": 1774857906995.6794
+  },
+  {
+    "slug": "maroun-blance",
+    "name": "Maroun Blance",
+    "style": "illustration, graphics",
+    "works": [
+      {
+        "image": "/images/works/maroun-blance/1.jpeg",
+        "title": null,
+        "slug": "maroun-blance-1"
+      },
+      {
+        "image": "/images/works/maroun-blance/2.jpeg",
+        "title": null,
+        "slug": "maroun-blance-2"
+      },
+      {
+        "image": "/images/works/maroun-blance/3.jpeg",
+        "title": null,
+        "slug": "maroun-blance-3"
+      },
+      {
+        "image": "/images/works/maroun-blance/4.jpeg",
+        "title": null,
+        "slug": "maroun-blance-4"
+      }
+    ],
+    "mtime": 1774835152157.0117
+  },
+  {
+    "slug": "martyn-nasta",
+    "name": "Nasta Martyn",
+    "style": null,
+    "works": [
+      {
+        "image": "/images/works/martyn-nasta/1.jpg",
+        "title": null,
+        "slug": "martyn-nasta-1"
+      },
+      {
+        "image": "/images/works/martyn-nasta/2.jpg",
+        "title": null,
+        "slug": "martyn-nasta-2"
+      },
+      {
+        "image": "/images/works/martyn-nasta/3.jpg",
+        "title": null,
+        "slug": "martyn-nasta-3"
+      },
+      {
+        "image": "/images/works/martyn-nasta/4.jpg",
+        "title": null,
+        "slug": "martyn-nasta-4"
+      },
+      {
+        "image": "/images/works/martyn-nasta/5.jpg",
+        "title": null,
+        "slug": "martyn-nasta-5"
+      }
+    ],
+    "mtime": 1774837007091.0378
+  },
+  {
+    "slug": "menabde-giorgi",
+    "name": "Giorgi Menabde",
+    "style": null,
+    "works": [
+      {
+        "image": "/images/works/menabde-giorgi/1.jpg",
+        "title": null,
+        "slug": "menabde-giorgi-1"
+      },
+      {
+        "image": "/images/works/menabde-giorgi/2.jpg",
+        "title": null,
+        "slug": "menabde-giorgi-2"
+      },
+      {
+        "image": "/images/works/menabde-giorgi/3.jpg",
+        "title": null,
+        "slug": "menabde-giorgi-3"
+      },
+      {
+        "image": "/images/works/menabde-giorgi/4.jpg",
+        "title": null,
+        "slug": "menabde-giorgi-4"
+      },
+      {
+        "image": "/images/works/menabde-giorgi/5.jpg",
+        "title": null,
+        "slug": "menabde-giorgi-5"
+      }
+    ],
+    "mtime": 1775890399305.549
+  },
+  {
+    "slug": "molly-moon",
+    "name": "Molly Moon",
+    "style": null,
+    "works": [],
+    "mtime": 1776994306584.5166
+  },
+  {
+    "slug": "nagaen-egr",
+    "name": "Egr Nagaen",
+    "style": "sketching",
+    "works": [
+      {
+        "image": "/images/works/nagaen-egr/1.jpg",
+        "title": null,
+        "slug": "nagaen-egr"
+      }
+    ],
+    "mtime": 1774857592732.9856
+  },
+  {
+    "slug": "nagornaya-ann",
+    "name": "Anna Nagornaya",
+    "style": null,
+    "works": [
+      {
+        "image": "/images/works/nagornaya-ann/1.jpg",
+        "title": null,
+        "slug": "nagornaya-ann-1"
+      },
+      {
+        "image": "/images/works/nagornaya-ann/2.jpg",
+        "title": null,
+        "slug": "nagornaya-ann-2"
+      }
+    ],
+    "mtime": 1775892422351.3367
+  },
+  {
+    "slug": "nesterov-dima",
+    "name": "Dima Nesterov",
+    "style": null,
+    "works": [],
+    "mtime": 1775891727225.4993
+  },
+  {
+    "slug": "poliakova-ekaterina",
+    "name": "Ekaterina Poliakova",
+    "style": "naïve, mixed media",
+    "works": [
+      {
+        "image": "/images/works/poliakova-ekaterina/1.jpg",
+        "title": null,
+        "slug": "poliakova-ekaterina-1"
+      },
+      {
+        "image": "/images/works/poliakova-ekaterina/2.jpg",
+        "title": null,
+        "slug": "poliakova-ekaterina-2"
+      },
+      {
+        "image": "/images/works/poliakova-ekaterina/3.jpg",
+        "title": null,
+        "slug": "poliakova-ekaterina-3"
+      },
+      {
+        "image": "/images/works/poliakova-ekaterina/4.jpg",
+        "title": null,
+        "slug": "poliakova-ekaterina-4"
+      },
+      {
+        "image": "/images/works/poliakova-ekaterina/5.jpg",
+        "title": null,
+        "slug": "poliakova-ekaterina-5"
+      }
+    ],
+    "mtime": 1775907835798.3164
+  },
+  {
+    "slug": "radkevich-kristina",
+    "name": "Kristina Radkevich",
+    "style": "sketching with graphic materials",
+    "works": [
+      {
+        "image": "/images/works/radkevich-kristina/1.jpeg",
+        "title": null,
+        "slug": "radkevich-kristina-1"
+      },
+      {
+        "image": "/images/works/radkevich-kristina/2.jpeg",
+        "title": null,
+        "slug": "radkevich-kristina-2"
+      }
+    ],
+    "mtime": 1775878680211.3604
+  },
+  {
+    "slug": "rodina-arina",
+    "name": "Arina Rodina",
+    "style": "mixed media, graphic art",
+    "works": [
+      {
+        "image": "/images/works/rodina-arina/1.jpeg",
+        "title": null,
+        "slug": "rodina-arina-1"
+      },
+      {
+        "image": "/images/works/rodina-arina/2.jpeg",
+        "title": null,
+        "slug": "rodina-arina-2"
+      },
+      {
+        "image": "/images/works/rodina-arina/3.jpeg",
+        "title": null,
+        "slug": "rodina-arina-3"
+      }
+    ],
+    "mtime": 1775183346730.8123
+  },
+  {
+    "slug": "sedova-evgenia",
+    "name": "Evgenia Sedova",
+    "style": "graphic art, mixed media",
+    "works": [
+      {
+        "image": "/images/works/sedova-evgenia/1.jpeg",
+        "title": null,
+        "slug": "sedova-evgenia-1"
+      },
+      {
+        "image": "/images/works/sedova-evgenia/2.jpeg",
+        "title": null,
+        "slug": "sedova-evgenia-2"
+      },
+      {
+        "image": "/images/works/sedova-evgenia/3.jpeg",
+        "title": null,
+        "slug": "sedova-evgenia-3"
+      }
+    ],
+    "mtime": 1775184010048.052
+  },
+  {
+    "slug": "shavaleeva-violetta",
+    "name": "Violetta Shavaleeva",
+    "style": "naïve art, mixed media, graphic art, sketching",
+    "works": [
+      {
+        "image": "/images/works/shavaleeva-violetta/1.jpeg",
+        "title": null,
+        "slug": "shavaleeva-violetta-1"
+      },
+      {
+        "image": "/images/works/shavaleeva-violetta/2.jpeg",
+        "title": null,
+        "slug": "shavaleeva-violetta-2"
+      },
+      {
+        "image": "/images/works/shavaleeva-violetta/3.jpeg",
+        "title": null,
+        "slug": "shavaleeva-violetta-3"
+      },
+      {
+        "image": "/images/works/shavaleeva-violetta/4.jpeg",
+        "title": null,
+        "slug": "shavaleeva-violetta-4"
+      },
+      {
+        "image": "/images/works/shavaleeva-violetta/5.jpeg",
+        "title": null,
+        "slug": "shavaleeva-violetta-5"
+      }
+    ],
+    "mtime": 1775182497638.6914
+  },
+  {
+    "slug": "shesterova-kristina",
+    "name": "Kristina Shesterova",
+    "style": "sketches with watercolor markers, illustration",
+    "works": [
+      {
+        "image": "/images/works/shesterova-kristina/1.jpg",
+        "title": null,
+        "slug": "shesterova-kristina-1"
+      },
+      {
+        "image": "/images/works/shesterova-kristina/2.jpg",
+        "title": null,
+        "slug": "shesterova-kristina-2"
+      },
+      {
+        "image": "/images/works/shesterova-kristina/3.jpg",
+        "title": null,
+        "slug": "shesterova-kristina-3"
+      }
+    ],
+    "mtime": 1775876612693.8674
+  },
+  {
+    "slug": "shipunova-evgenia",
+    "name": "Evgenia Shipunova",
+    "style": null,
+    "works": [
+      {
+        "image": "/images/works/shipunova-evgenia/1.webp",
+        "title": null,
+        "slug": "shipunova-evgenia-1"
+      },
+      {
+        "image": "/images/works/shipunova-evgenia/2.jpg",
+        "title": null,
+        "slug": "shipunova-evgenia-2"
+      },
+      {
+        "image": "/images/works/shipunova-evgenia/3.jpg",
+        "title": null,
+        "slug": "shipunova-evgenia-3"
+      },
+      {
+        "image": "/images/works/shipunova-evgenia/4.jpg",
+        "title": null,
+        "slug": "shipunova-evgenia-4"
+      },
+      {
+        "image": "/images/works/shipunova-evgenia/5.jpg",
+        "title": null,
+        "slug": "shipunova-evgenia-5"
+      }
+    ],
+    "mtime": 1775877342692.6433
+  },
+  {
+    "slug": "smoragdova-leni",
+    "name": "Leni Smoragdova",
+    "style": null,
+    "works": [
+      {
+        "image": "/images/works/smoragdova-leni/1.jpeg",
+        "title": null,
+        "slug": "smoragdova-leni-1"
+      },
+      {
+        "image": "/images/works/smoragdova-leni/2.jpeg",
+        "title": null,
+        "slug": "smoragdova-leni-2"
+      },
+      {
+        "image": "/images/works/smoragdova-leni/3.jpeg",
+        "title": null,
+        "slug": "smoragdova-leni-3"
+      }
+    ],
+    "mtime": 1774855498380.2073
+  },
+  {
+    "slug": "sokolova-olga",
+    "name": "Olga Sokolova",
+    "style": "Mixed media, collage, children’s illustration, abstraction",
+    "works": [
+      {
+        "image": "/images/works/sokolova-olga/1.jpg",
+        "title": null,
+        "slug": "sokolova-olga-1"
+      },
+      {
+        "image": "/images/works/sokolova-olga/2.jpg",
+        "title": null,
+        "slug": "sokolova-olga-2"
+      },
+      {
+        "image": "/images/works/sokolova-olga/3.jpg",
+        "title": null,
+        "slug": "sokolova-olga-3"
+      },
+      {
+        "image": "/images/works/sokolova-olga/4.jpg",
+        "title": null,
+        "slug": "sokolova-olga-4"
+      },
+      {
+        "image": "/images/works/sokolova-olga/5.jpg",
+        "title": null,
+        "slug": "sokolova-olga-5"
+      }
+    ],
+    "mtime": 1775875506825.8086
+  },
+  {
+    "slug": "stepanova-katerina",
+    "name": "Katerina Stepanova",
+    "style": "analog collage",
+    "works": [
+      {
+        "image": "/images/works/stepanova-katerina/1.jpg",
+        "title": null,
+        "slug": "stepanova-katerina-1"
+      },
+      {
+        "image": "/images/works/stepanova-katerina/2.jpg",
+        "title": null,
+        "slug": "stepanova-katerina-2"
+      },
+      {
+        "image": "/images/works/stepanova-katerina/3.jpg",
+        "title": null,
+        "slug": "stepanova-katerina-3"
+      },
+      {
+        "image": "/images/works/stepanova-katerina/4.jpg",
+        "title": null,
+        "slug": "stepanova-katerina-4"
+      },
+      {
+        "image": "/images/works/stepanova-katerina/5.jpg",
+        "title": null,
+        "slug": "stepanova-katerina-5"
+      }
+    ],
+    "mtime": 1774840147685.6394
+  },
+  {
+    "slug": "tatarinov-mark",
+    "name": "Mark Tatarinov",
+    "style": null,
+    "works": [],
+    "mtime": 1775934597551.1357
+  },
+  {
+    "slug": "tatarinova-olga",
+    "name": "Olga Tatarinova",
+    "style": null,
+    "works": [
+      {
+        "image": "/images/works/tatarinova-olga/1.jpg",
+        "title": null,
+        "slug": "tatarinova-olga-1"
+      },
+      {
+        "image": "/images/works/tatarinova-olga/2.jpg",
+        "title": null,
+        "slug": "tatarinova-olga-2"
+      },
+      {
+        "image": "/images/works/tatarinova-olga/3.jpg",
+        "title": null,
+        "slug": "tatarinova-olga-3"
+      },
+      {
+        "image": "/images/works/tatarinova-olga/4.jpg",
+        "title": null,
+        "slug": "tatarinova-olga-4"
+      },
+      {
+        "image": "/images/works/tatarinova-olga/5.jpg",
+        "title": null,
+        "slug": "tatarinova-olga-5"
+      },
+      {
+        "image": "/images/works/tatarinova-olga/6.jpg",
+        "title": null,
+        "slug": "tatarinova-olga-6"
+      },
+      {
+        "image": "/images/works/tatarinova-olga/7.jpg",
+        "title": null,
+        "slug": "tatarinova-olga-7"
+      }
+    ],
+    "mtime": 1775617128527.4475
+  },
+  {
+    "slug": "van-elena",
+    "name": "Elena Van",
+    "style": "illustration, landscape",
+    "works": [
+      {
+        "image": "/images/works/van-elena/1.jpg",
+        "title": null,
+        "slug": "van-elena-1"
+      },
+      {
+        "image": "/images/works/van-elena/2.jpg",
+        "title": null,
+        "slug": "van-elena-2"
+      },
+      {
+        "image": "/images/works/van-elena/3.jpg",
+        "title": null,
+        "slug": "van-elena-3"
+      }
+    ],
+    "mtime": 1775982453838.1016
+  },
+  {
+    "slug": "vot-anya",
+    "name": "Anya Vot",
+    "style": "graphic art, abstraction",
+    "works": [
+      {
+        "image": "/images/works/vot-anya/1.jpg",
+        "title": null,
+        "slug": "vot-anya-1"
+      },
+      {
+        "image": "/images/works/vot-anya/2.jpg",
+        "title": null,
+        "slug": "vot-anya-2"
+      }
+    ],
+    "mtime": 1775184233453.4316
+  },
+  {
+    "slug": "zhivov-vadim",
+    "name": "Vadim Zhivov",
+    "style": "Post-graffiti, illustration (pencil, alcohol markers, and charcoal)",
+    "works": [
+      {
+        "image": "/images/works/zhivov-vadim/1.jpeg",
+        "title": null,
+        "slug": "zhivov-vadim-1"
+      },
+      {
+        "image": "/images/works/zhivov-vadim/2.jpeg",
+        "title": null,
+        "slug": "zhivov-vadim-2"
+      },
+      {
+        "image": "/images/works/zhivov-vadim/3.jpeg",
+        "title": null,
+        "slug": "zhivov-vadim-3"
+      },
+      {
+        "image": "/images/works/zhivov-vadim/4.jpeg",
+        "title": null,
+        "slug": "zhivov-vadim-4"
+      }
+    ],
+    "mtime": 1774839385275.0215
+  }
+]

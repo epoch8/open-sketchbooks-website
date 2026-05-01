@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "astro dev",
     "dump:sketchbooks": "node scripts/dump-sketchbooks.mjs",
+    "dump:artists": "node scripts/dump-artists.mjs",
     "generate:og": "node scripts/generate-og.js",
     "build:og": "npm run dump:sketchbooks && npm run generate:og",
     "build": "npm run build:og && astro build",
