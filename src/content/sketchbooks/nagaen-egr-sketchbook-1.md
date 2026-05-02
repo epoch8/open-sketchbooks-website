@@ -55,9 +55,9 @@ pages:
   - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/nagaen-egr/sketchbook-1-110-140/resize_web/1600/026.jpg"
 
 featured:
+  - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/nagaen-egr/sketchbook-1-110-140/resize_web/800/015.jpg"
   - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/nagaen-egr/sketchbook-1-110-140/resize_web/800/007.jpg"
   - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/nagaen-egr/sketchbook-1-110-140/resize_web/800/008.jpg"
-  - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/nagaen-egr/sketchbook-1-110-140/resize_web/800/015.jpg"
 
 
 # 👇 настройки отображения (UI)
