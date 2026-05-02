@@ -1,6 +1,7 @@
 ---
+export const prerender = true;
 import InternalLayout from "@/layouts/InternalLayout.astro";
-import { getCollection } from "astro:content";
+import { getCollection, render } from "astro:content";
 
 import {
   mainNav,
@@ -21,7 +22,7 @@ export async function getStaticPaths() {
   const artists = await getCollection("artists");
 
   return artists.map((artist) => ({
-    params: { slug: artist.slug },
+    params: { slug: artist.id },
     props: { artist },
   }));
 }
@@ -31,7 +32,7 @@ export async function getStaticPaths() {
 ================================ */
 
 const { artist } = Astro.props;
-const { Content } = await artist.render();
+const { Content } = await render(artist);
 
 /* ================================
    SEO
@@ -104,7 +105,7 @@ const pageSEO = {
                 <input
                   type="hidden"
                   name="fields[artist]"
-                  value={artist.slug}
+                  value={artist.id}
                 />
 
                 <button type="submit" class="rsvp__button">

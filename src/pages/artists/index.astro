@@ -55,7 +55,7 @@ const artists = await getCollection("artists");
         {artists.map((artist) => (
           <CardGridItem
             title={artist.data.title}
-            href={`/artists/${artist.slug}`}
+            href={`/artists/${artist.id}`}
             text=""                
             buttonLabel=""
           />

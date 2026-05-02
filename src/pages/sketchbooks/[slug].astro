@@ -1,6 +1,7 @@
 ---
+export const prerender = true;
 import InternalLayout from "@/layouts/InternalLayout.astro";
-import { getCollection } from "astro:content";
+import { getCollection, render } from "astro:content";
 
 import { SEOBase } from "@/content/template/seo/seo";
 
@@ -25,7 +26,7 @@ export async function getStaticPaths() {
   const published = sketchbooks.filter((b) => b.data.published === true);
 
   return published.map((book) => ({
-    params: { slug: book.slug },
+    params: { slug: book.id },
     props: {
       book,
       allSketchbooks: published,
@@ -40,13 +41,13 @@ export async function getStaticPaths() {
 const { book, allSketchbooks } = Astro.props;
 
 /* 🔥 ВАЖНО: рендер markdown */
-const { Content } = await book.render();
+const { Content } = await render(book);
 
 /* 👤 author */
 const artists = await getCollection("artists");
 
 const artist = book.data.author
-  ? artists.find((a) => a.slug === book.data.author)
+  ? artists.find((a) => a.id === book.data.author)
   : null;
 
 /* 📚 same author */
@@ -55,7 +56,7 @@ const sameAuthorSketchbooks =
     ? allSketchbooks
         .filter(
           (b) =>
-            b.slug !== book.slug &&
+            b.id !== book.id &&
             b.data.author &&
             b.data.author === book.data.author
         )
@@ -71,13 +72,13 @@ const hasSameAuthor = sameAuthorSketchbooks.length > 0;
 
 const relatedSketchbooks = (book.data.related ?? [])
   .map((rel) =>
-    allSketchbooks.find((b) => b.slug === rel.slug)
+    allSketchbooks.find((b) => b.id === rel.slug)
   )
   .filter((b): b is (typeof allSketchbooks)[number] => Boolean(b))
   .slice(0, 6);
   
 const artistMap = Object.fromEntries(
-  artists.map((a) => [a.slug, a])
+  artists.map((a) => [a.id, a])
 );
 
 /* 📂 pages */
@@ -97,11 +98,11 @@ const pageSEO = {
   description: book.data.seoDescription ?? book.data.title,
 
   og: {
-    image: `${base}/og/sketchbooks/${book.slug}.png`,
+    image: `${base}/og/sketchbooks/${book.id}.png`,
   },
 
   twitter: {
-    image: `${base}/og/sketchbooks/${book.slug}.png`,
+    image: `${base}/og/sketchbooks/${book.id}.png`,
   },
 };
 ---
@@ -185,7 +186,7 @@ const pageSEO = {
               <div class="sketchbook-related-list">
                 {sameAuthorSketchbooks.map((b) => (
                   <a
-                    href={`/sketchbooks/${b.slug}`}
+                    href={`/sketchbooks/${b.id}`}
                     class="sketchbook-related-item"
                   >
 
@@ -233,7 +234,7 @@ const pageSEO = {
 
             <button
               class="sketchbook-viewer__topbar-button"
-              onclick={`window.SketchbookViewer.open('sketchbook-${book.slug}', 0)`}
+              onclick={`window.SketchbookViewer.open('sketchbook-${book.id}', 0)`}
             >
               View full sketchbook
             </button>
@@ -278,7 +279,7 @@ const pageSEO = {
 
           return (
             <a
-              href={`/sketchbooks/${b.slug}`}
+              href={`/sketchbooks/${b.id}`}
               class="sketchbook-explore__item"
             >
               {b.data.cover && (
@@ -326,14 +327,14 @@ const pageSEO = {
 
   <SketchbookViewer
     slot="overlay"
-    viewerId={`sketchbook-${book.slug}`}
+    viewerId={`sketchbook-${book.id}`}
     pages={pages}
     title={book.data.title}
     author={
       artist
         ? {
             name: artist.data.title,
-            url: `/artists/${artist.slug}`,
+            url: `/artists/${artist.id}`,
           }
         : undefined
     }

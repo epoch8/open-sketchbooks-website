@@ -1,10 +1,11 @@
 ---
+export const prerender = true;
 import InternalLayout from "@/layouts/InternalLayout.astro";
 import { SEOBase } from "@/content/template/seo/seo";
 import type { SEOConfig } from "@/lib/seo/types";
 
 
-import { getCollection, getEntry } from "astro:content";
+import { getCollection, getEntry, render } from "astro:content";
 
 import {
   mainNav,
@@ -23,7 +24,7 @@ export async function getStaticPaths() {
 
   return events.map((event) => ({
     params: {
-      slug: event.slug, // 👈 filesystem slug
+      slug: event.id,
     },
     props: {
       event,
@@ -67,7 +68,7 @@ const artistEntries = (
    MARKDOWN
 ================================ */
 
-const { Content } = await event.render();
+const { Content } = await render(event);
 
 /* ================================
    SEO
@@ -79,7 +80,7 @@ const pageSEO: Partial<SEOConfig> = {
     event.data.description ||
     "Sketchbook event from Open Sketchbook community.",
 
-  canonical: `https://open-sketchbook.place/events/${event.slug}`,
+  canonical: `https://open-sketchbook.place/events/${event.id}`,
 
   og: {
     type: "article",
@@ -174,7 +175,7 @@ const formattedDate = new Date(event.data.date).toLocaleDateString("en", {
         >
           {artistEntries.map((artist) => (
             <li style="break-inside: avoid; margin-bottom: 8px;">
-              <a href={`/artists/${artist.slug}`}>
+              <a href={`/artists/${artist.id}`}>
                 {artist.data.title}
               </a>
             </li>

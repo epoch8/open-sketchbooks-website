@@ -1,11 +1,12 @@
 ---
+export const prerender = true;
 import { getCollection } from "astro:content";
 
 export async function getStaticPaths() {
   const artists = await getCollection("artists");
 
   return artists.map((artist) => ({
-    params: { slug: artist.slug },
+    params: { slug: artist.id },
     props: { artist },
   }));
 }
@@ -13,7 +14,7 @@ export async function getStaticPaths() {
 const { artist } = Astro.props;
 
 /* 👉 ссылка на exhibition */
-const url = `https://open-sketchbook.place/artists/${artist.slug}/exhibition`;
+const url = `https://open-sketchbook.place/artists/${artist.id}/exhibition`;
 ---
 
 <html>

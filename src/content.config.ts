@@ -1,11 +1,7 @@
 import { defineCollection, z } from "astro:content";
+import { glob } from "astro/loaders";
 
-/* 🔒 базовый slug (на будущее и для связей) */
 const slug = z.string().regex(/^[a-z0-9-]+$/);
-
-/* ================================
-   ARTISTS
-================================ */
 
 const paymentMethodSchema = z.discriminatedUnion("type", [
   z.object({
@@ -35,19 +31,12 @@ const paymentMethodSchema = z.discriminatedUnion("type", [
 ]);
 
 const artists = defineCollection({
+  loader: glob({ pattern: "**/*.md", base: "./src/content/artists" }),
   schema: z.object({
     title: z.string().min(1),
-
-    /* 👤 соцсети */
     instagram: z.string().optional(),
-
-    /* 🎨 опционально */
     style: z.string().optional(),
-
-    /* 💸 оплата */
     paymentMethods: z.array(paymentMethodSchema).default([]),
-
-    /* 💬 контакт */
     contact: z
       .object({
         telegram: z
@@ -61,219 +50,126 @@ const artists = defineCollection({
   }),
 });
 
-/* ================================
-   WORKS
-================================ */
-
 const works = defineCollection({
+  loader: glob({ pattern: "**/*.md", base: "./src/content/works" }),
   schema: z.object({
     title: z.string().min(1).optional(),
-
-    /* 🔗 связь с artist.slug */
     artist: slug,
-
     image: z.string().min(1),
-
     year: z.number().int().optional(),
-
     tags: z.array(z.string()).optional(),
   }),
 });
 
-/* ================================
-   EVENTS
-================================ */
-
 const events = defineCollection({
+  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/events" }),
   schema: z.object({
     title: z.string().min(1),
-
     date: z.coerce.date(),
-
     location: z.string().min(1),
-
     description: z.string().optional(),
-
     artists: z.array(slug).default([]),
-
     cover: z.string().optional(),
   }),
 });
 
-/* ================================
-   SKETCHBOOKS
-================================ */
-
 const sketchbooks = defineCollection({
+  loader: glob({ pattern: "**/*.md", base: "./src/content/sketchbooks" }),
   schema: z.object({
     title: z.string().min(1),
-
-    /* 👤 автор */
     author: z.string().min(1),
-
     published: z.boolean().default(false),
-
-    size_mm: z.object({
-      width: z.number().positive().optional(),
-      height: z.number().positive().optional(),
-    }).optional(),
-
-    /* 📅 */
+    size_mm: z
+      .object({
+        width: z.number().positive().optional(),
+        height: z.number().positive().optional(),
+      })
+      .optional(),
     year: z.number().int().optional(),
-
-    /* 🏷 */
     tags: z.array(z.string()).default([]),
-
-    /* 📦 формат */
     format: z.object({
       physical: z.boolean().default(true),
       digital: z.boolean().default(false),
     }),
-
-    /* SEO */
     seoDescription: z.string().optional(),
-
-    /* 🎨 обложка */
     cover: z.string().min(1).optional(),
-
-
-
-    /* 📄 страницы */
     pages: z
       .array(
         z.object({
           src: z.string().min(1),
           caption: z.string().optional(),
-          aspect: z
-            .enum(["portrait", "square", "landscape"])
-            .optional(),
+          aspect: z.enum(["portrait", "square", "landscape"]).optional(),
         })
       )
       .optional()
       .default([]),
-
     featured: z
       .array(
         z.object({
           src: z.string().min(1),
           caption: z.string().optional(),
-          aspect: z
-            .enum(["portrait", "square", "landscape"])
-            .optional(),
+          aspect: z.enum(["portrait", "square", "landscape"]).optional(),
         })
       )
       .optional()
       .default([]),
-
     related: z
-  .array(
-    z.object({
-      slug: z.string().min(1),
-      type: z
-        .enum([
-          "similar",       // просто похожее
-        ])
-        .default("similar"),
-    })
-  )
-  .optional()
-  .default([]),
-
-    /* ⚙️ UI */
+      .array(
+        z.object({
+          slug: z.string().min(1),
+          type: z.enum(["similar"]).default("similar"),
+        })
+      )
+      .optional()
+      .default([]),
     settings: z
       .object({
         showCaptions: z.boolean().default(true),
         allowZoom: z.boolean().default(true),
-        background: z
-          .enum(["light", "dark"])
-          .default("light"),
+        background: z.enum(["light", "dark"]).default("light"),
       })
       .default({}),
   }),
 });
 
-
-/* ================================
-   PRODUCTS
-================================ */
-
 const relation = z.object({
   type: z.enum(["from", "related", "part_of"]),
   target: z.enum(["sketchbook", "collection"]),
   slug: slug,
-
-  // опционально (только для from)
   page: z.number().int().positive().optional(),
 });
 
 export const products = defineCollection({
+  loader: glob({ pattern: "**/*.md", base: "./src/content/products" }),
   schema: z.object({
-    /* 🧩 тип продукта */
     type: z.enum(["print", "original", "zine"]),
-
-    /* 📛 */
     title: z.string().min(1),
-
-    /* 💰 */
     price: z.object({
       amount: z.number().positive(),
       currency: z.enum(["GEL", "USD", "EUR"]),
     }),
-
-    /* 👤 */
     artist: slug,
-
-    /* 🖼 */
     image: z.string().min(1),
-
-    /* 📦 */
     status: z.enum(["available", "sold", "reserved"]).default("available"),
-
-    /* ⭐ placement */
-    featured: z
-      .array(z.enum(["artist", "items", "series"]))
-      .default([]),
-
-    /* 🔗 связи */
+    featured: z.array(z.enum(["artist", "items", "series"])).default([]),
     relations: z.array(relation).default([]),
-
-    /* 🎨 мета */
     medium: z.string().optional(),
     size: z.string().optional(),
     edition: z.string().optional(),
   }),
 });
 
-/* ================================
-   PRODUCT COLLECTIONS
-================================ */
-
 const productCollections = defineCollection({
+  loader: glob({ pattern: "**/*.md", base: "./src/content/productCollections" }),
   schema: z.object({
     title: z.string().min(1),
-
-    /* 👤 */
     artist: slug,
-
-    /* 🔗 связь с sketchbook */
     sketchbook: slug.optional(),
-
-        /* ⭐ placement */
-    featured: z
-      .array(z.enum(["artist", "items", "series"]))
-      .default([]),
-
-    /* 📝 */
+    featured: z.array(z.enum(["artist", "items", "series"])).default([]),
     description: z.string().optional(),
-
-    /* 🖼 */
     cover: z.string().optional(),
   }),
 });
-
-/* ================================
-   EXPORT
-================================ */
 
 export const collections = {
   artists,

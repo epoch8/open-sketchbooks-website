@@ -1,4 +1,5 @@
 ---
+export const prerender = true;
 import InternalLayout from "@/layouts/InternalLayout.astro";
 
 import { getCollection } from "astro:content";
@@ -21,7 +22,7 @@ export async function getStaticPaths() {
   const works = await getCollection("works");
 
   return works.map((work) => ({
-    params: { slug: work.slug },
+    params: { slug: work.id },
     props: { work },
   }));
 }
@@ -36,7 +37,7 @@ const { work } = Astro.props;
 const artists = await getCollection("artists");
 
 const artist = artists.find(
-  (a) => a.slug === work.data.artist
+  (a) => a.id === work.data.artist
 );
 
 /* ================================
@@ -67,7 +68,7 @@ const pageSEO = {
         {artist && (
           <>
             <span> / </span>
-            <a href={`/artists/${artist.slug}`}>
+            <a href={`/artists/${artist.id}`}>
               {artist.data.title}
             </a>
           </>
@@ -96,7 +97,7 @@ const pageSEO = {
             {artist && (
               <p class="artist">
                 by{" "}
-                <a href={`/artists/${artist.slug}`}>
+                <a href={`/artists/${artist.id}`}>
                   {artist.data.title}
                 </a>
               </p>

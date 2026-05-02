@@ -34,7 +34,7 @@ const artists: Artist[] = await getCollection("artists");
 ================================ */
 
 function getArtist(slug: string): Artist | undefined {
-  return artists.find((a) => a.slug === slug);
+  return artists.find((a) => a.id === slug);
 }
 
 function getRelation(
@@ -106,7 +106,7 @@ const pageSEO = {
 
           return (
             <a
-              href={`/items/${product.slug}`}
+              href={`/items/${product.id}`}
               class="card"
             >
               {/* IMAGE */}

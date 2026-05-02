@@ -1,4 +1,5 @@
 ---
+export const prerender = true;
 import InternalLayout from "@/layouts/InternalLayout.astro";
 import Gallery from "@/components/blocks/gallery/Gallery.astro";
 import CardGrid from "@/components/blocks/card-grid/CardGrid.astro";
@@ -6,7 +7,7 @@ import CardGridItem from "@/components/blocks/card-grid/CardGridItem.astro";
 import Book from "@/components/blocks/book/book.astro";
 
 
-import { getCollection } from "astro:content";
+import { getCollection, render } from "astro:content";
 
 import {
   mainNav,
@@ -26,7 +27,7 @@ export async function getStaticPaths() {
   const artists = await getCollection("artists");
 
   return artists.map((artist) => ({
-    params: { slug: artist.slug },
+    params: { slug: artist.id },
     props: { artist },
   }));
 }
@@ -36,19 +37,19 @@ export async function getStaticPaths() {
 ================================ */
 
 const { artist } = Astro.props;
-const { Content } = await artist.render();
+const { Content } = await render(artist);
 
 /* 👉 works */
 const works = await getCollection("works");
 
 const artistWorks = works.filter(
-  (work) => work.data.artist === artist.slug
+  (work) => work.data.artist === artist.id
 );
 
 const galleryWorks = artistWorks.map((w) => ({
   title: w.data.title ?? undefined,
   image: w.data.image,
-  slug: w.slug,
+  slug: w.id,
   alt: w.data.title ?? artist.data.title ?? "Artwork",
 }));
 
@@ -58,7 +59,7 @@ const sketchbooks = await getCollection("sketchbooks");
 const artistSketchbooks = sketchbooks
   .filter(
     (book) =>
-      book.data.author === artist.slug &&
+      book.data.author === artist.id &&
       book.data.published === true
   )
   .sort((a, b) => (b.data.year ?? 0) - (a.data.year ?? 0));
@@ -73,11 +74,11 @@ const allCollections = await getCollection("productCollections");
 /* фильтр по артисту */
 
 const items = allItems.filter(
-  (p) => p.data.artist === artist.slug
+  (p) => p.data.artist === artist.id
 );
 
 const collections = allCollections.filter(
-  (c) => c.data.artist === artist.slug
+  (c) => c.data.artist === artist.id
 );
 
 /* ================================
@@ -178,7 +179,7 @@ const pageSEO = {
         return (
           <a
             class="artist-sketchbook"
-            href={`/sketchbooks/${book.slug}`}
+            href={`/sketchbooks/${book.id}`}
           >
             <div class="artist-sketchbook__book">
               <Book
@@ -268,7 +269,7 @@ const pageSEO = {
               <input
                 type="hidden"
                 name="fields[artist]"
-                value={artist.slug}
+                value={artist.id}
               />
 
               <button type="submit" class="rsvp__button">

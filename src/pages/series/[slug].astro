@@ -1,6 +1,7 @@
 ---
+export const prerender = true;
 import InternalLayout from "@/layouts/InternalLayout.astro";
-import { getCollection } from "astro:content";
+import { getCollection, render } from "astro:content";
 import type { CollectionEntry } from "astro:content";
 
 import {
@@ -30,7 +31,7 @@ export async function getStaticPaths() {
   const collections = await getCollection("productCollections");
 
   return collections.map((collection) => ({
-    params: { slug: collection.slug },
+    params: { slug: collection.id },
     props: { collection },
   }));
 }
@@ -40,7 +41,7 @@ export async function getStaticPaths() {
 ================================ */
 
 const { collection } = Astro.props as { collection: Collection };
-const { Content } = await collection.render();
+const { Content } = await render(collection);
 
 const allProducts: Product[] = await getCollection("products");
 const sketchbooks: Sketchbook[] = await getCollection("sketchbooks");
@@ -74,7 +75,7 @@ function getFromRelation(
 ================================ */
 
 const products: Product[] = allProducts
-  .filter((p) => hasPartOfCollection(p, collection.slug))
+  .filter((p) => hasPartOfCollection(p, collection.id))
   .sort((a, b) =>
     a.data.title.localeCompare(b.data.title)
   );
@@ -92,7 +93,7 @@ const firstFrom: Relation | undefined = products
 
 const sketchbook: Sketchbook | undefined =
   firstFrom?.target === "sketchbook"
-    ? sketchbooks.find((s) => s.slug === firstFrom.slug)
+    ? sketchbooks.find((s) => s.id === firstFrom.slug)
     : undefined;
 
 /* ================================
@@ -143,7 +144,7 @@ const pageSEO = {
       {/* CONTEXT */}
       {sketchbook && (
         <div class="context">
-          <a href={`/sketchbooks/${sketchbook.slug}`}>
+          <a href={`/sketchbooks/${sketchbook.id}`}>
             rooted in {sketchbook.data.title} →
           </a>
         </div>
@@ -163,7 +164,7 @@ const pageSEO = {
 
               return (
                 <a
-                  href={`/items/${product.slug}`}
+                  href={`/items/${product.id}`}
                   class="card"
                 >
                   <div class="image">

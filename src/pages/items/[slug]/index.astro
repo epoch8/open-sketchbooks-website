@@ -1,6 +1,7 @@
 ---
+export const prerender = true;
 import InternalLayout from "@/layouts/InternalLayout.astro";
-import { getCollection } from "astro:content";
+import { getCollection, render } from "astro:content";
 
 import {
   mainNav,
@@ -19,7 +20,7 @@ export async function getStaticPaths() {
   const products = await getCollection("products");
 
   return products.map((product) => ({
-    params: { slug: product.slug },
+    params: { slug: product.id },
     props: { product },
   }));
 }
@@ -29,7 +30,7 @@ export async function getStaticPaths() {
 ================================ */
 
 const { product } = Astro.props;
-const { Content } = await product.render();
+const { Content } = await render(product);
 
 /* 👇 все продукты */
 const allProducts = await getCollection("products");
@@ -58,7 +59,7 @@ const relatedRels = relations.filter((r) => r.type === "related");
 const collections = await getCollection("productCollections");
 
 const collection = collectionRel
-  ? collections.find((c) => c.slug === collectionRel.slug)
+  ? collections.find((c) => c.id === collectionRel.slug)
   : null;
 
 /* ================================
@@ -69,7 +70,7 @@ const sketchbooks = await getCollection("sketchbooks");
 
 const fromSketchbook =
   from?.target === "sketchbook"
-    ? sketchbooks.find((s) => s.slug === from.slug)
+    ? sketchbooks.find((s) => s.id === from.slug)
     : null;
 
 /* ================================
@@ -79,7 +80,7 @@ const fromSketchbook =
 const artists = await getCollection("artists");
 
 const artist = product.data.artist
-  ? artists.find((a) => a.slug === product.data.artist)
+  ? artists.find((a) => a.id === product.data.artist)
   : null;
 
 /* ================================
@@ -89,7 +90,7 @@ const artist = product.data.artist
 const related =
   collectionRel
     ? allProducts.filter((p) => {
-        if (p.slug === product.slug) return false;
+        if (p.id === product.id) return false;
 
         const rels = p.data.relations ?? [];
 
@@ -147,7 +148,7 @@ const pageSEO = {
           {artist && (
             <div class="artist">
               by{" "}
-              <a href={`/artists/${artist.slug}`}>
+              <a href={`/artists/${artist.id}`}>
                 {artist.data.title}
               </a>
             </div>
@@ -189,7 +190,7 @@ const pageSEO = {
               <div class="relation relation--from">
                 <div class="label">from</div>
 
-                <a href={`/sketchbooks/${fromSketchbook.slug}`}>
+                <a href={`/sketchbooks/${fromSketchbook.id}`}>
                   {fromSketchbook.data.title}
                 </a>
 
@@ -206,7 +207,7 @@ const pageSEO = {
               <div class="relation relation--collection">
                 <div class="label">part of</div>
 
-                <a href={`/collections/${collection.slug}`}>
+                <a href={`/collections/${collection.id}`}>
                   {collection.data.title}
                 </a>
               </div>
@@ -220,22 +221,22 @@ const pageSEO = {
                 <div class="related-links">
                   {relatedRels.map((r) => {
                     if (r.target === "sketchbook") {
-                      const s = sketchbooks.find((x) => x.slug === r.slug);
+                      const s = sketchbooks.find((x) => x.id === r.slug);
                       if (!s) return null;
 
                       return (
-                        <a href={`/sketchbooks/${s.slug}`}>
+                        <a href={`/sketchbooks/${s.id}`}>
                           {s.data.title}
                         </a>
                       );
                     }
 
                     if (r.target === "collection") {
-                      const c = collections.find((x) => x.slug === r.slug);
+                      const c = collections.find((x) => x.id === r.slug);
                       if (!c) return null;
 
                       return (
-                        <a href={`/collections/${c.slug}`}>
+                        <a href={`/collections/${c.id}`}>
                           {c.data.title}
                         </a>
                       );
@@ -264,7 +265,7 @@ const pageSEO = {
 
           <div class="grid">
             {related.map((p) => (
-              <a href={`/items/${p.slug}`} class="card">
+              <a href={`/items/${p.id}`} class="card">
                 <div class="image">
                   <img src={p.data.image} alt={p.data.title} />
                 </div>
