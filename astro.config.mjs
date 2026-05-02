@@ -1,12 +1,14 @@
 import { defineConfig } from "astro/config";
 import react from "@astrojs/react";
 import mdx from "@astrojs/mdx";
+import node from "@astrojs/node";
 import path from "node:path";
 
 export default defineConfig({
   site: "https://open-sketchbook.place",
-  output: "static",
+  output: "server",
   base: "/",
+  adapter: node({ mode: "standalone" }),
 
   integrations: [
     react(),
