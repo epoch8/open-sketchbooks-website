@@ -11,9 +11,9 @@ export async function GET() {
 
     ...sketchbooks
       .filter((b) => b.data.published)
-      .map((b) => `/sketchbooks/${b.slug}`),
+      .map((b) => `/sketchbooks/${b.id}`),
 
-    ...artists.map((a) => `/artists/${a.slug}`),
+    ...artists.map((a) => `/artists/${a.id}`),
   ];
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
