@@ -13,11 +13,10 @@ import {
 } from "@/lib/seo/navigationSchema";
 
 import GithubIcon from "@/components/icons/GithubIcon.astro";
-
 import type { NavItem, IconName } from "@/lib/navigation/types";
 
 /* ================================
-   LOCAL TYPES (чтобы не тащить из content)
+   TYPES
 ================================ */
 
 type NavSection = {
@@ -31,17 +30,12 @@ type FooterMeta = {
   company?: string;
 };
 
-/* ================================
-   TYPES
-================================ */
-
 interface Props {
   baseSEO: SEOConfig;
   pageSEO?: Partial<SEOConfig>;
   structuredData?: object | object[];
   lang?: string;
 
-  /* UI */
   showNav?: boolean;
   showFooter?: boolean;
 
@@ -78,15 +72,11 @@ const {
   },
 } = Astro.props as Props;
 
-/* ================================
-   PATH
-================================ */
-
 const currentPath = Astro.url.pathname;
 
-/* ======================================================
+/* ================================
    SEO MERGE
-====================================================== */
+================================ */
 
 const seo: SEOConfig = pageSEO
   ? extendSEO(baseSEO, pageSEO)
@@ -99,28 +89,40 @@ const {
   noindex,
   og,
   twitter,
+  siteUrl,
 } = seo;
 
-/* ======================================================
-   BASE URL
-====================================================== */
+/* ================================
+   URL RESOLUTION (🔥 КЛЮЧЕВОЕ)
+================================ */
+
+const resolveUrl = (url?: string) => {
+  if (!url) return undefined;
+  if (url.startsWith("http")) return url;
+  if (!siteUrl) return url;
+  return `${siteUrl}${url}`;
+};
+
+const ogImage = resolveUrl(og?.image);
+const twitterImage = resolveUrl(twitter?.image ?? og?.image);
+
+/* ================================
+   BASE URL (for schemas)
+================================ */
 
 const baseUrl =
   (canonical && new URL(canonical).origin) ||
+  siteUrl ||
   "";
 
-/* ======================================================
-   NAVIGATION SCHEMA
-====================================================== */
+/* ================================
+   STRUCTURED DATA
+================================ */
 
 const navigationSchemas = [
   buildMainNavSchema(baseUrl, navItems),
   buildFooterNavSchema(baseUrl, footerSections),
 ];
-
-/* ======================================================
-   MERGE STRUCTURED DATA
-====================================================== */
 
 const allStructuredData = [
   ...navigationSchemas,
@@ -136,72 +138,74 @@ const allStructuredData = [
 <html lang={lang}>
   <head>
 
-<script is:inline>
-  const allowedHosts = [
-    "open-sketchbook.place",
-    "www.open-sketchbook.place"
-  ];
+    <!-- analytics -->
+    <script is:inline>
+      const allowedHosts = [
+        "open-sketchbook.place",
+        "www.open-sketchbook.place"
+      ];
 
-  if (allowedHosts.includes(window.location.hostname)) {
-    // грузим gtag.js только на проде
-    const script = document.createElement("script");
-    script.src = "https://www.googletagmanager.com/gtag/js?id=G-YD4RSLKX8T";
-    script.async = true;
+      if (allowedHosts.includes(window.location.hostname)) {
+        const script = document.createElement("script");
+        script.src = "https://www.googletagmanager.com/gtag/js?id=G-YD4RSLKX8T";
+        script.async = true;
 
-    script.onload = () => {
-      window.dataLayer = window.dataLayer || [];
+        script.onload = () => {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){window.dataLayer.push(arguments);}
+          window.gtag = gtag;
 
-      function gtag(){window.dataLayer.push(arguments);}
-      window.gtag = gtag;
+          gtag('js', new Date());
+          gtag('config', 'G-YD4RSLKX8T');
+        };
 
-      gtag('js', new Date());
-      gtag('config', 'G-YD4RSLKX8T');
-    };
-
-    document.head.appendChild(script);
-  }
-</script>
+        document.head.appendChild(script);
+      }
+    </script>
 
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Comfortaa:wght@300..700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Playwrite+DK+Uloopet+Guides&family=Playwrite+DK+Uloopet:wght@100..400&family=Trispace:wght@100..800&display=swap" rel="stylesheet">
-<title>{title}</title>
+    <title>{title}</title>
     <meta name="description" content={description} />
 
     {noindex && <meta name="robots" content="noindex,nofollow" />}
     {canonical && <link rel="canonical" href={canonical} />}
 
-    {/* OG */}
+    {/* =========================
+        OPEN GRAPH
+    ========================= */}
+
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content={og?.type ?? "website"} />
+
     {canonical && <meta property="og:url" content={canonical} />}
-    {og?.image && <meta property="og:image" content={og.image} />}
+    {ogImage && <meta property="og:image" content={ogImage} />}
     {og?.imageAlt && (
       <meta property="og:image:alt" content={og.imageAlt} />
     )}
 
-    {/* Twitter */}
+    {/* =========================
+        TWITTER
+    ========================= */}
+
     <meta
       name="twitter:card"
       content={twitter?.card ?? "summary_large_image"}
     />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
-    {(twitter?.image ?? og?.image) && (
-      <meta
-        name="twitter:image"
-        content={twitter?.image ?? og?.image}
-      />
+
+    {twitterImage && (
+      <meta name="twitter:image" content={twitterImage} />
     )}
 
-    {/* STRUCTURED DATA */}
+    {/* =========================
+        STRUCTURED DATA
+    ========================= */}
+
     {allStructuredData.map((item) => (
       <script
         type="application/ld+json"
@@ -226,8 +230,7 @@ const allStructuredData = [
       <slot />
     </main>
 
-      <slot name="overlay" />
-
+    <slot name="overlay" />
 
     {showFooter && footerSections.length > 0 && (
       <Footer

@@ -2,21 +2,26 @@
 
 import type { SEOConfig } from "@/lib/seo/types";
 
-export const SEOBase: SEOConfig = {
-  title: "Astro Website Starter",
-  description:
-    "Quick template for building content-rich websites with Astro. Features SEO best practices, responsive design, and easy customization.",
+const SITE_URL = "https://open-sketchbook.place";
 
-  canonical: "",
+export const SEOBase: SEOConfig = {
+  title: "Open Sketchbooks — Flip Through Real Artists’ Sketchbooks",
+
+  description:
+    "Explore real sketchbooks by artists – raw pages, ideas, and visual thinking. Discover artists, flip through sketchbooks, and join open calls and local exhibitions.",
+
+  siteUrl: SITE_URL,
+
+  canonical: SITE_URL,
 
   og: {
     type: "website",
-    image: "/og/default.png",
-    imageAlt: "Website preview",
+    image: `${SITE_URL}/og/open-sketchbooks.png`,
+    imageAlt: "Open Sketchbooks — artists and sketchbooks",
   },
 
   twitter: {
     card: "summary_large_image",
-    image: "/og/default.png",
+    image: `${SITE_URL}/og/open-sketchbooks.png`,
   },
 };
