@@ -23,7 +23,7 @@ format:
   physical: true
   digital: true
 
-seoDescription: "2024 by Liza Chernova"
+seoDescription: "2024 travel diary by Liza Chernova – travel sketchbook with ink drawings and mixed media. Observational sketches of places, people, and everyday life, capturing journeys and experiences through drawing."
 
 cover: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/chernov-lis/2024/resize_web/800/001.jpg"
 
@@ -76,6 +76,7 @@ featured:
   - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/chernov-lis/2024/resize_web/1600/012.jpg"
   - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/chernov-lis/2024/resize_web/1600/020.jpg"
   - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/chernov-lis/2024/resize_web/1600/022.jpg"
+  - src: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/chernov-lis/2024/resize_web/1600/024.jpg"
 
 # 👇 настройки отображения (UI)
 settings:

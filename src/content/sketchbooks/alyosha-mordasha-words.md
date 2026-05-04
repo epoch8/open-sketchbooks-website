@@ -18,7 +18,7 @@ format:
   physical: true
   digital: true
 
-seoDescription: "Sketches of Alyosha Mordasha"
+seoDescription: "“Words” by Alyosha Mordasha – a visual poetry sketchbook combining handwritten text, illustration, and experimental typography."
 
 cover: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/alyosha-mordasha/words/resize_web/800/001.jpg"
 

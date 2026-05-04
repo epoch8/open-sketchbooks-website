@@ -22,7 +22,7 @@ format:
   physical: true
   digital: true
 
-seoDescription: "2022 by Liza Chernova"
+seoDescription: "2022 sketchbook by Liza Chernova – mixed media and graphic sketchbook documenting relocation to Dilijan and then to Tbilisi. Personal visual diary of displacement, travel, and everyday life."
 
 cover: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/chernov-lis/2022/resize_web/800/050.jpg"
 

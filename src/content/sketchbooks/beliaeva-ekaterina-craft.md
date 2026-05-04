@@ -18,7 +18,7 @@ format:
   physical: true
   digital: true
 
-seoDescription: "Sketches of Beliaeva Ekaterina"
+seoDescription: "Doodle sketchbook by Ekaterina Beliaeva – naïve illustration and mixed media sketchbook with spontaneous doodles, characters, and animation-style drawings. Daily sketchbook practice focused on free drawing and creative expression."
 
 cover: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/beliaeva-ekaterina/craft/resize_web/800/001.jpg"
 

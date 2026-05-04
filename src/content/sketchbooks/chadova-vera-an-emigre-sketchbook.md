@@ -18,7 +18,7 @@ format:
   physical: true
   digital: true
 
-seoDescription: "An émigré sketchbook by Vera Chadova"
+seoDescription: "An émigré sketchbook by Vera Chadova – urban sketching and mixed media sketchbook documenting relocation and daily life in Tbilisi. City sketches, collage, and observational drawing exploring place, memory, and migration."
 
 cover: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/chadova-vera/sketchbook-130-210/resize_web/800/001.jpg"
 

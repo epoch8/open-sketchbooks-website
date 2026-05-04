@@ -16,7 +16,7 @@ format:
   physical: true
   digital: true
 
-seoDescription: "Sketches of Beliaeva Ekaterina"
+seoDescription: "Drawing diary by Ekaterina Beliaeva – large-format sketchbook featuring city sketches, character exploration, and loose expressive drawing. Urban sketching and daily drawing diary with bold strokes and mixed media."
 
 cover:  "https://storage.googleapis.com/open-sketchbooks/sketchbooks/beliaeva-ekaterina/diary/resize_web/800/001.jpg"
 

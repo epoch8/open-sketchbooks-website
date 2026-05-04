@@ -16,7 +16,7 @@ format:
   physical: true
   digital: true
 
-seoDescription: "Quick nude studies by Nagaen Egr, created over five years."
+seoDescription: "Quick nude studies No.3 by Egr Nagaen – a sketchbook of life drawing and figure studies created over five years. Gesture sketches exploring human anatomy, movement, and artistic process by a film and animation artist based in Tbilisi."
 
 cover: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/nagaen-egr/nude-studies-3-150-210/resize_web/800/001.jpg"
 

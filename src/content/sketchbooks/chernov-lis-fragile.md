@@ -17,7 +17,7 @@ format:
   physical: true
   digital: true
 
-seoDescription: "Fragile by Liza Chernova"
+seoDescription: "“Fragile” by Liza Chernova – mixed media sketchbook and artist book using collage, found objects, and personal artifacts. Exploration of memory, time, and material decay through objects, fragments, and everyday traces."
 
 cover: "https://storage.googleapis.com/open-sketchbooks/sketchbooks/chernov-lis/fragile/resize_web/800/035.jpg"
 
