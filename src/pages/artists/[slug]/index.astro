@@ -2,8 +2,6 @@
 export const prerender = true;
 import InternalLayout from "@/layouts/InternalLayout.astro";
 import Gallery from "@/components/blocks/gallery/Gallery.astro";
-import CardGrid from "@/components/blocks/card-grid/CardGrid.astro";
-import CardGridItem from "@/components/blocks/card-grid/CardGridItem.astro";
 import Book from "@/components/blocks/book/book.astro";
 
 
@@ -112,7 +110,12 @@ const nonFeaturedItems = items.filter(
 const pageSEO = {
   title: artist.data.title,
   description: `Works by ${artist.data.title}`,
-  image: `/og/artists/${artist.id}.png`,
+  og: {
+    image: `/og/artists/${artist.id}.png`,
+  },
+  twitter: {
+    image: `/og/artists/${artist.id}.png`,
+  },
 };
 ---
 
