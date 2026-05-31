@@ -66,9 +66,12 @@ const events = defineCollection({
   schema: z.object({
     title: z.string().min(1),
     date: z.coerce.date(),
+    endDate: z.coerce.date().optional(),
     location: z.string().min(1),
+    locationUrl: z.string().url().optional(),
     description: z.string().optional(),
     artists: z.array(slug).default([]),
+    sketchbooks: z.array(slug).default([]),
     cover: z.string().optional(),
   }),
 });

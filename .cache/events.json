@@ -1,0 +1,49 @@
+[
+  {
+    "slug": "batumi-sketchbook-exhibition-summer-2026",
+    "title": "Sketchbook Art Exhibition – Batumi, June 27-28, 2026",
+    "date": "2026-06-27T00:00:00.000Z",
+    "endDate": "2026-06-28T00:00:00.000Z",
+    "location": "Batumi, Loft4, 91 Zurab Gorgiladze St",
+    "sketchbooks": [
+      {
+        "slug": "zhivov-vadim-sketchbook",
+        "title": "Sublimation Sketchbook",
+        "thumb": "https://storage.googleapis.com/open-sketchbooks/sketchbooks/zhivov-vadim/sketchbook/resize_web/800/122.jpg"
+      },
+      {
+        "slug": "shipunova-evgenia-svaneti",
+        "title": "Svaneti",
+        "thumb": "https://storage.googleapis.com/open-sketchbooks/sketchbooks/shipunova-evgenia/svaneti/resize_web/1600/042.jpg"
+      },
+      {
+        "slug": "shipunova-evgenia-flower-no1",
+        "title": "Flower no1",
+        "thumb": "https://storage.googleapis.com/open-sketchbooks/sketchbooks/shipunova-evgenia/flower-no1/resize_web/800/053.jpg"
+      },
+      {
+        "slug": "shipunova-evgenia-doodles",
+        "title": "Doodles",
+        "thumb": "https://storage.googleapis.com/open-sketchbooks/sketchbooks/shipunova-evgenia/sketchbook-no4/resize_web/1600/020.jpg"
+      },
+      {
+        "slug": "sokolova-olga-big-blue-sketchbook",
+        "title": "Big Blue Sketchbook",
+        "thumb": "https://storage.googleapis.com/open-sketchbooks/sketchbooks/sokolova-olga/big-blue/resize_web/800/003.jpg"
+      },
+      {
+        "slug": "beliaeva-ekaterina-diary",
+        "title": "Drawing Diary",
+        "thumb": "https://storage.googleapis.com/open-sketchbooks/sketchbooks/beliaeva-ekaterina/diary/resize_web/800/003.jpg"
+      }
+    ]
+  },
+  {
+    "slug": "tbilisi-sketchbook-exhibition-spring-2026",
+    "title": "Sketchbook Art Exhibition – Tbilisi, April 12, 2026",
+    "date": "2026-04-12T00:00:00.000Z",
+    "endDate": null,
+    "location": "Tbilisi, CHITI Club Saburtalo, Simon Kandelaki St, 39",
+    "sketchbooks": []
+  }
+]

@@ -678,3 +678,112 @@ a:focus-visible {
   }
 }
 
+/* ======================================
+   FEATURED SKETCHBOOKS (event page)
+====================================== */
+
+.event-featured {
+  margin-top: 48px;
+  margin-bottom: 48px;
+}
+
+.event-sketchbooks {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 24px;
+  margin-top: 24px;
+}
+
+.event-sketchbook {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
+.event-sketchbook__thumb {
+  overflow: hidden;
+  border-radius: 12px;
+  background: var(--color-surface, #f2f2f2);
+  aspect-ratio: 3 / 4; /* default: portrait */
+}
+
+.event-sketchbook--square .event-sketchbook__thumb {
+  aspect-ratio: 1 / 1;
+}
+
+.event-sketchbook--landscape .event-sketchbook__thumb {
+  aspect-ratio: 4 / 3;
+}
+
+.event-sketchbook__thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.3s ease;
+}
+
+.event-sketchbook:hover .event-sketchbook__thumb img {
+  transform: scale(1.03);
+}
+
+.event-sketchbook__meta {
+  margin-top: 10px;
+}
+
+.event-sketchbook__title {
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.event-sketchbook__author {
+  margin-top: 2px;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+}
+
+/* ======================================
+   EVENT SPACE PHOTOS (in MDX content)
+====================================== */
+
+.event-space-photos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+  margin: 32px 0;
+}
+
+.event-space-photos img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 12px;
+  display: block;
+}
+
+/* ======================================
+   HOME HERO BUTTONS
+====================================== */
+
+.heroButtons {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.heroButton--secondary {
+  background: transparent;
+  border: 1px solid currentColor;
+  color: inherit;
+}
+
+@media (max-width: 480px) {
+  .heroButtons {
+    flex-direction: column;
+  }
+
+  .heroButtons .heroButton {
+    width: 100%;
+    text-align: center;
+  }
+}

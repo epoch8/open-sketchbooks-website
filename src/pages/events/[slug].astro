@@ -7,6 +7,8 @@ import type { SEOConfig } from "@/lib/seo/types";
 
 import { getCollection, getEntry, render } from "astro:content";
 
+import { formatEventDate } from "@/lib/format/eventDate";
+
 import {
   mainNav,
   footerNav,
@@ -65,6 +67,31 @@ const artistEntries = (
 ).filter(isDefined);
 
 /* ================================
+   FEATURED SKETCHBOOKS
+================================ */
+
+const featuredSketchbooks = (
+  await Promise.all(
+    (event.data.sketchbooks || []).map(async (slug) => {
+      const entry = await getEntry("sketchbooks", slug);
+
+      if (!entry) {
+        console.warn(`Missing sketchbook: ${slug}`);
+      }
+
+      return entry;
+    })
+  )
+)
+  .filter(isDefined)
+  .filter((s) => s.data.published);
+
+// Map artist slug → entry, for the "by {author}" line on featured cards.
+const artistMap = Object.fromEntries(
+  artistEntries.map((artist) => [artist.id, artist])
+);
+
+/* ================================
    MARKDOWN
 ================================ */
 
@@ -84,13 +111,13 @@ const pageSEO: Partial<SEOConfig> = {
 
   og: {
     type: "article",
-    image: "/og/events.jpg",
-    imageAlt: "Events – Open Sketchbooks",
+    image: `/og/events/${event.id}.png`,
+    imageAlt: `${event.data.title} – Open Sketchbooks`,
   },
 
   twitter: {
     card: "summary_large_image",
-    image: "/og/events.jpg",
+    image: `/og/events/${event.id}.png`,
   },
 };
 
@@ -98,11 +125,7 @@ const pageSEO: Partial<SEOConfig> = {
    DATE
 ================================ */
 
-const formattedDate = new Date(event.data.date).toLocaleDateString("en", {
-  year: "numeric",
-  month: "long",
-  day: "numeric",
-});
+const formattedDate = formatEventDate(event.data.date, event.data.endDate);
 ---
 
 <InternalLayout
@@ -124,7 +147,14 @@ const formattedDate = new Date(event.data.date).toLocaleDateString("en", {
           <h1>{event.data.title}</h1>
 
           <p class="hero-header__meta">
-            {formattedDate} · {event.data.location}
+            {formattedDate} ·{" "}
+            {event.data.locationUrl ? (
+              <a href={event.data.locationUrl} target="_blank" rel="noopener">
+                {event.data.location}
+              </a>
+            ) : (
+              event.data.location
+            )}
           </p>
         </div>
 
@@ -143,6 +173,43 @@ const formattedDate = new Date(event.data.date).toLocaleDateString("en", {
           alt={event.data.title}
           style="width:100%; border-radius:12px;"
         />
+      )}
+
+      {/* FEATURED SKETCHBOOKS */}
+      {featuredSketchbooks.length > 0 && (
+        <div class="flow event-featured">
+          <h2>Featured sketchbooks</h2>
+          <p>A taste of what you'll be able to flip through at the exhibition.</p>
+
+          <div class="event-sketchbooks">
+            {featuredSketchbooks.map((book) => {
+              const thumb = book.data.featured?.[0]?.src ?? book.data.cover;
+              const aspect = book.data.featured?.[0]?.aspect ?? "portrait";
+              const author = artistMap[book.data.author];
+
+              return (
+                <a
+                  href={`/sketchbooks/${book.id}`}
+                  class={`event-sketchbook event-sketchbook--${aspect}`}
+                >
+                  <div class="event-sketchbook__thumb">
+                    {thumb && (
+                      <img src={thumb} alt={book.data.title} loading="lazy" />
+                    )}
+                  </div>
+                  <div class="event-sketchbook__meta">
+                    <div class="event-sketchbook__title">{book.data.title}</div>
+                    {author && (
+                      <div class="event-sketchbook__author">
+                        by {author.data.title}
+                      </div>
+                    )}
+                  </div>
+                </a>
+              );
+            })}
+          </div>
+        </div>
       )}
 
       {/* CONTENT */}

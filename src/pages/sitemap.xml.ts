@@ -5,6 +5,7 @@ export async function GET() {
 
   const sketchbooks = await getCollection('sketchbooks');
   const artists = await getCollection('artists');
+  const events = await getCollection('events');
 
   const urls = [
     '',
@@ -14,6 +15,8 @@ export async function GET() {
       .map((b) => `/sketchbooks/${b.id}`),
 
     ...artists.map((a) => `/artists/${a.id}`),
+
+    ...events.map((e) => `/events/${e.id}`),
   ];
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
