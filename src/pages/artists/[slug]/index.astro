@@ -155,6 +155,28 @@ const pageSEO = {
           </a>
         )}
 
+        {artist.data.threads && (
+          <a
+            href={`https://www.threads.com/@${artist.data.threads}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="threads"
+          >
+            @{artist.data.threads}
+          </a>
+        )}
+
+        {artist.data.website && (
+          <a
+            href={artist.data.website}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="website"
+          >
+            {new URL(artist.data.website).hostname.replace(/^www\./, "")}
+          </a>
+        )}
+
       </div>
     </div>
 
@@ -335,13 +357,17 @@ const pageSEO = {
    INSTAGRAM
 ================================ */
 
-.instagram {
+.instagram,
+.threads,
+.website {
   text-decoration: none;
   color: inherit;
   border-bottom: 1px solid transparent;
 }
 
-.instagram:hover {
+.instagram:hover,
+.threads:hover,
+.website:hover {
   border-color: currentColor;
 }
 

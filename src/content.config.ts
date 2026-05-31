@@ -35,6 +35,8 @@ const artists = defineCollection({
   schema: z.object({
     title: z.string().min(1),
     instagram: z.string().optional(),
+    threads: z.string().optional(),
+    website: z.string().url().optional(),
     style: z.string().optional(),
     paymentMethods: z.array(paymentMethodSchema).default([]),
     contact: z
