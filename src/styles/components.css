@@ -774,7 +774,12 @@ a:focus-visible {
 .heroButton--secondary {
   background: transparent;
   border: 1px solid currentColor;
-  color: inherit;
+  color: var(--color-text);
+}
+
+.heroButton--secondary:hover {
+  background: var(--color-text);
+  color: var(--color-bg);
 }
 
 @media (max-width: 480px) {
