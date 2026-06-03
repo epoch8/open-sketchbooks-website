@@ -1,5 +1,5 @@
 ---
-title: Galia Presniakova
+title: Galina Presniakova
 instagram: presnyakova_g
 style: Watercolour illustration, graphics · urban sketching, nature
 ---
