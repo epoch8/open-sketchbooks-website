@@ -51,6 +51,13 @@ export const mainNav: NavItem[] = [
   },
 
   {
+    label: "Tools",
+    href: "/tools",
+    description: "Interactive tools for artists",
+    enabled: true,
+  },
+
+  {
     label: "GitHub",
     href: "https://github.com/epoch8/vedana",
     external: true,

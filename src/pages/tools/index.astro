@@ -1,0 +1,59 @@
+---
+import InternalLayout from "@/layouts/InternalLayout.astro";
+import { SEOBase } from "@/content/template/seo/seo";
+import type { SEOConfig } from "@/lib/seo/types";
+
+import CardGrid from "@/components/blocks/card-grid/CardGrid.astro";
+import CardGridItem from "@/components/blocks/card-grid/CardGridItem.astro";
+
+import { getCollection } from "astro:content";
+
+import {
+  mainNav,
+  footerNav,
+  footerMeta,
+} from "@/content/template/navigation/navigation";
+
+import BrandLogo from "@/components/products/open-sketchbooks/logo/BrandLogo.astro";
+
+const pageSEO: Partial<SEOConfig> = {
+  title: "Tools — Open Sketchbooks",
+  description:
+    "Free interactive tools for artists — color, palette and sketchbook helpers.",
+  canonical: "https://open-sketchbook.place/tools",
+};
+
+const all = await getCollection("tools");
+const tools = all
+  .filter((t) => t.data.published)
+  .sort((a, b) => (a.data.order ?? 999) - (b.data.order ?? 999));
+---
+
+<InternalLayout
+  baseSEO={SEOBase}
+  pageSEO={pageSEO}
+  navItems={mainNav}
+  footerSections={footerNav}
+  footerMeta={footerMeta}
+  logo={BrandLogo}
+>
+  <section class="section">
+    <div class="container flow">
+      <h1>Tools</h1>
+      <p>Free interactive tools for artists. Open one and play — nothing to install.</p>
+
+      <CardGrid>
+        {tools.map((tool) => (
+          <CardGridItem
+            title={tool.data.title}
+            href={`/tools/${tool.id}`}
+            image={tool.data.cover}
+            imageAlt={tool.data.title}
+            text={tool.data.summary}
+            buttonLabel="Open"
+          />
+        ))}
+      </CardGrid>
+    </div>
+  </section>
+</InternalLayout>

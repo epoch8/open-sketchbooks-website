@@ -176,6 +176,22 @@ const productCollections = defineCollection({
   }),
 });
 
+const tools = defineCollection({
+  loader: glob({ pattern: "**/*.md", base: "./src/content/tools" }),
+  schema: z.object({
+    title: z.string().min(1),
+    summary: z.string().min(1),
+    author: z.string().default("Olga Tatarinova"),
+    published: z.boolean().default(false),
+    order: z.number().int().optional(),
+    tags: z.array(z.string()).default([]),
+    src: z.string().min(1),
+    cover: z.string().optional(),
+    credit: z.string().optional(),
+    uiLang: z.enum(["en", "ru"]).default("en"),
+  }),
+});
+
 export const collections = {
   artists,
   works,
@@ -183,4 +199,5 @@ export const collections = {
   sketchbooks,
   products,
   productCollections,
+  tools,
 };

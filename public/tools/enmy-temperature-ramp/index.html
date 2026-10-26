@@ -1,0 +1,1067 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Enmy · temperature ramp</title>
+<style>
+ :root{--ink:#221D1D;--mut:#8A817B;--teal:#1D9E75;--line:#cfc9c2}
+ *{box-sizing:border-box}
+ body{margin:0;font-family:'Nunito',Segoe UI,sans-serif;background:#EAF3EA;color:var(--ink)}
+ .wrap{max-width:1080px;margin:0 auto;padding:14px}
+ h1{font-size:19px;margin:0 0 2px}.sub{font-size:12.5px;color:var(--mut);margin:0 0 10px;line-height:1.5}
+ .grid{display:grid;grid-template-columns:1.05fr 1fr;gap:14px}
+ .col{min-width:0}
+ @media(max-width:820px){.grid{grid-template-columns:1fr}}
+ .card{background:#fff;border-radius:12px;box-shadow:0 3px 14px rgba(0,0,0,.07);padding:12px 13px;margin-bottom:12px}
+ h2{font-size:13px;margin:0 0 9px;display:flex;align-items:center;gap:7px}
+ .num{display:inline-flex;width:19px;height:19px;border-radius:50%;background:var(--ink);color:#fff;font-size:11px;align-items:center;justify-content:center}
+ .bar{display:flex;gap:8px 10px;align-items:center;flex-wrap:wrap;margin:8px 0}
+ .lbl{font-size:12px;font-weight:700;color:#555}
+ .seg{display:inline-flex;border:1.5px solid var(--line);border-radius:8px;overflow:hidden}
+ .seg span{padding:5px 10px;font-size:12px;border-right:1.5px solid var(--line);cursor:pointer}
+ .seg span:last-child{border-right:none}
+ .seg span.on{background:var(--teal);color:#fff}
+ .mpick{display:flex;flex-wrap:wrap;gap:3px}
+ .msw{width:25px;height:21px;border-radius:5px;border:2px solid transparent;cursor:pointer;font-size:8px;font-weight:800;display:flex;align-items:center;justify-content:center}
+ .msw.on{border-color:#222;box-shadow:0 0 0 2px #fff inset}
+ .msw.act{border-color:var(--teal);box-shadow:0 0 0 2px #fff inset,0 0 0 3px var(--teal)}
+ .pzrow{display:flex;align-items:flex-start;gap:9px;margin-bottom:6px}
+ .pzlab{min-width:98px;font-size:11px;font-weight:800;text-align:right;color:#444;padding-top:4px;flex:0 0 auto}
+ .pzchips{display:flex;flex-wrap:wrap;gap:3px;align-items:center}
+ .pchip{display:inline-flex;align-items:center;justify-content:center;min-width:30px;height:22px;padding:0 4px;border-radius:5px;font-size:9px;font-weight:800;border:1.5px solid rgba(0,0,0,.08)}
+ .pchip.ex{min-width:25px;height:17px;font-size:7.5px;opacity:.92}
+ .pchip.opt{min-width:25px;height:17px;font-size:7.5px;border:1.5px dashed rgba(0,0,0,.4)}
+ .pzsep{width:1px;align-self:stretch;background:var(--line);margin:2px 4px}
+ .oswitch{display:inline-flex;align-items:center;justify-content:center;min-width:34px;height:24px;padding:0 6px;border-radius:6px;font-size:10px;font-weight:800;border:2px solid transparent;cursor:pointer;margin-right:4px}
+ .oswitch.on{border-color:#222;box-shadow:0 0 0 2px #fff inset}
+ .btn{font:inherit;font-weight:700;font-size:12px;border:1.5px solid var(--line);background:#fff;border-radius:8px;padding:6px 11px;cursor:pointer}
+ .btn.sm{padding:5px 9px;font-size:11.5px}
+ input[type=range]{vertical-align:middle}
+ .wheelwrap{display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap}
+ #wheel{position:relative;width:220px;height:220px;flex:0 0 auto;touch-action:none}
+ #wdisc{position:absolute;inset:0;border-radius:50%;border:1.5px solid var(--line)}
+ #wsvg{position:absolute;left:0;top:0}
+ .wlabels{font-size:11px;color:var(--mut);line-height:1.5;flex:1;min-width:170px}
+ .wlabels b{color:var(--ink)}
+ .ramp{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+ .rc{border-radius:9px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.08);background:#fff}
+ .rc.base{outline:2.5px solid var(--teal)}
+ .sw{height:56px;display:flex;align-items:flex-end;justify-content:space-between;padding:4px 5px}
+ .code{font-size:13px;font-weight:800}
+ .pip{font-size:7.5px;font-weight:800;background:#fff;border:1px solid rgba(0,0,0,.2);border-radius:4px;padding:1px 2px;color:#888}
+ .cbody{padding:4px 5px 6px}
+ .step{font-size:10.5px;font-weight:800;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+ .drift{font-size:9px;color:var(--mut);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+ .strip{display:flex;height:20px;border-radius:7px;overflow:hidden;margin-top:9px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+ .strip div{flex:1}
+ .tstrip{display:flex;gap:2px}
+ .tc{flex:1;min-width:0;height:46px;border-radius:5px;display:flex;align-items:flex-end;justify-content:center;font-size:8.5px;font-weight:800;padding-bottom:2px;overflow:hidden}
+ .tc.anchor{outline:2px solid var(--teal);outline-offset:-2px}
+ .oc.anchor{outline:2px solid var(--teal);outline-offset:-2px}
+ .cpk{display:inline-flex;align-items:center;justify-content:center;min-width:26px;height:19px;padding:0 5px;border-radius:5px;font-size:9.5px;font-weight:800;cursor:pointer;border:2px solid transparent}
+ .cpk.on{border-color:var(--teal)}
+ .tlabels{display:flex;gap:2px;margin-top:2px}
+ .tlab{flex:1;min-width:0;font-size:7.5px;text-align:center;color:#333;font-weight:800;line-height:1.05;white-space:nowrap}
+ .tlab:not(:empty){border-top:2px solid var(--teal)}
+ .ostrip{display:flex;gap:2px;margin-top:6px}
+ .oc{flex:1;min-width:0;height:54px;border-radius:5px;display:flex;flex-direction:column;overflow:hidden;font-size:9.5px;font-weight:800}
+ .ocodes{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;line-height:1.12}
+ .obar{display:flex;width:100%;height:8px}
+ .obar span{display:block;height:100%}
+ .note{font-size:11px;color:var(--mut);margin-top:9px;line-height:1.5}
+ .stgrid{display:grid;grid-template-columns:auto 1fr;gap:5px 9px;align-items:center;margin-top:8px}
+ .stlab{font-size:10px;color:#555;text-align:right;white-space:nowrap;font-weight:700}
+ .strow{display:inline-flex;flex-wrap:wrap;gap:3px}
+ .stc{display:inline-flex;align-items:center;justify-content:center;min-width:30px;height:20px;padding:0 4px;border-radius:5px;font-size:9px;font-weight:800;border:2px solid transparent;cursor:pointer}
+ .stc.cur{border-color:#222;box-shadow:0 0 0 2px #fff inset}
+ .val{font-size:11.5px;font-weight:700;color:#555;min-width:26px;display:inline-block}
+ .schint{font-size:10.5px;color:var(--mut);margin-top:4px;line-height:1.4}
+</style></head><body><div class="wrap">
+<h1>Enmy · temperature ramp <span style="font-size:12px;color:var(--mut)">v4f · glow ramp (over-light)</span></h1>
+<p class="sub">Pick object markers → set the shared light on the wheel → character and strength → read the pair palette from the scene map (three ramps: light · contact · shadow). All objects under one light, shadows converge to one sky.</p>
+
+<div class="card" style="padding:9px 13px">
+ <div class="bar" style="margin:0"><span class="lbl">Scene:</span><span id="scenes" class="bar" style="margin:0;gap:5px"></span>
+  <button id="reset" class="btn sm" style="margin-left:auto">Reset</button></div>
+</div>
+
+<div class="grid">
+ <div class="col">
+  <div class="card">
+   <h2><span class="num">1</span> Objects — markers (scene)</h2>
+   <div class="mpick" id="mpick"></div>
+   <div id="objswitch" style="margin-top:9px"></div>
+   <div id="rolepick" style="margin-top:7px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:11px;color:var(--mut)"></div>
+   <div class="schint">Click the palette to add or remove a marker from the scene. All selected ones go on the wheel. The row below — <b>active object</b> (outlined on the wheel, its light→shadow path is drawn in block 2 and on the scene map); click switches the active one.</div>
+  </div>
+
+  <div class="card">
+   <h2><span class="num">2</span> Color — light, object, shadow on the wheel</h2>
+   <div class="wheelwrap">
+    <div id="wheel"><div id="wdisc"></div><svg id="wsvg" width="220" height="220"></svg></div>
+    <div class="wlabels" id="wlabels"></div>
+   </div>
+   <div style="margin-top:8px"><div class="lbl" style="margin-bottom:3px">Scene light · by marker <span style="font-weight:400;color:var(--mut)">· hue and strength from the marker, drawn washed toward the light (light is not paint); the dot on the wheel can be nudged by hand</span></div><div class="mpick" id="lightpick"></div></div>
+   <div style="margin-top:6px"><div class="lbl" style="margin-bottom:3px">Fill · by marker <span style="font-weight:400;color:var(--mut)">· sky / second light</span></div><div class="mpick" id="fillpick"></div></div>
+   <div class="bar" style="margin-top:8px"><span class="lbl">Shadow angle</span><span class="seg" id="angleSeg">
+    <span data-a="complement" class="on">complement</span><span data-a="split">split</span><span data-a="triad">triad</span><span data-a="analog">analog</span></span></div>
+   <div class="bar"><span class="lbl">Path · route</span><span class="seg" id="pathSeg">
+    <span data-p="straight" class="on">straight</span><span data-p="warmTurn">warm</span><span data-p="coolTurn">cool</span><span data-p="sTurn">S-break</span></span></div>
+   <div class="bar"><span class="lbl">Path · chroma profile</span><span class="seg" id="profSeg">
+    <span data-pr="dip">dip</span><span data-pr="flat" class="on">flat</span><span data-pr="glow">glow</span></span></div>
+   <div class="schint">In plain words: how much the color <b>rich</b> on the way from light to shadow. <b>Dip</b> — in the halftone the color dims toward gray (dusty, airy, like distance). <b>Flat</b> — holds richness all the way (clean, bright, poster-like). <b>Glow</b> — flares brightest at the break of light and shadow (a rich glowing edge, like on an apple or a cheek). This is separate from the route: the route = where the hue goes, profile = whether it is dense or washed out.</div>
+   <div class="schint" id="wnote"></div>
+  </div>
+
+  <div class="card">
+   <h2><span class="num">3</span> Form — how we model</h2>
+   <div class="bar"><span class="lbl" style="min-width:150px">Lightness (tone)</span><input id="contrast" type="range" min="40" max="160" value="100"><b class="val" id="contrastV">1.0</b></div>
+   <div class="bar"><span class="lbl" style="min-width:150px">Warm-cool (modulation)</span><input id="tsculpt" type="range" min="0" max="100" value="0"><b class="val" id="tsculptV">0</b></div>
+   <div class="bar"><span class="lbl" style="min-width:150px">Chroma (spread)</span><input id="csculpt" type="range" min="0" max="150" value="100"><b class="val" id="csculptV">1.0</b></div>
+   <div style="display:flex;align-items:center;gap:8px;margin:8px 0 2px;font-size:11px;padding-top:8px;border-top:1px dashed var(--line)">
+    <label style="cursor:pointer;display:inline-flex;align-items:center;gap:4px"><input type="checkbox" id="localhold">Hold local color</label>
+    <label style="cursor:pointer;display:inline-flex;align-items:center;gap:4px;margin-left:12px"><input type="checkbox" id="nowash">Do not wash out light</label>
+    <span style="color:#B8AFA9">body (halftone) = exact object color, we model the form around it (e.g. lime foliage is built through G3, not Y6)</span></div>
+   <div class="schint">Three ways to model the same form — three channels along the light→shadow arc. <b>Lightness</b> — classic modeling: highlight lighter, core darker, the tone carries the form. <b>Warm-cool</b> — Cézanne modulation: light goes warm, shadow goes cool at similar lightness, the form reads by temperature. <b>Chroma</b> — richness spread: >1 light richer, shadow toward gray; <1 the other way. Drop lightness to zero, add warmth — the form holds on one temperature, with no tonal ladder.</div>
+  </div>
+  <div class="card">
+   <h2><span class="num">4</span> Character and strength</h2>
+   <div class="bar"><span class="lbl" style="min-width:150px">Key (lightness)</span><input id="key" type="range" min="-100" max="100" value="0"><b class="val" id="keyV">0</b></div>
+   <div class="bar"><span class="lbl" style="min-width:150px">Shadow strength (to complement)</span><input id="force" type="range" min="0" max="100" value="50"><b class="val" id="forceV">0.5</b></div>
+   <div class="bar"><span class="lbl" style="min-width:150px">Shadow cleanliness</span><input id="schroma" type="range" min="-100" max="100" value="0"><b class="val" id="schromaV">0</b></div>
+   <div class="bar"><span class="lbl" style="min-width:150px">Fill strength</span><input id="fill" type="range" min="0" max="100" value="0"><b class="val" id="fillV">0</b></div>
+   <div class="schint">Fill (second light) — <b>second dot on the wheel</b> (drag): angle = its hue, radius = saturation. Floods the whole object toward this color: at the wheel edge — a rich color bath (neon, water, fire, color grade), at the center — a pale airy haze. <b>Strength</b> = how much is flooded. By default the dot sits in the light complement (daytime sky); pull toward the light — blue-in-blue monochrome. In v3 it becomes a per-object dose = in planes.</div>
+  </div>
+ </div>
+
+ <div class="col">
+  <!-- палитра сцены и «Деталь объекта» убраны (v4): всё читается со схемы сцены -->
+  <div class="card">
+   <h2><span class="num">5</span> Scene mode <span style="font-size:11px;font-weight:400;color:var(--mut)">· mix or flat route · settings per mode</span></h2>
+   <div style="display:flex;align-items:center;gap:14px;margin:0 0 10px;font-size:12px;flex-wrap:wrap">
+    <label style="cursor:pointer;display:inline-flex;align-items:center;gap:4px"><input type="radio" name="v4amode" id="modeMix" checked>mix (bestMix)</label>
+    <label style="cursor:pointer;display:inline-flex;align-items:center;gap:4px"><input type="radio" name="v4amode" id="modeFlat">flat route (v4a)</label></div>
+   <div id="mixCtl">
+    <div style="display:flex;align-items:center;gap:8px;margin:0 0 8px;font-size:11px;color:var(--mut)">
+     <span style="white-space:nowrap">Pair seamlessness</span>
+     <input id="seam" type="range" min="0" max="100" value="10" style="flex:1;max-width:180px;vertical-align:middle">
+     <b id="seamV" style="min-width:30px">0.10</b>
+     <span style="color:#B8AFA9">0 — accuracy · higher — blends smoother</span></div>
+    <div style="display:flex;align-items:center;gap:8px;margin:0 0 8px;font-size:11px;color:var(--mut)">
+     <span style="white-space:nowrap">Anti-mud (MUD)</span>
+     <input id="mud" type="range" min="0" max="600" value="200" style="flex:1;max-width:180px;vertical-align:middle">
+     <b id="mudV" style="min-width:30px">2.00</b>
+     <span style="color:#B8AFA9">0 — color accuracy · higher — fewer pairs that muddy into gray</span></div>
+    <div style="display:flex;align-items:center;gap:8px;margin:0 0 8px;font-size:11px;color:var(--mut)">
+     <span style="white-space:nowrap">My mix ratings</span>
+     <input id="rate" type="range" min="0" max="600" value="300" style="flex:1;max-width:150px;vertical-align:middle">
+     <b id="rateV" style="min-width:30px">3.00</b>
+     <label style="display:inline-flex;cursor:pointer"><span style="text-decoration:underline;color:var(--mut)">load</span><input id="rateFile" type="file" accept="application/json" style="display:none"></label>
+     <span id="rateN" style="color:#B8AFA9;white-space:nowrap"></span></div>
+   </div>
+   <div id="v4aCtl" style="display:none">
+    <div style="display:flex;align-items:center;gap:8px;margin:0 0 6px;font-size:11px;color:var(--mut)">
+     <span style="white-space:nowrap">Fidelity ↔ cleanliness</span>
+     <input id="v4aL" type="range" min="0" max="100" value="60" style="flex:1;max-width:150px;vertical-align:middle">
+     <b id="v4aLV" style="min-width:30px">0.60</b>
+     <span style="color:#B8AFA9">0 — toward truth · higher — nicer seam</span></div>
+    <div style="display:flex;align-items:center;gap:8px;margin:0 0 6px;font-size:11px;color:var(--mut)">
+     <span style="white-space:nowrap">Temp. bias (Path)</span>
+     <input id="v4aTemp" type="range" min="0" max="150" value="50" style="flex:1;max-width:130px;vertical-align:middle">
+     <b id="v4aTempV" style="min-width:30px">0.50</b>
+     <label style="display:inline-flex;align-items:center;gap:4px;cursor:pointer;margin-left:6px"><input id="v4aKeep" type="checkbox" checked>hold chroma</label><label style="display:inline-flex;align-items:center;gap:4px;cursor:pointer;margin-left:6px"><input id="v4aHue" type="checkbox">hold hue</label></div>
+    <div style="font-size:10.5px;color:#B8AFA9;margin:0 0 4px">Flat mode: the Markers below are painted with flat stations (the painted cube shows the gap from the true scene), and gap ladders appear under the stretch.</div>
+   </div>
+  </div>
+  <div class="card">
+   <h2>Scene map <span style="font-size:11px;font-weight:400;color:var(--mut)">· object A on surface B · one pass through the contact · the pair palette reads off the three ramps</span></h2>
+   <div id="castpick" style="margin-bottom:8px"></div>
+   <div class="lbl" style="margin-bottom:3px">True colors <span style="font-weight:400;color:var(--mut)">· lab→RGB, before markers · reference (full monitor gamut)</span></div>
+   <div id="truescene"></div>
+   <div class="lbl" style="margin-top:8px;margin-bottom:3px">Markers <span style="font-weight:400;color:var(--mut)">· bestMix — what you will actually lay down with the set</span></div>
+   <div id="castscene"></div>
+   <div id="castdE" style="margin-top:6px;font-size:11px;color:var(--mut)"></div>
+   <div class="schint" style="margin-top:4px">Compare the scenes: if the true one is right but the marker one lies, blame the set / quantization (bestMix, SEAM, gamut); if even the true one is off, the target model lies (sixZones, levers, terminator).</div>
+   <div class="lbl" style="margin-top:10px;margin-bottom:3px">Glow ramp <span style="font-weight:400;color:var(--mut)">· over-light: burn (reflection, peak on the terminator) · backlight rim · peak · depth (emission, tone = average of object and light); bright and saturated, which the light does not have</span></div>
+   <div id="lineGlow" style="display:flex;gap:6px;align-items:stretch"></div>
+   <div class="strip" id="lineGlowStrip"></div>
+   <div class="lbl" style="margin-top:10px;margin-bottom:3px">Light ramp <span style="font-weight:400;color:var(--mut)">· object A: highlight · light · halftone · core shadow · reflex (contextual, lit-B) · anchor zones; detail is in the route ladder</span></div>
+   <div id="lineLight" style="display:flex;gap:6px;align-items:stretch"></div>
+   <div class="strip" id="lineLightStrip"></div>
+   <div class="lbl" style="margin-top:10px;margin-bottom:3px">Contact ramp <span style="font-weight:400;color:var(--mut)">· seam: lit-A · touch (occlusion, darkest) · ★ bright contact · lit-B</span></div>
+   <div id="lineContact" style="display:flex;gap:6px;align-items:stretch"></div>
+   <div class="strip" id="lineContactStrip"></div>
+   <div class="lbl" style="margin-top:10px;margin-bottom:3px">Shadow ramp <span style="font-weight:400;color:var(--mut)">· onto surface B: body · edge · halftone · surface B</span></div>
+   <div id="lineShadow" style="display:flex;gap:6px;align-items:stretch"></div>
+   <div class="strip" id="lineShadowStrip"></div>
+   <div class="schint"><b>Wireframe v4.</b> Three ramps in one pass through the contact: light (object) → contact (seam) → shadow (on B). Flat chips, no blends (added back later). Reflex is contextual (lit-B into the A shadow). The pair palette reads straight off the ramp cards (code · zone · family/ratio); the separate palette block is removed. Object detail below is a backup for the blended stretch.</div>
+  </div>
+  <div class="card">
+   <h2>Route <span style="font-size:11px;font-weight:400;color:var(--mut)">· ladders over zone gaps · mirrors the mode: flat = stations, mix = strokes · rows = granularity</span></h2>
+   <div id="v4aramp"></div>
+   <div class="schint">Each gap between neighboring zones is its own ladder. Rows (straight / 2 / 3 / 4) set granularity: how many in-between colors sit between zones (formerly ramp detail, now one axis with hops). In <b>flat</b> mode a cell is a flat station (seam bottleneck badge on the left), in <b>the mix</b> — <b>pair strokes</b> by its ratio (markers do not blend into one patch — optical mixing is alternating strokes). <b>Gradient 1</b> — object, <b>gradient 2</b> — cast shadow. Mode and knobs are in the Scene map.</div>
+  </div>
+ </div>
+</div>
+</div>
+<script>
+const PAL=[{"c": "R1", "h": "#E45B49", "row": "R", "g": "G11", "hu": 3.8, "L": 50.2}, {"c": "R2", "h": "#FCF1E4", "row": "VR", "g": "G2", "hu": 344.7, "L": 82.7}, {"c": "R3", "h": "#D2554A", "row": "R", "g": "G12", "hu": 0.0, "L": 44.2}, {"c": "R4", "h": "#E98383", "row": "R", "g": "G6", "hu": 10.5, "L": 62.4}, {"c": "R5", "h": "#F1B4BB", "row": "R", "g": "G4", "hu": 354.2, "L": 72.6}, {"c": "R6", "h": "#9C362E", "row": "R", "g": "G14", "hu": 352.2, "L": 32.1}, {"c": "R7", "h": "#DD8578", "row": "R", "g": "G10", "hu": 0.0, "L": 55.3}, {"c": "VR1", "h": "#BF685B", "row": "VR", "g": "G11", "hu": 341.9, "L": 50.5}, {"c": "VR2", "h": "#F2BEC7", "row": "VR", "g": "G5", "hu": 335.0, "L": 67.9}, {"c": "VR3", "h": "#E98287", "row": "VR", "g": "G8", "hu": 338.6, "L": 58.8}, {"c": "VR4", "h": "#F5CEE4", "row": "V", "g": "G4", "hu": 304.4, "L": 78.8}, {"c": "VR5", "h": "#F3C2E7", "row": "VR", "g": "G4", "hu": 331.9, "L": 74.9}, {"c": "RY1", "h": "#EB975C", "row": "O", "g": "G7", "hu": 51.6, "L": 64.6}, {"c": "RY2", "h": "#F2C969", "row": "O", "g": "G6", "hu": 61.6, "L": 71.2}, {"c": "RY3", "h": "#E66A5D", "row": "R", "g": "G8", "hu": 14.4, "L": 60.3}, {"c": "RY4", "h": "#E26A64", "row": "RO", "g": "G9", "hu": 32.5, "L": 57.0}, {"c": "Y1", "h": "#F1C22C", "row": "YO", "g": "G1", "hu": 87.3, "L": 80.4}, {"c": "Y2", "h": "#EEECC3", "row": "Y", "g": "G1", "hu": 106.4, "L": 92.6}, {"c": "Y3", "h": "#F8BF56", "row": "YO", "g": "G4", "hu": 80.6, "L": 80.7}, {"c": "Y4", "h": "#CDB32A", "row": "YO", "g": "G3", "hu": 93.6, "L": 73.1}, {"c": "Y5", "h": "#E4E238", "row": "Y", "g": "G1", "hu": 103.0, "L": 87.6}, {"c": "Y6", "h": "#F5E2AA", "row": "YO", "g": "G1", "hu": 93.2, "L": 90.2}, {"c": "Y7", "h": "#F7E58E", "row": "Y", "g": "G1", "hu": 107.7, "L": 88.4}, {"c": "G1", "h": "#7EC082", "row": "G", "g": "G8", "hu": 187.9, "L": 60.9}, {"c": "G2", "h": "#5B8E5F", "row": "G", "g": "G6", "hu": 181.2, "L": 64.0}, {"c": "G3", "h": "#E3F094", "row": "YG", "g": "G3", "hu": 148.9, "L": 82.2}, {"c": "G4", "h": "#A3C775", "row": "YG", "g": "G3", "hu": 152.7, "L": 84.1}, {"c": "G5", "h": "#85AF64", "row": "YG", "g": "G4", "hu": 154.8, "L": 77.2}, {"c": "G6", "h": "#9FDF8B", "row": "G", "g": "G5", "hu": 186.3, "L": 71.3}, {"c": "G7", "h": "#BBEA93", "row": "YG", "g": "G2", "hu": 162.9, "L": 85.2}, {"c": "G8", "h": "#91D484", "row": "G", "g": "G3", "hu": 165.9, "L": 82.8}, {"c": "G9", "h": "#617E4D", "row": "YG", "g": "G12", "hu": 164.5, "L": 46.7}, {"c": "G10", "h": "#8BB85A", "row": "G", "g": "G6", "hu": 185.3, "L": 70.4}, {"c": "G11", "h": "#48664C", "row": "G", "g": "G14", "hu": 193.8, "L": 35.2}, {"c": "G12", "h": "#A4AE75", "row": "YG", "g": "G9", "hu": 160.8, "L": 61.5}, {"c": "G13", "h": "#EEF3CC", "row": "G", "g": "G2", "hu": 166.7, "L": 87.8}, {"c": "BG1", "h": "#AAE3B5", "row": "GB", "g": "G4", "hu": 205.6, "L": 78.2}, {"c": "BG2", "h": "#D3F2D5", "row": "GB", "g": "—", "hu": 203.3, "L": 87.9}, {"c": "BG3", "h": "#92D9BB", "row": "GB", "g": "G4", "hu": 208.2, "L": 73.3}, {"c": "BG4", "h": "#5A8F70", "row": "GB", "g": "G9", "hu": 207.5, "L": 53.7}, {"c": "BG5", "h": "#C9EFDC", "row": "GB", "g": "G2", "hu": 200.0, "L": 83.4}, {"c": "BG6", "h": "#85A78E", "row": "GB", "g": "G7", "hu": 207.7, "L": 63.0}, {"c": "BR7", "h": "#F5F4DF", "row": "O", "g": "—", "hu": 58.0, "L": 90.0}, {"c": "B1", "h": "#83B6E3", "row": "B", "g": "G11", "hu": 228.2, "L": 51.0}, {"c": "B2", "h": "#D6F2EB", "row": "GB", "g": "—", "hu": 220.0, "L": 86.0}, {"c": "B3", "h": "#6C8ECB", "row": "B", "g": "G13", "hu": 231.0, "L": 41.9}, {"c": "B4", "h": "#BCEAE9", "row": "GB", "g": "G4", "hu": 223.8, "L": 74.2}, {"c": "B5", "h": "#4E5A9C", "row": "B", "g": "G14", "hu": 233.3, "L": 35.1}, {"c": "B6", "h": "#B0E1E9", "row": "B", "g": "G5", "hu": 225.4, "L": 67.3}, {"c": "B7", "h": "#E4F3EB", "row": "GB", "g": "G4", "hu": 223.1, "L": 80.4}, {"c": "B8", "h": "#4D5673", "row": "B", "g": "G15", "hu": 234.4, "L": 15.8}, {"c": "B9", "h": "#F0EFEA", "row": "B", "g": "—", "hu": 231.0, "L": 82.7}, {"c": "B10", "h": "#B5DDE9", "row": "B", "g": "G10", "hu": 226.0, "L": 58.8}, {"c": "B11", "h": "#4C61A1", "row": "B", "g": "G15", "hu": 235.3, "L": 22.5}, {"c": "B12", "h": "#677A9A", "row": "B", "g": "G15", "hu": 234.3, "L": 29.6}, {"c": "BV1", "h": "#C1BEE3", "row": "B", "g": "G4", "hu": 248.6, "L": 80.3}, {"c": "BV2", "h": "#9F9CDA", "row": "B", "g": "G10", "hu": 247.5, "L": 59.6}, {"c": "V1", "h": "#AC87BC", "row": "BV", "g": "G11", "hu": 259.1, "L": 44.0}, {"c": "V2", "h": "#DAC4E7", "row": "B", "g": "G7", "hu": 252.0, "L": 70.5}, {"c": "V3", "h": "#7566AB", "row": "BV", "g": "G13", "hu": 260.0, "L": 38.6}, {"c": "V4", "h": "#7766A8", "row": "BV", "g": "G13", "hu": 260.0, "L": 33.8}, {"c": "V5", "h": "#AE98CB", "row": "B", "g": "G10", "hu": 252.6, "L": 53.2}, {"c": "V6", "h": "#605490", "row": "BV", "g": "G15", "hu": 260.5, "L": 21.8}, {"c": "V7", "h": "#947DC0", "row": "BV", "g": "G15", "hu": 261.3, "L": 27.7}, {"c": "E1", "h": "#F9EBDE", "row": "O", "g": "—", "hu": 72.0, "L": 93.8}, {"c": "E2", "h": "#E7E1D1", "row": "O", "g": "—", "hu": 94.5, "L": 89.6}, {"c": "E3", "h": "#ECE1C5", "row": "YO", "g": "G1", "hu": 93.0, "L": 89.7}, {"c": "E4", "h": "#FAFAF9", "row": "neutr", "g": "—", "hu": 72.0, "L": 94.7}, {"c": "DE1", "h": "#FFC9BD", "row": "RO", "g": "G2", "hu": 37.3, "L": 85.4}, {"c": "DE2", "h": "#FDC4B0", "row": "RO", "g": "G4", "hu": 45.4, "L": 83.7}, {"c": "BR1", "h": "#615154", "row": "O", "g": "G14", "hu": 5.7, "L": 36.1}, {"c": "BR2", "h": "#C3986B", "row": "O", "g": "G5", "hu": 70.9, "L": 65.8}, {"c": "BR3", "h": "#E7C9BE", "row": "O", "g": "G4", "hu": 46.7, "L": 83.2}, {"c": "BR4", "h": "#8E615C", "row": "O", "g": "G12", "hu": 30.2, "L": 45.7}, {"c": "BR5", "h": "#AD8174", "row": "O", "g": "G10", "hu": 42.1, "L": 57.9}, {"c": "BR6", "h": "#FBEFCC", "row": "O", "g": "G2", "hu": 56.5, "L": 84.0}, {"c": "GY1", "h": "#B2B7B5", "row": "neutr", "g": "—", "hu": 85.7, "L": 77.0}, {"c": "GY2", "h": "#4A4846", "row": "neutr", "g": "—", "hu": 225.0, "L": 26.0}, {"c": "1", "h": "#FFFFFF", "row": "neutr", "g": "—", "hu": 0.0, "L": 100.0}, {"c": "0", "h": "#342B22", "row": "neutr", "g": "—", "hu": 0.0, "L": 9.3}];
+const HUE=["R","RO","O","YO","Y","YG","G","GB","B","BV","V","VR"];
+const CHIPC={R:"#E05a5a",RO:"#E8794a",O:"#F0932a",YO:"#F3B833",Y:"#E4DB3a",YG:"#A6D84f",G:"#43B25a",GB:"#37B0A0",B:"#3f7fd8",BV:"#6a58b8",V:"#8a54b0",VR:"#D64d8e"};
+function ri(r){return HUE.indexOf(r);}
+function _lab(hex){function lin(c){c/=255;return c<=0.04045?c/12.92:Math.pow((c+0.055)/1.055,2.4)}let n=parseInt(hex.slice(1),16),r=lin(n>>16&255),g=lin(n>>8&255),b=lin(n&255);let X=r*0.4124+g*0.3576+b*0.1805,Y=r*0.2126+g*0.7152+b*0.0722,Z=r*0.0193+g*0.1192+b*0.9505;function f(t){return t>0.008856?Math.cbrt(t):7.787*t+16/116}let fx=f(X/0.95047),fy=f(Y/1),fz=f(Z/1.08883);return[116*fy-16,500*(fx-fy),200*(fy-fz)];}
+const CMAX=75, KEYAMT=22, CHROMA_BOW=15;
+const WPOLE=50, CPOLE=235, TFRAC=0.6, CSWING=0.6;   // холодный полюс тени; тёплый полюс горения = оттенок света (S.light.ha), не константа, макс.доля поворота к полюсу, амплитуда разброса хромы
+function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
+PAL.forEach(p=>{const l=_lab(p.h);p.L=l[0];p.C=Math.hypot(l[1],l[2]);p.ax=l[1];p.bx=l[2];const h=Math.atan2(l[2],l[1])*180/Math.PI;const f1=0.116*Math.abs(Math.sin(((h-90)/2)*Math.PI/180))+0.085;const f2=2.5-0.025*l[0];p.Lhk=l[0]+f2*f1*p.C;const r=ri(p.row);p.ha=r>=0?r*30:null;p.rad=clamp(p.C/CMAX,0.14,1);p.lin=toLinRGB(p.h);});
+const CH=PAL.filter(p=>ri(p.row)>=0);
+function lab2rgb(L,a,b){let y=(L+16)/116,x=a/500+y,z=y-b/200;const f=t=>{const t3=t*t*t;return t3>0.008856?t3:(t-16/116)/7.787;};x=0.95047*f(x);y=f(y);z=1.08883*f(z);let r=x*3.2406-y*1.5372-z*0.4986,g=-x*0.9689+y*1.8758+z*0.0415,bl=x*0.0557-y*0.2040+z*1.0570;const g2=c=>{c=c<=0.0031308?12.92*c:1.055*Math.pow(c,1/2.4)-0.055;return Math.round(clamp(c,0,1)*255);};return '#'+[g2(r),g2(g),g2(bl)].map(v=>v.toString(16).padStart(2,'0')).join('');}
+function labDist(A,B){return Math.hypot(A[0]-B[0],A[1]-B[1],A[2]-B[2]);}
+// ===== АКРИЛОВАЯ ОПТИКА: партитивное смешение в ЛИНЕЙНОМ свете =====
+// Тулинг чисто под Enmy (акрил). Модель — «Enmy — оптическое смешение для акрила (модель).md».
+// Коэффициенты сухого сдвига крутить ПОСЛЕ выкраски (ТЗ). Дефолт 0/1 = чистое линейное среднее.
+const ACRYL={ dryL:0, dryC:1.00, wSteps:20 };   // dryL: ΔL* (+светлее/−темнее); dryC: множитель хромы; wSteps: шагов доли
+function toLinRGB(hex){const f=c=>{c/=255;return c<=0.04045?c/12.92:Math.pow((c+0.055)/1.055,2.4);};const n=parseInt(hex.slice(1),16);return [f(n>>16&255),f(n>>8&255),f(n&255)];}
+function linToLab(r,g,b){const X=r*0.4124+g*0.3576+b*0.1805,Y=r*0.2126+g*0.7152+b*0.0722,Z=r*0.0193+g*0.1192+b*0.9505;const f=t=>t>0.008856?Math.cbrt(t):7.787*t+16/116;const fx=f(X/0.95047),fy=f(Y/1),fz=f(Z/1.08883);return[116*fy-16,500*(fx-fy),200*(fy-fz)];}
+// сухой сдвиг, масштабируется «замешанностью» (0 у чистого маркера w=0/1, макс на 50/50) — чтобы одиночки оставались точными
+function dryShift(lab,mixAmt){return [lab[0]+ACRYL.dryL*mixAmt, lab[1]*(1-(1-ACRYL.dryC)*mixAmt), lab[2]*(1-(1-ACRYL.dryC)*mixAmt)];}
+// предсказание смеси A·w + B·(1−w) в линейном свете → Lab (для расстояния до цели)
+function mixPredictLab(A,B,w){if(A===B)return [A.L,A.ax,A.bx];const L=A.lin,M=B.lin;const lab=linToLab(L[0]*w+M[0]*(1-w),L[1]*w+M[1]*(1-w),L[2]*w+M[2]*(1-w));return dryShift(lab,4*w*(1-w));}
+function mixPredictHex(A,B,w){const lab=mixPredictLab(A,B,w);return lab2rgb(lab[0],lab[1],lab[2]);}
+const MIX_ADJ=7;   // штраф оптике за ту же пару маркеров, что у соседа
+const LIGHTENERS=['1'];   // белый как осветлитель — всегда в кандидатах (акрил умеет вверх по светлоте)
+let LOCALHOLD=false;      // держать локальный цвет: тело-зона (полутень) = точный цвет объекта, форму лепим вокруг него · галка в блоке 3
+let NOWASH=false;         // не выбеливать свет: снимает гамут-зажим хромы и занижение блика, чтобы блик/свет держали цвет и просто светлели
+let SEAM=0.10;            // приоритет бесшовных пар: штраф за разрыв светлот пары (0 = выкл; выше = строже изосветлотность) · ползунок в «Схеме сцены»
+let MUDW=2.0;             // штраф за грязь: провал хромы через серый центр при смешении пары (0 = выкл). Ортогонален SEAM (тот про светлоту, этот про хрому). Свип: 2.0 убирает ~82% грязи при +0.23 ΔE
+
+const MUDT=[0.35,0.5,0.65];   // доли бленда, где щупаем провал хромы
+let RATEW=3.0;            // сила «моих оценок»: для пары с ручной оценкой её балл правит подбор (5 — люблю, 1 — избегать). 0 = игнор · ползунок в «Схеме сцены»
+function canon(a,b){return a<b?a+'|'+b:b+'|'+a;}   // ключ пары независимо от порядка
+let MIXRATE={"0|G1":4,"0|G2":5,"0|G3":5,"0|G4":4,"0|G5":4,"0|G6":2,"0|G8":3,"1|G1":4,"1|G2":5,"1|G3":5,"1|G4":4,"1|G5":4,"1|G6":4,"1|G8":5,"B10|G1":5,"B10|G2":5,"B10|G3":2,"B10|G4":5,"B10|G5":5,"B10|G6":5,"B10|G8":5,"B11|B5":5,"B11|BV1":5,"B11|BV2":5,"B11|G1":3,"B11|G2":5,"B11|G3":1,"B11|G4":2,"B11|G5":1,"B11|G6":3,"B11|G8":4,"B12|B3":5,"B12|B8":5,"B12|G1":4,"B12|G2":5,"B12|G3":1,"B12|G4":5,"B12|G5":2,"B12|G6":3,"B12|G8":4,"B1|G1":5,"B1|G2":5,"B1|G3":3,"B1|G4":2,"B1|G5":2,"B1|G6":5,"B1|G8":5,"B2|G1":5,"B2|G2":4,"B2|G3":5,"B2|G4":5,"B2|G5":3,"B2|G6":5,"B2|G8":5,"B3|B8":5,"B3|G1":5,"B3|G2":5,"B3|G3":2,"B3|G4":2,"B3|G5":2,"B3|G6":4,"B3|G8":3,"B4|G1":5,"B4|G2":5,"B4|G3":2,"B4|G4":5,"B4|G5":5,"B4|G6":5,"B4|G8":5,"B5|BV1":5,"B5|BV2":5,"B5|G1":3,"B5|G2":5,"B5|G3":2,"B5|G4":2,"B5|G5":2,"B5|G6":4,"B5|G8":3,"B6|G1":5,"B6|G2":5,"B6|G3":2,"B6|G4":5,"B6|G5":4,"B6|G6":5,"B6|G8":5,"B7|G1":5,"B7|G2":5,"B7|G3":5,"B7|G4":5,"B7|G5":5,"B7|G6":5,"B7|G8":5,"B8|G1":4,"B8|G2":5,"B8|G3":2,"B8|G4":2,"B8|G5":1,"B8|G6":3,"B8|G8":3,"B9|G1":1,"B9|G2":4,"B9|G6":5,"BG1|BG4":5,"BG1|BG6":5,"BG1|G1":5,"BG1|G11":5,"BG1|G2":5,"BG1|G3":4,"BG1|G4":4,"BG1|G5":3,"BG1|G6":5,"BG1|G8":5,"BG2|G1":5,"BG2|G2":5,"BG2|G3":5,"BG2|G4":5,"BG2|G5":4,"BG2|G6":5,"BG2|G8":5,"BG3|BG5":5,"BG3|G1":5,"BG3|G2":5,"BG3|G3":3,"BG3|G4":1,"BG3|G5":2,"BG3|G6":4,"BG3|G8":4,"BG4|BG6":5,"BG4|G1":5,"BG4|G11":5,"BG4|G2":5,"BG4|G3":3,"BG4|G4":1,"BG4|G5":1,"BG4|G6":3,"BG4|G8":5,"BG5|G1":5,"BG5|G2":5,"BG5|G3":5,"BG5|G4":4,"BG5|G5":3,"BG5|G6":5,"BG5|G8":5,"BG6|G1":5,"BG6|G11":5,"BG6|G2":5,"BG6|G3":4,"BG6|G4":5,"BG6|G5":4,"BG6|G6":5,"BG6|G8":5,"BR1|G1":4,"BR1|G2":4,"BR1|G3":5,"BR1|G4":4,"BR1|G5":4,"BR1|G6":3,"BR1|G8":3,"BR2|G1":2,"BR2|G2":4,"BR2|G3":4,"BR2|G4":5,"BR2|G5":5,"BR2|G6":5,"BR2|G8":5,"BR2|Y3":5,"BR3|DE2":5,"BR3|G1":3,"BR3|G2":3,"BR3|G3":5,"BR3|G4":5,"BR3|G5":4,"BR3|G6":5,"BR3|G8":5,"BR4|G1":2,"BR4|G2":4,"BR4|G3":3,"BR4|G4":5,"BR4|G5":2,"BR4|G6":3,"BR4|G8":3,"BR4|R4":5,"BR4|RY4":5,"BR4|VR3":5,"BR5|DE1":5,"BR5|G1":4,"BR5|G2":4,"BR5|G3":3,"BR5|G4":3,"BR5|G5":3,"BR5|G6":3,"BR5|G8":4,"BR5|R1":5,"BR5|R3":5,"BR5|R6":5,"BR5|R7":5,"BR5|RY3":5,"BR5|VR1":5,"BR6|E3":5,"BR6|G1":2,"BR6|G2":2,"BR6|G3":5,"BR6|G4":4,"BR6|G5":3,"BR6|G6":3,"BR6|G8":5,"BR6|RY2":5,"BR6|Y1":5,"BR6|Y4":5,"BR6|Y6":5,"BR7|G1":2,"BR7|G12":5,"BR7|G13":5,"BR7|G2":2,"BR7|G3":5,"BV1|BV2":5,"BV1|G1":5,"BV1|G2":4,"BV1|G3":5,"BV1|G4":5,"BV1|G5":5,"BV1|G6":5,"BV1|G8":5,"BV2|G1":5,"BV2|G2":5,"BV2|G3":5,"BV2|G4":5,"BV2|G5":4,"BV2|G6":5,"BV2|G8":5,"DE1|G1":1,"DE1|G2":2,"DE1|G3":5,"DE1|G4":5,"DE1|G5":5,"DE1|G6":5,"DE1|G8":5,"DE1|R1":5,"DE1|R3":5,"DE1|R6":5,"DE1|R7":5,"DE1|RY3":5,"DE1|VR1":5,"DE2|G1":1,"DE2|G2":2,"DE2|G3":5,"DE2|G4":4,"DE2|G5":3,"DE2|G6":5,"DE2|G8":5,"E1|G1":1,"E1|G2":2,"E1|G3":5,"E1|G4":3,"E1|G5":3,"E1|G6":5,"E1|G8":5,"E2|G1":3,"E2|G2":1,"E2|G3":5,"E2|G4":4,"E2|G5":3,"E2|G6":5,"E2|G8":4,"E3|G1":1,"E3|G2":2,"E3|G3":5,"E3|G4":4,"E3|G5":4,"E3|G6":3,"E3|G8":5,"E3|RY2":5,"E3|Y1":5,"E3|Y4":5,"E3|Y6":5,"E4|G1":2,"E4|G2":1,"E4|G3":5,"E4|G4":4,"E4|G5":3,"E4|G6":5,"E4|G8":5,"G10|G2":3,"G10|G3":4,"G10|G4":5,"G10|G5":5,"G10|G6":4,"G10|G7":5,"G10|G8":5,"G10|G9":5,"G11|G2":5,"G11|G3":3,"G11|G4":3,"G11|G5":5,"G11|G6":5,"G11|G8":5,"G12|G13":5,"G12|G2":3,"G12|G3":5,"G12|G4":3,"G12|G5":3,"G12|G6":3,"G12|G8":4,"G13|G2":4,"G13|G3":5,"G13|G4":5,"G13|G5":3,"G13|G6":5,"G13|G8":5,"G1|G10":4,"G1|G11":5,"G1|G12":2,"G1|G13":4,"G1|G2":5,"G1|G3":5,"G1|G4":4,"G1|G5":3,"G1|G6":5,"G1|G7":5,"G1|G8":5,"G1|G9":3,"G1|GY1":5,"G1|GY2":4,"G1|R1":1,"G1|R2":4,"G1|R3":1,"G1|R4":1,"G1|R5":1,"G1|R6":1,"G1|R7":1,"G1|RY1":1,"G1|RY2":1,"G1|RY3":1,"G1|RY4":1,"G1|V1":4,"G1|V2":2,"G1|V3":3,"G1|V4":2,"G1|V5":4,"G1|V6":2,"G1|V7":4,"G1|VR1":2,"G1|VR2":2,"G1|VR3":2,"G1|VR4":2,"G1|VR5":1,"G1|Y1":2,"G1|Y2":4,"G1|Y3":1,"G1|Y4":1,"G1|Y5":4,"G1|Y6":2,"G1|Y7":3,"G2|G3":3,"G2|G4":5,"G2|G5":4,"G2|G6":5,"G2|G7":5,"G2|G8":5,"G2|G9":4,"G2|GY1":5,"G2|GY2":5,"G2|R1":1,"G2|R2":4,"G2|R3":1,"G2|R4":3,"G2|R5":2,"G2|R6":1,"G2|R7":3,"G2|RY1":1,"G2|RY2":2,"G2|RY3":1,"G2|RY4":2,"G2|V1":5,"G2|V2":4,"G2|V3":5,"G2|V4":5,"G2|V5":5,"G2|V6":5,"G2|V7":5,"G2|VR1":2,"G2|VR2":3,"G2|VR3":2,"G2|VR4":2,"G2|VR5":3,"G2|Y1":2,"G2|Y2":3,"G2|Y3":2,"G2|Y4":2,"G2|Y5":2,"G2|Y6":2,"G2|Y7":2,"G3|G4":5,"G3|G5":4,"G3|G6":4,"G3|G7":5,"G3|G8":3,"G3|G9":3,"G3|GY1":5,"G3|GY2":5,"G3|R1":1,"G3|R2":5,"G3|R3":1,"G3|R4":2,"G3|R5":3,"G3|R6":1,"G3|R7":3,"G3|RY1":2,"G3|RY2":4,"G3|RY3":2,"G3|RY4":2,"G3|V1":4,"G3|V2":5,"G3|V3":4,"G3|V4":3,"G3|V5":4,"G3|V6":3,"G3|V7":4,"G3|VR1":3,"G3|VR2":5,"G3|VR3":3,"G3|VR4":5,"G3|VR5":5,"G3|Y1":5,"G3|Y2":5,"G3|Y3":4,"G3|Y4":4,"G3|Y5":5,"G3|Y6":4,"G3|Y7":5,"G4|G5":5,"G4|G6":4,"G4|G7":5,"G4|G8":3,"G4|G9":5,"G4|GY1":5,"G4|GY2":4,"G4|R1":1,"G4|R2":5,"G4|R3":2,"G4|R4":3,"G4|R5":4,"G4|R6":2,"G4|R7":3,"G4|RY1":1,"G4|RY2":3,"G4|RY3":2,"G4|RY4":2,"G4|V1":4,"G4|V2":5,"G4|V3":3,"G4|V4":2,"G4|V5":4,"G4|V6":2,"G4|V7":3,"G4|VR1":2,"G4|VR2":4,"G4|VR3":3,"G4|VR4":4,"G4|VR5":5,"G4|Y1":5,"G4|Y2":5,"G4|Y3":2,"G4|Y4":3,"G4|Y5":5,"G4|Y6":5,"G4|Y7":4,"G5|G6":4,"G5|G7":5,"G5|G8":3,"G5|G9":5,"G5|GY1":5,"G5|GY2":4,"G5|R1":1,"G5|R2":4,"G5|R3":1,"G5|R4":3,"G5|R5":5,"G5|R6":1,"G5|R7":5,"G5|RY1":3,"G5|RY2":5,"G5|RY3":1,"G5|RY4":1,"G5|V1":4,"G5|V2":5,"G5|V3":2,"G5|V4":1,"G5|V5":5,"G5|V6":1,"G5|V7":3,"G5|VR1":1,"G5|VR2":5,"G5|VR3":3,"G5|VR4":4,"G5|VR5":4,"G5|Y1":4,"G5|Y2":5,"G5|Y3":1,"G5|Y4":5,"G5|Y5":4,"G5|Y6":5,"G5|Y7":3,"G6|G7":5,"G6|G8":5,"G6|G9":5,"G6|GY1":5,"G6|GY2":3,"G6|R1":1,"G6|R2":5,"G6|R3":1,"G6|R4":4,"G6|R5":5,"G6|R6":1,"G6|R7":4,"G6|RY1":3,"G6|RY2":5,"G6|RY3":1,"G6|RY4":1,"G6|V1":5,"G6|V2":5,"G6|V3":4,"G6|V4":4,"G6|V5":5,"G6|V6":2,"G6|V7":5,"G6|VR1":1,"G6|VR2":5,"G6|VR3":4,"G6|VR4":3,"G6|VR5":5,"G6|Y1":4,"G6|Y2":5,"G6|Y3":3,"G6|Y4":5,"G6|Y5":5,"G6|Y6":5,"G6|Y7":4,"G7|G9":5,"G8|G9":4,"G8|GY1":5,"G8|GY2":5,"G8|R1":1,"G8|R2":5,"G8|R3":1,"G8|R4":5,"G8|R5":5,"G8|R6":1,"G8|R7":4,"G8|RY1":3,"G8|RY2":5,"G8|RY3":3,"G8|RY4":2,"G8|V1":5,"G8|V2":5,"G8|V3":3,"G8|V4":4,"G8|V5":5,"G8|V6":3,"G8|V7":5,"G8|VR1":4,"G8|VR2":5,"G8|VR3":4,"G8|VR4":3,"G8|VR5":5,"G8|Y1":3,"G8|Y2":5,"G8|Y3":2,"G8|Y4":4,"G8|Y5":4,"G8|Y6":4,"G8|Y7":4,"R1|R3":5,"R1|R6":5,"R1|R7":5,"R1|RY3":5,"R1|VR1":5,"R3|R6":5,"R3|R7":5,"R3|RY3":5,"R3|VR1":5,"R4|RY4":5,"R4|VR3":5,"R5|VR2":5,"R6|R7":5,"R6|RY3":5,"R6|VR1":5,"R7|RY3":5,"R7|VR1":5,"RY2|Y1":5,"RY2|Y4":5,"RY2|Y6":5,"RY3|VR1":5,"RY4|VR3":5,"V1|V2":5,"V3|V4":5,"V3|V5":5,"V3|V6":5,"V3|V7":5,"V4|V5":5,"V4|V6":5,"V4|V7":5,"V5|V6":5,"V5|V7":5,"V6|V7":5,"VR4|VR5":5,"Y1|Y4":5,"Y1|Y6":5,"Y2|Y5":5,"Y2|Y7":5,"Y4|Y6":5,"Y5|Y7":5};   // оценки миксов (1–5) из выкраски; подкладываются встроенно + обновляются кнопкой «загрузить»
+let RFL={sos:1.0, neb:0.3, sc:0.0};   // вклады рефлекса: сосед (лит-B) · небо (заполняющий) · сцена (метка с круга). Ручка снята — задел на v5 (там продумаем), пока фикс на дефолтах
+function bestMix(t,avoid){const K=16;
+ const cand=PAL.map(p=>({p,d:labDist([p.L,p.ax,p.bx],t)})).sort((x,y)=>x.d-y.d).slice(0,K).map(x=>x.p);
+ LIGHTENERS.forEach(c=>{if(!cand.some(p=>p.c===c)){const w=PAL.find(p=>p.c===c);if(w)cand.push(w);}});
+ const pen=(a,c)=>(avoid&&((a===avoid[0]&&c===avoid[1])||(a===avoid[1]&&c===avoid[0])))?MIX_ADJ:0;
+ let best={A:cand[0],B:cand[0],w:1,d:labDist(mixPredictLab(cand[0],cand[0],1),t)+pen(cand[0].c,cand[0].c)};
+ const N=ACRYL.wSteps;
+ for(let i=0;i<cand.length;i++)for(let j=i+1;j<cand.length;j++){const A=cand[i],B=cand[j];
+  const cm=Math.min(A.C,B.C);let cmin=cm;                                   // провал хромы: щупаем бленд в середине
+  for(let k=0;k<MUDT.length;k++){const m=mixPredictLab(A,B,MUDT[k]);const cc=Math.hypot(m[1],m[2]);if(cc<cmin)cmin=cc;}
+  const mud=MUDW*Math.max(0,cm-cmin)*cm/CMAX;                               // впадина ниже слабого края × его сочность = грязь (сочное→серое→сочное — сильно; мутное→мутное — почти нет)
+  const rk=MIXRATE[canon(A.c,B.c)];const qpen=(rk!=null&&RATEW>0)?RATEW*(5-rk):mud;   // есть ручная оценка и сила>0 — она правит (5→0, 1→4·RATEW); иначе модельная грязь
+  for(let s=0;s<=N;s++){const w=s/N;const ww=4*w*(1-w);const d=labDist(mixPredictLab(A,B,w),t)+pen(A.c,B.c)+SEAM*Math.abs(A.L-B.L)*ww+qpen*ww;if(d<best.d)best={A,B,w,d};}}
+ return best;}
+// ===== v4a: маршрут по ПЛОСКИМ маркерам (чистый переход, замесов нет) =====
+// доки: «Enmy v4a — плоские якоря и чистый маршрут — design.md».
+// Режим — бинарный (S.v4amode). λ (V4A_L) — под-ручка внутри плоского. Градиенты по парам зон,
+// у каждого зазора своя лесенка хопов. Температура — активная стоимость выбора пути (S.path).
+let V4A_L=0.6;      // λ: 1 = чистота (максимин по оценкам) · 0 = верность (липнет к истинной кривой)
+let V4A_KEEP=true;  // держать хрому: не вести маршрут через серое/чёрно-белое
+let V4A_HUE=false; const V4A_HUEW=6.0;  // держать оттенок: штраф за уход по хью (вес по хроме кандидата)
+let V4A_TEMP=0.5;   // сила температурного уклона: прямой/тёплый/холодный/S выбирают точный путь
+const V4A_LAB=p=>[p.L,p.ax,p.bx];
+// качество ребра ∈[0,1], выше = чище. Есть ручная оценка — она; иначе модель (провал хромы через серый центр)
+function edgeEff(a,b){
+ if(a.c===b.c)return 1;
+ const rk=MIXRATE[canon(a.c,b.c)];
+ if(rk!=null)return (rk-1)/4;                                          // 1..5 → 0..1
+ const cm=Math.min(a.C,b.C);let cmin=cm;
+ for(let k=0;k<MUDT.length;k++){const m=mixPredictLab(a,b,MUDT[k]);const cc=Math.hypot(m[1],m[2]);if(cc<cmin)cmin=cc;}
+ return clamp(1-(Math.max(0,cm-cmin)*cm/CMAX)/18,0,1);                 // грубая нормировка модельной грязи
+}
+function nearestFlat(t){let best=PAL[0],bd=1e9;for(const p of PAL){const d=labDist(V4A_LAB(p),t);if(d<bd){bd=d;best=p;}}return best;}
+function nearestK(t,K){return PAL.map(p=>({p,d:labDist(V4A_LAB(p),t)})).sort((x,y)=>x.d-y.d).slice(0,K).map(x=>x.p);}
+// точка на кусочно-линейной истинной кривой (ctrl — массив Lab) в доле t → ΔE отклонения станции
+function driftAt(lab,ctrl,t){const n=ctrl.length-1,f=clamp(t,0,1)*n,i=Math.min(Math.floor(f),n-1),u=f-i;
+ const p=ctrl[i],q=ctrl[i+1];return labDist(lab,[lerp(p[0],q[0],u),lerp(p[1],q[1],u),lerp(p[2],q[2],u)]);}
+const V4A_MAXHOP=4;   // потолок хопов в лесенке зазора (зоны рядом — больше не нужно)
+function warmth(a,b){return Math.cos((atan2d(b,a)-30)*Math.PI/180);}   // тёплость оттенка (RO≈30° самый тёплый)
+function tempSign(t){                                                  // желаемый знак темп.уклона по S.path
+ if(S.path==='warmTurn')return 1;
+ if(S.path==='coolTurn')return -1;
+ if(S.path==='sTurn')return t<0.5?1:-1;                                // тёплый свет → холодная тень
+ return 0;                                                             // прямой — без активного уклона
+}
+// beam-поиск зазора mA→mB на H рёбер: максимин чистоты − уход от истины + температурный уклон; монотонность L, пол по хроме, без повторов
+function routeSegment(mA,mB,H,ctrl){
+ const La=mA.L,Lb=mB.L,desc=Lb<=La,cfloor=V4A_KEEP?0.75*Math.min(mA.C,mB.C):0;
+ const lo=Math.min(La,Lb)-3,hi=Math.max(La,Lb)+3,BW=48;
+ const straightAt=t=>{const n=ctrl.length-1,f=clamp(t,0,1)*n,i=Math.min(Math.floor(f),n-1),u=f-i,p=ctrl[i],q=ctrl[i+1];return [lerp(p[1],q[1],u),lerp(p[2],q[2],u)];};
+ let beam=[{path:[mA],minEff:1,driftSum:0,tempSum:0,hueSum:0}];
+ for(let step=1;step<=H;step++){const last=step===H,next=[];
+  for(const st of beam){const u=st.path[st.path.length-1];
+   const opts=last?[mB]:PAL;
+   for(const v of opts){
+    if(!last){
+     if(v.c===mA.c||v.c===mB.c)continue;
+     if(st.path.some(p=>p.c===v.c))continue;                           // запрет повторов
+     if(v.L<lo||v.L>hi)continue;
+     if(desc?v.L>u.L+3:v.L<u.L-3)continue;                             // монотонность в сторону B
+     if(V4A_KEEP&&v.C<cfloor)continue;
+     if(V4A_HUE&&v.C>10){const sc=straightAt(step/H);let dd=Math.abs(atan2d(v.bx,v.ax)-atan2d(sc[1],sc[0]))%360;if(dd>180)dd=360-dd;if(dd>42)continue;}
+    }
+    const e=edgeEff(u,v),t=step/H,dr=last?0:driftAt(V4A_LAB(v),ctrl,t);
+    let tp=0;if(!last){const sg=tempSign(t);if(sg){const str=straightAt(t);tp=sg*(warmth(v.ax,v.bx)-warmth(str[0],str[1]));}}
+    let hd=0;if(!last&&V4A_HUE){const sc=straightAt(t);const sh=atan2d(sc[1],sc[0]),vh=atan2d(v.bx,v.ax);let d=Math.abs(vh-sh)%360;if(d>180)d=360-d;hd=d*Math.min(1,v.C/22);}
+    next.push({path:[...st.path,v],minEff:Math.min(st.minEff,e),driftSum:st.driftSum+dr,tempSum:st.tempSum+tp,hueSum:st.hueSum+hd});
+   }}
+  next.forEach(s=>{const n=Math.max(1,s.path.length-2||1);s.score=V4A_L*s.minEff-(1-V4A_L)*(s.driftSum/n/30)+V4A_TEMP*(s.tempSum/n)-(V4A_HUE?V4A_HUEW*(s.hueSum/n/180):0);});
+  next.sort((a,b)=>b.score-a.score);beam=next.slice(0,BW);
+  if(!beam.length)break;
+ }
+ if(!beam.length)return null;
+ const best=beam[0];return {path:best.path,minEff:best.minEff};
+}
+// зоны градиентов → {n:имя, t:истинный tab}
+function objectZones(A,c){const z=sixZones(A.base,computeGeom(A.base));return [   // рефлекс — контекстный c.reflexA, как в линейке света (один источник)
+ {n:'highlight',t:z.blik.tab},{n:'light',t:z.svet.tab},{n:'halftone',t:z.polu.tab},{n:'core shadow',t:z.jadro.tab},{n:'reflex',t:c.reflexA}];}
+function shadowZones(A,B,c){const Bb=[B.base.L,B.base.ax,B.base.bx];return [
+ {n:'body',t:c.bodyT},{n:'edge',t:c.edgeT},{n:'halftone',t:c.penT},{n:'surface B',t:Bb}];}
+function snapZones(zones){return zones.map(z=>({...z,m:nearestFlat(z.t)}));}   // снап каждой зоны в плоский (независимо; связку соседей — позже)
+// ===== ЛИНЕЙКА СВЕЧЕНИЯ (над-свет) — design-doc v2 =====
+// Четыре станции над потолком линейки света. Горение — отражение (крыша конуса L×C): пик хромы на
+// терминаторе, тон = объект, слегка повёрнутый к свету, хрома выкручена к максимуму набора → снап садит
+// на насыщенный маркер (тёплый→R1, зелёный→G3). Просвет — эмиссия (вне конуса): тон = среднее объекта и
+// света, три станции по толщине — рим (тонко, почти свет-белый) · пик (ядро, ярко+насыщенно) · глубина
+// (толсто, тёмно+насыщенно). Всё в Lab-tab [L,a,b], как остальные зоны; снап/замес — общий движок.
+function glowZones(A){
+ const base=A.base, ct=S.contrast, key=S.key*KEYAMT;
+ const objH=atan2d(base.bx,base.ax), objC=base.C, lightH=wheelToLab(S.light.ha);
+ const HC=(h,L,C)=>[clamp(L,8,96), C*cosd(h), C*sind(h)];
+ const burnH=lerpAngle(objH,lightH,0.35);   // горение тянет к полюсу света, но остаётся объектным
+ const transH=lerpAngle(objH,lightH,0.5);   // просвет = среднее объекта и света
+ return {
+  gor:  HC(burnH, base.L+6*ct+key,  CMAX*0.95),                 // горение — отражённый пик на терминаторе
+  rim:  HC(transH,base.L+24*ct+key, Math.max(18,objC*0.5)),     // рим — тонкий край, почти свет-белый
+  peak: HC(transH,base.L+12*ct+key, CMAX*0.92),                 // пик — ядро свечения, ярко+насыщенно
+  deep: HC(transH,base.L-22*ct+key, CMAX*0.85)                  // глубина — толсто, тёмно+насыщенно
+ };
+}
+// просвет-лесенка для нижнего блока (3 узла: рим→пик→глубина); горение идёт отдельной ячейкой (раздельно с пиком)
+function glowProsvetZones(A){const G=glowZones(A);return [{n:'rim',t:G.rim},{n:'peak',t:G.peak},{n:'depth',t:G.deep}];}
+function glowCellHTML(lab,label){   // одиночная ячейка (горение) — плоский снап или замес, как в grad()
+ if(S.v4amode){const m=nearestFlat(lab);
+  return '<div style="display:flex;align-items:center;gap:6px;margin-bottom:6px"><div style="width:26px;height:20px;border-radius:5px;background:'+m.h+';border:1px solid #00000022"></div><span style="font-size:10px;color:#221D1D">'+label+' <span style="color:#8A817B">('+m.c+')</span></span></div>';}
+ const m=bestMix(lab),wA=Math.round(m.w*20)*5,code=wA>=95?m.A.c:(wA<=5?m.B.c:m.A.c+'·'+m.B.c),mixc=mixPredictHex(m.A,m.B,m.w);
+ return '<div style="display:flex;align-items:center;gap:6px;margin-bottom:6px"><div style="width:26px;height:20px;border-radius:5px;background:'+mixc+';border:1px solid #00000022"></div><span style="font-size:10px;color:#221D1D">'+label+' <span style="color:#8A817B">('+code+')</span></span></div>';}
+// одна строка лесенки: маршрут зазора a→b на H рёбер + узкое место
+function gapRow(a,b,H){
+ const r=routeSegment(a.m,b.m,H,[a.t,b.t]);if(!r)return null;
+ let minEff=1;
+ for(let i=0;i<r.path.length-1;i++){const e=edgeEff(r.path[i],r.path[i+1]);if(e<minEff)minEff=e;}
+ return {path:r.path,minEff};
+}
+// v4a-цвет зоны для крашеного шара: ближайший плоский маркер
+function flatHex(lab){return nearestFlat(lab).h;}
+// рендер лесенок по зазорам: стопка (объект + падающая тень)
+function ladderRows(a,b){
+ let rows='';
+ const budgets=[[1,'straight'],[2,'2 hops'],[3,'3 hops'],[4,'4 hops']];
+ for(const bd of budgets){const H=bd[0],lbl=bd[1];const r=gapRow(a,b,H);if(!r)continue;
+  const star=r.minEff*4+1, col=star>=4.4?'#2E8E86':star>=3.2?'#C68A50':'#B23A5A';
+  const grad='linear-gradient(90deg,'+r.path.map((m,i)=>m.h+' '+(i/(r.path.length-1)*100).toFixed(0)+'%').join(',')+')';
+  let sw='';r.path.forEach(m=>{sw+='<div style="flex:1;min-width:14px;height:20px;border-radius:5px;background:'+m.h+';display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:'+txt(m.h)+';border:1px solid #00000022">'+m.c+'</div>';});
+  const path=r.path.map(m=>m.c).join('→'), starTxt=(star>=4.95?'5':star.toFixed(1));
+  rows+='<div style="display:flex;align-items:center;gap:6px;margin-bottom:3px">'
+   +'<span style="font-size:9px;color:#8A817B;min-width:40px">'+lbl+'</span>'
+   +'<span style="min-width:20px;height:18px;border-radius:4px;background:'+col+';color:#fff;font-size:9.5px;font-weight:800;display:flex;align-items:center;justify-content:center">'+starTxt+'</span>'
+   +'<div style="flex:1;display:flex;gap:2px;padding:2px;border-radius:6px;background:'+grad+'">'+sw+'</div>'
+   +'<span style="font-size:8px;color:#B8AFA9;min-width:92px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+path+'</span></div>';
+ }
+ return rows||'<div style="font-size:9px;color:#B23A5A">no route — ease off hold chroma</div>';
+}
+// ===== bestMix-растяжка МАЗКАМИ (зеркало плоской: пара по пропорции чередуется штрихами) =====
+const DAB_RUN=6;                       // фикс число мазков на сегмент (первый заход)
+function dabRatio(w){                   // доля A [0,1] → [a,b] мазков в единице (клубок), ближайший простой паттерн
+ if(w>=0.92)return [1,0]; if(w>=0.70)return [3,1]; if(w>=0.58)return [2,1];
+ if(w>=0.42)return [1,1]; if(w>=0.30)return [1,2]; if(w>=0.08)return [1,3]; return [0,1];
+}
+function dabRun(m){                     // bestMix {A,B,w} → массив маркеров длины DAB_RUN
+ const A=m.A,B=m.B;if(A.c===B.c)return Array(DAB_RUN).fill(A);
+ const r=dabRatio(m.w),a=r[0],b=r[1];
+ if(b===0)return Array(DAB_RUN).fill(A);if(a===0)return Array(DAB_RUN).fill(B);
+ const unit=[];for(let i=0;i<a;i++)unit.push(A);for(let i=0;i<b;i++)unit.push(B);
+ const out=[];while(out.length<DAB_RUN)out.push(unit[out.length%unit.length]);return out.slice(0,DAB_RUN);
+}
+function pairCodeM(m){const wA=Math.round(m.w*20)*5;return wA>=95?m.A.c:wA<=5?m.B.c:m.A.c+'·'+m.B.c;}
+function pairCode(tab){return pairCodeM(bestMix(tab));}
+// строки bestMix-лесенки зазора za→zb: ряд = число промежуточных (прямой 0 … 4хопа 3); точку bestMix → мазки + код под сегментом
+function dabGapRows(za,zb){
+ let rows='';const budgets=[[1,'straight'],[2,'2 hops'],[3,'3 hops'],[4,'4 hops']];
+ for(const bd of budgets){const H=bd[0],lbl=bd[1],pts=H+1;            // N хопов = N−1 промежуточных → pts = H+1 точек
+  let runs='',labs='';
+  for(let i=0;i<pts;i++){const u=pts>1?i/(pts-1):0;
+   const tab=[lerp(za.t[0],zb.t[0],u),lerp(za.t[1],zb.t[1],u),lerp(za.t[2],zb.t[2],u)];
+   const m=bestMix(tab);
+   let seg='';dabRun(m).forEach(d=>{seg+='<div style="flex:1;min-width:2px;background:'+d.h+'"></div>';});
+   runs+='<div style="flex:1;display:flex;min-width:0;box-shadow:1px 0 0 #ffffffaa inset">'+seg+'</div>';
+   labs+='<div style="flex:1;min-width:0;text-align:center;font-size:8px;font-weight:800;color:#8A817B;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+pairCodeM(m)+'</div>';
+  }
+  rows+='<div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:5px">'
+   +'<span style="font-size:9px;color:#8A817B;min-width:40px;padding-top:5px">'+lbl+'</span>'
+   +'<div style="flex:1;min-width:0">'
+   +'<div style="display:flex;height:20px;border-radius:6px;overflow:hidden;border:1px solid #00000022">'+runs+'</div>'
+   +'<div style="display:flex;margin-top:2px">'+labs+'</div></div></div>';
+ }
+ return rows;
+}
+function drawV4aLadders(A,B,c){
+ const box=document.getElementById('v4aramp');if(!box)return;
+ const flat=S.v4amode;
+ const grad=(zones,title)=>{let h='<div style="font-weight:700;font-size:11px;margin:2px 0 5px">'+title+'</div>';
+  for(let i=0;i<zones.length-1;i++){const a=zones[i],b=zones[i+1];let hdr,body;
+   if(flat){
+    hdr='<div style="font-size:10px;color:#221D1D;margin-bottom:3px">'+a.n+' <span style="color:#8A817B">('+a.m.c+')</span> → '+b.n+' <span style="color:#8A817B">('+b.m.c+')</span></div>';
+    if(a.m.c===b.m.c){                                                 // пустой зазор: зоны слились в один маркер
+     body='<div style="display:flex;align-items:center;gap:6px"><div style="width:26px;height:20px;border-radius:5px;background:'+a.m.h+';border:1px solid #00000022"></div>'
+      +'<span style="font-size:9px;color:#B8AFA9">zones landed on one marker '+a.m.c+' — no stretch, one chip</span></div>';
+    }else body=ladderRows(a,b);
+   }else{
+    hdr='<div style="font-size:10px;color:#221D1D;margin-bottom:3px">'+a.n+' <span style="color:#8A817B">('+pairCode(a.t)+')</span> → '+b.n+' <span style="color:#8A817B">('+pairCode(b.t)+')</span></div>';
+    body=dabGapRows(a,b);
+   }
+   h+='<div style="margin:0 0 7px">'+hdr+body+'</div>';}
+  return h;};
+ const oz=flat?snapZones(objectZones(A,c)):objectZones(A,c), sz=flat?snapZones(shadowZones(A,B,c)):shadowZones(A,B,c);
+ const G=glowZones(A), pz=flat?snapZones(glowProsvetZones(A)):glowProsvetZones(A);
+ box.innerHTML=grad(oz,'Gradient 1 · object')
+  +'<div style="border-top:1px dashed var(--line);margin:6px 0 8px"></div>'
+  +grad(sz,'Gradient 2 · cast shadow')
+  +'<div style="border-top:1px dashed var(--line);margin:6px 0 8px"></div>'
+  +'<div style="font-weight:700;font-size:11px;margin:2px 0 5px">Gradient 3 · glow</div>'
+  +glowCellHTML(G.gor,'✦ burn <span style="color:#B8AFA9">(reflection, separate)</span>')
+  +grad(pz,'backlight · rim · peak · depth');
+}
+// trig in degrees
+const cosd=a=>Math.cos(a*Math.PI/180), sind=a=>Math.sin(a*Math.PI/180), atan2d=(y,x)=>Math.atan2(y,x)*180/Math.PI;
+const norm360=a=>((a%360)+360)%360;
+// ремап оттенка: колесо-бакет (ha = ri(row)*30) → реальный Lab-угол (среднее маркеров бакета). Иначе TB разворачивает цель по неверному углу (синие уезжают)
+const HUEANCHOR=(function(){const acc=Array.from({length:12},()=>({x:0,y:0,w:0}));
+ for(const p of PAL){if(p.ha==null||p.C<8)continue;const b=Math.round(p.ha/30)%12,lh=Math.atan2(p.bx,p.ax);acc[b].x+=Math.cos(lh);acc[b].y+=Math.sin(lh);acc[b].w++;}
+ return acc.map((a,i)=>a.w>0?((atan2d(a.y,a.x)+360)%360):i*30);})();
+function wheelToLab(ha){ha=norm360(ha);const f=ha/30,i=Math.floor(f)%12,j=(i+1)%12,u=f-Math.floor(f);
+ const a=HUEANCHOR[i]*Math.PI/180,b=HUEANCHOR[j]*Math.PI/180,x=(1-u)*Math.cos(a)+u*Math.cos(b),y=(1-u)*Math.sin(a)+u*Math.sin(b);return norm360(atan2d(y,x));}
+function lerp(a,b,t){return a+(b-a)*t;}
+function lerpAngle(a,b,t){const d=((b-a+540)%360)-180;return norm360(a+d*t);}
+function arcDeltaWarm(hL,hS,warm){
+ // выбрать дугу (по/против часовой) по тёплости её середины: warm → через более тёплую, cool → холодную
+ const dp=norm360(hS-hL), dn=dp-360;
+ const w=h=>Math.cos((h-30)*Math.PI/180);   // «горячо» у RO(30°)
+ const wp=w(norm360(hL+dp/2)), wn=w(norm360(hL+dn/2));
+ if(warm) return wp>=wn?dp:dn;
+ return wp>=wn?dn:dp;
+}
+function txt(hex){const n=parseInt(hex.slice(1),16);return (0.2126*(n>>16&255)+0.7152*(n>>8&255)+0.0722*(n&255))/255>0.55?'#222':'#fff';}
+function mixHex(a,b,t){const pa=parseInt(a.slice(1),16),pb=parseInt(b.slice(1),16);const f=s=>{const ca=(pa>>s)&255,cb=(pb>>s)&255;return Math.round(ca+(cb-ca)*t);};return '#'+[16,8,0].map(s=>f(s).toString(16).padStart(2,'0')).join('');}
+function lightColor(){return mixHex(CHIPC[HUE[Math.round(S.light.ha/30)%12]],'#f2f1ee',1-S.light.sat);}
+function circ(a,b){const d=Math.abs(a-b);return Math.min(d,12-d);}
+// средний Lab-оттенок каждой строки (для целей растяжки в оптике)
+const ROWLABHUE=[];
+for(let r=0;r<12;r++){let sa=0,sb=0,n=0;for(const p of CH)if(ri(p.row)===r){sa+=p.ax;sb+=p.bx;n++;}ROWLABHUE[r]=n?atan2d(sb,sa):null;}
+for(let r=0;r<12;r++)if(ROWLABHUE[r]==null){for(let d=1;d<12;d++){const a=ROWLABHUE[(r-d+12)%12],b=ROWLABHUE[(r+d)%12];if(a!=null){ROWLABHUE[r]=a;break;}if(b!=null){ROWLABHUE[r]=b;break;}}}
+
+// ---------- state (v3: сцена — много объектов под общим светом) ----------
+const SCENE0=['BR5','G12','B6'];   // дефолт: охра / зелень / даль
+const S={objects:SCENE0.map(c=>({base:PAL.find(p=>p.c===c),role:'half'})),active:0,light:{ha:60,sat:0.85},angle:'complement',path:'straight',key:0,contrast:1.0,force:0.5,shadowChroma:0,fill:0,fillLight:{ha:240,sat:0.12},chromaProfile:'flat',tempSculpt:0,chromaSculpt:1.0,castA:0,castB:1,steps:12,v4amode:false};
+const activeBase=()=>S.objects[S.active].base;
+
+// ---------- geometry ----------
+function shadowChromaTarget(base){return Math.max(0,base.C+S.shadowChroma*45);}
+// атмосфера / сила заполняющего: цели зон подмешиваются к яркому fill (комплемент света, высокая светлота)
+function fillTarget(){const fl=S.fillLight;return{ha:fl.ha,L:lerp(82,58,fl.sat),C:3+47*fl.sat,hp:Math.min(1,0.7+0.3*fl.sat)};}
+function atmoHC(ha,C){const k=S.fill;if(!k)return[ha,C];const t=fillTarget();return[lerpAngle(ha,t.ha,t.hp*k),lerp(C,t.C,k)];}
+function atmoTL(ha,L,C){const k=S.fill;if(!k)return[ha,L,C];const r=atmoHC(ha,C);return[r[0],lerp(L,fillTarget().L,k),r[1]];}
+function computeGeom(base){
+ const Rref=S.light.ha;   // v3: якорь всегда свет (опора убрана)
+ const OPP=Rref+180;
+ let center,spread;
+ if(S.angle==='complement'){center=OPP;spread=0;}
+ else if(S.angle==='split'){center=OPP;spread=30;}
+ else if(S.angle==='triad'){center=OPP;spread=60;}
+ else{center=Rref;spread=30;} // analog
+ const shadowHue=norm360(center-spread), reflexHue=norm360(center+spread);   // сценовые метки (base-независимы)
+ // force: hue едет от локального цвета объекта (монохром) к метке — per-object
+ const baseHa=base.ha??Rref;
+ const shadowEff=lerpAngle(baseHa,shadowHue,S.force);
+ const reflexEff=lerpAngle(baseHa,reflexHue,S.force);
+ return {Rref,shadowHue,reflexHue,shadowEff,reflexEff,cS:shadowChromaTarget(base)};
+}
+const STERM=0.5, SWARM=20;   // терминатор на середине, тёплая вершина у RO(20°) // TUNE
+function pathHueAt(f,geom){
+ const hL=S.light.ha, hS=geom.shadowEff;
+ if(S.path==='straight'){
+  const cL=S.light.sat*CMAX, cS=geom.cS;
+  const aL=cL*cosd(hL),bL=cL*sind(hL),aS=cS*cosd(hS),bS=cS*sind(hS);
+  return norm360(atan2d(lerp(bL,bS,f),lerp(aL,aS,f)));
+ }
+ if(S.path==='sTurn'){
+  const hW=lerpAngle(hL,SWARM,0.55);   // тёплая вершина на терминаторе
+  return f<=STERM?lerpAngle(hL,hW,f/STERM):lerpAngle(hW,hS,(f-STERM)/(1-STERM));
+ }
+ const dh=arcDeltaWarm(hL,hS,S.path==='warmTurn');
+ return norm360(hL+f*dh);
+}
+// путь = две независимые оси: pathHueAt = маршрут оттенка, chromaProfile = профиль хромы вдоль пути
+function pathColor(f,geom){
+ const cL=S.light.sat*CMAX, cS=geom.cS;
+ const ha=pathHueAt(f,geom);
+ const base=lerp(cL,cS,f), bell=Math.sin(Math.PI*f);
+ let C=base;
+ if(S.chromaProfile==='glow')C=base+CHROMA_BOW*bell;          // хрома вспухает на терминаторе
+ else if(S.chromaProfile==='dip')C=base*(1-0.7*bell);          // хрома проседает к серому (сломанный цвет)
+ return {ha,C:Math.max(0,C)};
+}
+// отклонение оттенка пути от прямого lerp на доле f (0 при straight) — крюк для терминатора, не меняя straight
+function pathBendDelta(f,geom){
+ if(S.path==='straight')return 0;
+ const cL=S.light.sat*CMAX, cS=geom.cS, hL=S.light.ha, hS=geom.shadowEff;
+ const aL=cL*cosd(hL),bL=cL*sind(hL),aS=cS*cosd(hS),bS=cS*sind(hS);
+ const hstr=norm360(atan2d(lerp(bL,bS,f),lerp(aL,aS,f)));   // тот же прямой маршрут, что в pathHueAt('straight')
+ return ((pathHueAt(f,geom)-hstr+540)%360)-180;             // знаковое отклонение в градусах
+}
+
+// ---------- pick ----------
+const REPEAT_PEN=9, ADJ_PEN=40;   // мягкий штраф за повтор + жёсткий за повтор соседа
+function pick(tHa,tL,tC,wC){const tr=Math.round(tHa/30)%12;let best=CH[0],bd=1e9;for(const p of CH){let d=6*circ(ri(p.row),tr)+Math.abs(p.L-tL);if(wC>0)d+=wC*Math.abs(p.C-tC);if(d<bd){bd=d;best=p;}}return best;}
+function pickAvoid(tHa,tL,tC,wC,used,neigh){const tr=Math.round(tHa/30)%12;let best=CH[0],bd=1e9;for(const p of CH){let d=6*circ(ri(p.row),tr)+Math.abs(p.L-tL);if(wC>0)d+=wC*Math.abs(p.C-tC);d+=(used.get(p.c)||0)*REPEAT_PEN;if(neigh.indexOf(p.c)>=0)d+=ADJ_PEN;if(d<bd){bd=d;best=p;}}return best;}
+function pickCast(tL){let best=PAL[0],bd=1e9;for(const p of PAL){let d=Math.abs(p.L-tL)+0.6*p.C;if(d<bd){bd=d;best=p;}}return best;}
+
+// ---------- 5 зон объекта (общий источник для лесенки и растяжки); падающая тень — в блоке «тень на соседа» ----------
+function sixZones(base,g){
+ const cl=v=>clamp(v,8,96),key=S.key*KEYAMT,ct=S.contrast;
+ const shC=shadowChromaTarget(base), wDark=0.3+Math.abs(S.shadowChroma);
+ const pc0=pathColor(0,g), pc15=pathColor(0.15,g);
+ const A=(ha,L,C)=>{const r=atmoTL(ha,L,C),Lc=cl(r[1]);return [r[0],Lc,r[2]*(NOWASH?1:clamp(Math.min((100-Lc)/12,Lc/12),0,1))];};   // атмо-цель; хрома зажата гамутом симметрично (ни светлое, ни тёмное не бывает сильно насыщенным). NOWASH=вкл → зажим снят, свет держит цвет
+ // три канала лепки формой по одной дуге. φ = положение зоны на форме (+блик…−ядро). При дефолтах (tempSculpt 0, chromaSculpt 1) modH/modC — тождество, вывод = как раньше.
+ const modH=(ha,phi)=>{if(!S.tempSculpt||!phi)return ha;const pole=phi>0?S.light.ha:S.fillLight.ha;return lerpAngle(ha,pole,S.tempSculpt*Math.min(1,Math.abs(phi))*TFRAC);};   // модуляция: свет→тепло, тень→холод при близкой светлоте
+ const modC=(C,phi)=>C*(1+phi*(S.chromaSculpt-1)*CSWING);   // разброс хромы: >1 свет сочнее/тень к серому
+ const PB=1, PS=16/30, PP=0, PR=-10/30, PJ=-24/30;   // φ зон из тональных сдвигов (блик +30 … ядро −24)
+ // v4e: роль маркера — где он по светлоте в своей линейке. bL сдвигает опору, чтобы зона роли совпала с base.
+ const role=(S.objects.find(o=>o.base===base)||{}).role||'half';
+ const roleOff=({light:16,half:0,shadow:-24}[role]||0)*ct, bL=base.L-roleOff;
+ const heldZone={light:'svet',half:'polu',shadow:'jadro'}[role], held=z=>LOCALHOLD&&z===heldZone, baseLab=[base.L,base.ax,base.bx];
+ const b=A(NOWASH?(base.ha??0):modH(pc0.ha,PB), bL+30*ct+key, NOWASH?base.C:modC(pc0.C*0.55,PB)), s=A(NOWASH?(base.ha??0):modH(pc15.ha,PS), bL+16*ct+key, NOWASH?base.C:modC(pc15.C,PS)),   // блик/свет: обычно берут цвет света (блик вымыт ×0.55); NOWASH=вкл → берут оттенок+хрому объекта (светлее того же цвета, не выбеливает)
+       p=A(norm360((base.ha??0)+pathBendDelta(0.5,g)), bL+key, modC(base.C,PP)), r=A(modH(g.reflexEff,PR), bL-10*ct+key, modC(shC,PR)),
+       j=A(modH(g.shadowEff,PJ), bL-24*ct+key, modC(shC,PJ));
+ const TB=v=>{const h=wheelToLab(v[0]);return [v[1], v[2]*cosd(h), v[2]*sind(h)];};   // [ha,L,C] → lab-таргет; угол через ремап колесо→Lab (иначе синие уезжают)
+ return {
+  blik:{nm:'Highlight', mk:pick(b[0],b[1],b[2],0.3), L:b[1], tab:TB(b)},
+  svet:{nm:'Light', mk:held('svet')?base:pick(s[0],s[1],s[2],0.3), L:s[1], tab:held('svet')?baseLab:TB(s)},
+  polu:{nm:'Halft.', mk:held('polu')?base:((role==='half'&&!(S.fill>0))?base:pick(p[0],p[1],p[2],0.3)), L:p[1], tab:held('polu')?baseLab:TB(p)},   // держать локальный цвет: зона роли = точный маркер
+  reflex:{nm:'Reflex', mk:pick(r[0],r[1],r[2],wDark), L:r[1], tab:TB(r)},
+  jadro:{nm:'Core shadow', mk:held('jadro')?base:pick(j[0],j[1],j[2],wDark), L:j[1], tab:held('jadro')?baseLab:TB(j)}
+ };
+}
+// ---------- render ----------
+const Rw=90, cx=110, cy=110;
+function polar2xy(ha,sat){const th=(ha-90)*Math.PI/180,r=sat*Rw;return {x:cx+r*Math.cos(th),y:cy+r*Math.sin(th)};}
+function xy2polar(x,y){const dx=x-cx,dy=y-cy;let ha=norm360(atan2d(dy,dx)+90);let sat=clamp(Math.hypot(dx,dy)/Rw,0,1);return {ha,sat};}
+function discGradient(){
+ let stops=[];for(let i=0;i<12;i++){stops.push(`${CHIPC[HUE[i]]} ${i*30}deg ${(i+1)*30}deg`);}
+ document.getElementById('wdisc').style.background=
+  `radial-gradient(circle at 50% 50%, #fff 12%, rgba(255,255,255,.55) 26%, rgba(255,255,255,0) 60%),`+
+  `conic-gradient(from -15deg, ${stops.join(',')})`;
+}
+function svgEl(t,at){const e=document.createElementNS('http://www.w3.org/2000/svg',t);for(const k in at)e.setAttribute(k,at[k]);return e;}
+function drawWheel(g){
+ const svg=document.getElementById('wsvg');svg.innerHTML='';
+ const L=polar2xy(S.light.ha,S.light.sat);
+ const T=polar2xy(g.shadowHue,1), Rf=polar2xy(g.reflexHue,1);      // сценовые метки (направление на fill)
+ // путь активного объекта свет→его тень
+ const Tend=polar2xy(g.shadowEff,1);
+ if(S.path==='straight'){svg.appendChild(svgEl('line',{x1:L.x,y1:L.y,x2:Tend.x,y2:Tend.y,stroke:'#666',['stroke-width']:1.5,['stroke-dasharray']:'4 3'}));}
+ else{
+  let d=`M ${L.x} ${L.y}`;for(let k=1;k<=20;k++){const f=k/20;const ha=pathHueAt(f,g);const rr=lerp(S.light.sat,1,f);const P=polar2xy(ha,rr);d+=` L ${P.x} ${P.y}`;}
+  const pc=S.path==='warmTurn'?'#C0392B':S.path==='coolTurn'?'#1D6FA0':'#8a54b0';
+  svg.appendChild(svgEl('path',{d,fill:'none',stroke:pc,['stroke-width']:2}));
+ }
+ // спицы центр→метки
+ svg.appendChild(svgEl('line',{x1:cx,y1:cy,x2:T.x,y2:T.y,stroke:'#c8c8c8',['stroke-width']:1}));
+ svg.appendChild(svgEl('line',{x1:cx,y1:cy,x2:Rf.x,y2:Rf.y,stroke:'#c8c8c8',['stroke-width']:1,['stroke-dasharray']:'2 2'}));
+ // объекты сцены (активный крупнее + обведён)
+ S.objects.forEach((o,i)=>{const P=polar2xy(o.base.ha??0,o.base.rad);const on=i===S.active;const sz=on?7:5;
+  svg.appendChild(svgEl('rect',{x:P.x-sz,y:P.y-sz,width:2*sz,height:2*sz,rx:3,fill:o.base.h,stroke:on?'#1D9E75':'#fff',['stroke-width']:on?2.5:1.5}));});
+ // метки тень/рефлекс
+ svg.appendChild(svgEl('circle',{cx:T.x,cy:T.y,r:6,fill:'#fff',stroke:'#333',['stroke-width']:2}));
+ svg.appendChild(svgEl('circle',{cx:Rf.x,cy:Rf.y,r:5.5,fill:'#fff',stroke:'#7a8a90',['stroke-width']:2,['stroke-dasharray']:'3 2'}));
+ // свет (тащим)
+ const ld=svgEl('circle',{cx:L.x,cy:L.y,r:8,fill:'#2b2b2b',stroke:'#fff',['stroke-width']:2,style:'cursor:grab'});ld.id='lightDot';svg.appendChild(ld);
+ const lab=(x,y,t,c)=>{const e=svgEl('text',{x,y,['font-size']:9,fill:c,['text-anchor']:'middle'});e.textContent=t;svg.appendChild(e);};
+ lab(L.x,L.y-11,'light','#2b2b2b'); lab(T.x,T.y+(T.y<cy?-9:15),'shadow','#444'); if(S.angle!=='complement')lab(Rf.x,Rf.y+(Rf.y<cy?-9:15),'reflex','#5f7690');
+ // заполняющий (второй свет) — тащим
+ const F=polar2xy(S.fillLight.ha,S.fillLight.sat);
+ svg.appendChild(svgEl('line',{x1:cx,y1:cy,x2:F.x,y2:F.y,stroke:'#9ab6d4',['stroke-width']:1,['stroke-dasharray']:'1 3'}));
+ const fd=svgEl('circle',{cx:F.x,cy:F.y,r:7,fill:'#eaf2fb',stroke:'#3b6ea5',['stroke-width']:2.5,style:'cursor:grab'});fd.id='fillDot';svg.appendChild(fd);
+ lab(F.x,F.y+(F.y<cy?-11:16),'fill','#3b6ea5');
+}
+function drawWheelLabels(g){
+ const pair=(ha)=>HUE[Math.round(ha/30)%12];
+ const lc=lightColor(), warm=Math.cos((S.light.ha-30)*Math.PI/180);
+ const temp=S.light.sat<0.12?'neutral':(warm>0.35?'warm':warm<-0.35?'cool':'mixed');
+ const fc=mixHex(CHIPC[HUE[Math.round(S.fillLight.ha/30)%12]],'#f2f1ee',1-S.fillLight.sat);
+ document.getElementById('wlabels').innerHTML=
+  `<div style="height:52px;border-radius:9px;background:${lc};border:1.5px solid var(--line);display:flex;flex-direction:column;justify-content:center;padding:0 12px;color:${txt(lc)};margin-bottom:6px">`+
+   `<div style="font-size:12px;font-weight:800">Scene light${S.light.mk?' · marker '+S.light.mk:''}</div>`+
+   `<div style="font-size:10.5px;opacity:.85">${pair(S.light.ha)} · ${temp} · sat. ${Math.round(S.light.sat*100)}%</div></div>`+
+  `<div style="height:40px;border-radius:9px;background:${fc};border:1.5px dashed #3b6ea5;display:flex;flex-direction:column;justify-content:center;padding:0 12px;color:${txt(fc)};margin-bottom:9px">`+
+   `<div style="font-size:11px;font-weight:800">Fill (second light)${S.fillLight.mk?' · marker '+S.fillLight.mk:''}</div>`+
+   `<div style="font-size:10px;opacity:.85">${pair(S.fillLight.ha)} · sat. ${Math.round(S.fillLight.sat*100)}%</div></div>`+
+  `<div><b>light</b> — dark dot (drag): angle=hue, radius=saturation</div>`+
+  `<div style="margin-top:4px"><b>fill</b> — blue dot (drag): its hue and saturation</div>`+
+  `<div style="margin-top:4px"><b>objects</b> — squares (markers ①); active is outlined</div>`+
+  `<div style="margin-top:4px"><b>shadow+reflex</b> — marks on the edge (one set per scene, from the light); all objects pull their shadow toward it</div>`+
+  `<div style="margin-top:6px;color:#999">light: ${pair(S.light.ha)} · shadow: ${pair(g.shadowHue)}${S.angle!=='complement'?' · reflex: '+pair(g.reflexHue):''}</div>`;
+}
+function drawObjSwitch(){
+ const box=document.getElementById('objswitch');box.innerHTML='';
+ S.objects.forEach((o,i)=>{const s=document.createElement('span');s.className='oswitch'+(i===S.active?' on':'');s.style.background=o.base.h;s.style.color=txt(o.base.h);s.textContent=o.base.c;s.title=o.base.c+' · '+o.base.row;s.onclick=()=>{S.active=i;render();};box.appendChild(s);});
+}
+function drawRolePick(){   // v4e: роль активного маркера в его линейке
+ const box=document.getElementById('rolepick');if(!box)return;box.innerHTML='';
+ const o=S.objects[S.active], cur=o.role||'half';
+ box.appendChild(Object.assign(document.createElement('span'),{textContent:o.base.c+' — is:',style:'white-space:nowrap'}));
+ [['light','light'],['half','halftone'],['shadow','shadow']].forEach(r=>{
+  const s=document.createElement('span');s.textContent=r[1];
+  s.style.cssText='cursor:pointer;padding:2px 8px;border-radius:7px;border:1.5px solid '+(cur===r[0]?'var(--teal)':'var(--line)')+';background:'+(cur===r[0]?'var(--teal)':'#fff')+';color:'+(cur===r[0]?'#fff':'var(--ink)')+';font-weight:'+(cur===r[0]?700:400);
+  s.onclick=()=>{o.role=r[0];render();};box.appendChild(s);});
+ box.appendChild(Object.assign(document.createElement('span'),{textContent:'· default halftone; the rest of the zones fill in',style:'color:#B8AFA9;white-space:nowrap'}));
+}
+function render(){
+ const active=activeBase();
+ const g=computeGeom(active);
+ discGradient(); drawWheel(g); drawWheelLabels(g);
+ drawPickRow('lightpick',S.light.mk,'light'); drawPickRow('fillpick',S.fillLight.mk,'fill');
+ drawObjSwitch(); drawRolePick(); mpick();
+ document.getElementById('wnote').innerHTML='The shadow is built from the fill light (the anchor is removed — always the light; this ties the objects together). The path has two axes: <b>route</b> (where the hue travels: straight through gray, a warm/cool turn by arc, S-break — warm terminator into cool shadow) and <b>chroma profile</b> (dip — halftones toward gray / broken color, flat, glow — chroma swells on the terminator). They can be mixed: cool with glow, straight with dip.';
+ drawCastBlock();
+}
+// ---------- тень на соседа ----------
+function fillSkyHex(){return mixHex(CHIPC[HUE[Math.round(S.fillLight.ha/30)%12]],'#f2f1ee',1-S.fillLight.sat);}
+// взаимный отскок в паре — где крутить (§4 дизайн-дока):
+const CAST={ brightC:1.2, reflexTint:0.25, reflexC:0.7 };   // ★ контакт: буст хромы · рефлекс: капля тона A · спад хромы лит-B
+function castNeighborCells(A,B,n){
+ const gA=computeGeom(A.base);
+ const zB=sixZones(B.base,computeGeom(B.base));
+ const zA=sixZones(A.base,gA);
+ const L=z=>[z.mk.L,z.mk.ax,z.mk.bx];
+ const jadB=L(zB.jadro), pol=L(zB.polu), fl=_lab(fillSkyHex());
+ const litA=L(zA.svet), litB=L(zB.svet);                           // освещённые локальные боков A и B
+ const Ab=[A.base.L,A.base.ax,A.base.bx];
+ // ★ яркий контакт — пик взаимного отскока: среднее лит-A/лит-B, хрома вверх (общий для обеих полосок)
+ const mx=[(litA[0]+litB[0])/2,(litA[1]+litB[1])/2,(litA[2]+litB[2])/2];
+ const bright=[mx[0], mx[1]*CAST.brightC, mx[2]*CAST.brightC];
+ // рефлекс A на теневой светлоте rL — взвешенная смесь трёх вкладов (ползунки RFL):
+ const rL=L(zA.reflex)[0], shC=shadowChromaTarget(A.base);
+ const Nrf=[lerp(litB[1]*CAST.reflexC,Ab[1],CAST.reflexTint), lerp(litB[2]*CAST.reflexC,Ab[2],CAST.reflexTint)];  // сосед — лит-B в тень A
+ const Srf=[fl[1]*CAST.reflexC, fl[2]*CAST.reflexC];                          // небо — заполняющий
+ const Mrf=[shC*cosd(gA.reflexEff), shC*sind(gA.reflexEff)];                  // сцена — метка рефлекса с круга
+ const ws=RFL.sos+RFL.neb+RFL.sc||1;
+ const reflexA=[rL,
+   (RFL.sos*Nrf[0]+RFL.neb*Srf[0]+RFL.sc*Mrf[0])/ws,
+   (RFL.sos*Nrf[1]+RFL.neb*Srf[1]+RFL.sc*Mrf[1])/ws];
+ const jadroA=L(zA.jadro);                                         // ядро A — собственная тень объекта
+ // тень B (как было): тело → край → полутень
+ const occl=[Math.max(14,jadB[0]-28), jadB[1]*0.2, jadB[2]*0.2];   // тонкая тёмная линия occlusion (в глубине градиента сцены)
+ const edge=[lerp(jadB[0],fl[0],0.4), lerp(jadB[1],fl[1],0.55), lerp(jadB[2],fl[2],0.55)];   // больше неба
+ const pen=[lerp(jadB[0],pol[0],0.6), lerp(jadB[1],pol[1],0.6), lerp(jadB[2],pol[2],0.6)];    // отпускает к свету B
+ const A3=[jadB,edge,pen], ramp=[];                                // тело → край → полутень
+ for(let i=0;i<n;i++){const t=i/(n-1)*2,seg=Math.min(1,Math.floor(t)),u=t-seg,P=A3[seg],Q=A3[seg+1];
+  ramp.push([lerp(P[0],Q[0],u),lerp(P[1],Q[1],u),lerp(P[2],Q[2],u)]);}
+ return {bright,litA,litB,reflexA,jadroA,occl,ramp,bodyT:jadB,edgeT:edge,penT:pen};   // bodyT/edgeT/penT — зоны линейки тени для v4a
+}
+function drawCastScene(A,B,c,mode){
+ mode=mode||'mk';
+ const occl=c.occl, bounce=c.bright, ramp=c.ramp;
+ const sun=lightColor(), ground=B.base.h, obj=A.base.h, sky=fillSkyHex();
+ const W=480,H=210,gy=150,sh=22,sx0=120,sx1=452;
+ const hx=c=>lab2rgb(c[0],c[1],c[2]);
+ const rhex=lab=>{const m=bestMix(lab);return mixPredictHex(m.A,m.B,m.w);};
+ const paint = mode==='true' ? hx : (S.v4amode?flatHex:rhex);   // 'true' — истинный (lab→RGB); 'mk' — bestMix или, в v4a, ближайший плоский маркер
+ const gid = mode==='true' ? 'T' : 'M';     // уникальные id градиентов на две сцены
+ const Bb=[B.base.L,B.base.ax,B.base.bx];
+ const seq=[occl].concat(ramp).concat([Bb]);   // от самой тёмной точки касания (окклюзия) → светлеет к поверхности; ★ яркий контакт — отдельной точкой
+ const stops=seq.map((v,i)=>'<stop offset="'+(i/(seq.length-1)).toFixed(3)+'" stop-color="'+paint(v)+'"/>').join('');
+ const T=(x,y,t,fs,fill,fw,ta)=>'<text x="'+x+'" y="'+y+'" font-family="-apple-system,Segoe UI,sans-serif" font-size="'+(fs||10)+'" fill="'+(fill||'#221D1D')+'" font-weight="'+(fw||400)+'" text-anchor="'+(ta||'start')+'">'+t+'</text>';
+ const zA=sixZones(A.base,computeGeom(A.base));   // путь уже учтён внутри sixZones (свет + терминатор), сцена читает зоны как есть
+ const cBlik=paint(zA.blik.tab),cLit=paint(zA.svet.tab),cPolu=paint(zA.polu.tab),cJad=paint(zA.jadro.tab),cRefl=paint(c.reflexA),cBright=paint(c.bright);
+ const cLitB=paint(c.litB),cLitA=paint(c.litA),cOccl=paint(c.occl);
+ const gl=glowZones(A);const cGor=paint(gl.gor),cRim=paint(gl.rim),cPk=paint(gl.peak),cDeep=paint(gl.deep);   // свечение: горение (терминатор) + просвет рим/пик/глубина (лист)
+ const bcx=100,br=30,bcy=gy-br,rr=br-2,cs=a=>Math.cos(a*Math.PI/180),sn=a=>Math.sin(a*Math.PI/180);
+ const pin=(x,y,nn)=>'<circle cx="'+x+'" cy="'+y+'" r="6.5" fill="#fff" opacity="0.92" stroke="#00000033"/>'+T(x,y+3,nn,8.5,'#221D1D',700,'middle');
+ const bandTop=f=>[146+f*300,132];
+  const zl=[['body',0.16],['edge',0.50],['halftone',0.85]].map(z=>{const pt=bandTop(z[1]);return T(pt[0],pt[1]-4,z[0],9,'#5a534f',700,'middle');}).join('');
+ const svg='<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;height:auto;display:block">'
+  +'<rect x="0" y="0" width="'+W+'" height="'+gy+'" fill="'+sky+'" opacity="0.5"/>'
+  +T(W-6,15,'sky · from fill',9,'#8A817B',400,'end')
+  +'<defs><linearGradient id="csg'+gid+'" x1="0" x2="1">'+stops+'</linearGradient>'
+  +'<radialGradient id="balla'+gid+'" cx="37%" cy="32%" r="72%"><stop offset="0" stop-color="'+cBlik+'"/><stop offset="0.32" stop-color="'+cLit+'"/><stop offset="0.56" stop-color="'+cPolu+'"/><stop offset="0.84" stop-color="'+cJad+'"/><stop offset="1" stop-color="'+cJad+'"/></radialGradient>'
+  +'<linearGradient id="leaf'+gid+'" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="'+cRim+'"/><stop offset="0.28" stop-color="'+cPk+'"/><stop offset="0.5" stop-color="'+cDeep+'"/><stop offset="0.72" stop-color="'+cPk+'"/><stop offset="1" stop-color="'+cRim+'"/></linearGradient>'
+  +'<radialGradient id="lglow'+gid+'" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#fff" stop-opacity="0.9"/><stop offset="0.55" stop-color="#fff" stop-opacity="0.32"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient></defs>'
+  +'<circle cx="44" cy="32" r="13" fill="'+sun+'"/>'
+  +[-30,0,30,60].map(a=>{const r=a*Math.PI/180;return '<line x1="'+(44+16*Math.cos(r))+'" y1="'+(32+16*Math.sin(r))+'" x2="'+(44+25*Math.cos(r))+'" y2="'+(32+25*Math.sin(r))+'" stroke="'+sun+'" stroke-width="2.2" stroke-linecap="round"/>';}).join('')
+  +T(64,24,'light source',9,'#8A817B')
+  +'<rect x="20" y="132" width="440" height="40" fill="'+ground+'" rx="3"/>'
+  +T(455,gy+sh+13,'surface B · '+B.base.c,9,'#8A817B',400,'end')
+  +'<polygon points="108,150 146,132 446,132 446,150" fill="url(#csg'+gid+')"/>'+T(322,162,'cast shadow',9,'#B23A5A',700,'middle')
+  +zl
+  +'<polygon points="108,150 108,96 70,78 70,132" fill="'+cPolu+'" stroke="#00000033" stroke-width="0.8"/>'  +'<polygon points="108,150 108,96 146,78 146,132" fill="'+cJad+'" stroke="#00000033" stroke-width="0.8"/>'  +'<polygon points="108,96 70,78 108,60 146,78" fill="'+cLit+'" stroke="#00000033" stroke-width="0.8"/>'  +'<polygon points="90,68 95,72 90,76 85,72" fill="'+cBlik+'" stroke="#ffffffcc" stroke-width="0.7"/>'  +'<line x1="108" y1="142.5" x2="146" y2="124.5" stroke="'+cRefl+'" stroke-width="2.4" stroke-linecap="round"/>'  +'<line x1="108" y1="146.5" x2="146" y2="128.5" stroke="'+cLitB+'" stroke-width="2.4" stroke-linecap="round"/>'  +'<ellipse cx="54" cy="162" rx="14" ry="5" fill="'+cLitA+'" opacity="0.85"/>'  +'<line x1="108" y1="150.5" x2="146" y2="132.5" stroke="'+cOccl+'" stroke-width="2.4" stroke-linecap="round"/>'  +'<line x1="108" y1="149" x2="108" y2="97" stroke="#00000060" stroke-width="1.2"/>'
+  +'<line x1="108" y1="96" x2="146" y2="78" stroke="'+cGor+'" stroke-width="5" opacity="0.3" stroke-linecap="round"/>'
+  +'<line x1="108" y1="96" x2="146" y2="78" stroke="'+cGor+'" stroke-width="2.4" stroke-linecap="round"/>'
+  +'<g transform="translate(396,76) rotate(-20)">'
+   +'<ellipse cx="0" cy="0" rx="48" ry="40" fill="url(#lglow'+gid+')"/>'
+   +'<path d="M0,-34 C20,-15 20,15 0,34 C-20,15 -20,-15 0,-34 Z" fill="url(#leaf'+gid+')" stroke="#00000033" stroke-width="0.8"/>'
+   +'<line x1="0" y1="-31" x2="0" y2="33" stroke="#0000004a" stroke-width="1.3"/>'
+   +'<line x1="0" y1="-16" x2="14" y2="-25" stroke="#0000003a" stroke-width="0.8"/><line x1="0" y1="-16" x2="-14" y2="-25" stroke="#0000003a" stroke-width="0.8"/>'
+   +'<line x1="0" y1="0" x2="16" y2="-9" stroke="#0000003a" stroke-width="0.8"/><line x1="0" y1="0" x2="-16" y2="-9" stroke="#0000003a" stroke-width="0.8"/>'
+   +'<line x1="0" y1="15" x2="14" y2="7" stroke="#0000003a" stroke-width="0.8"/><line x1="0" y1="15" x2="-14" y2="7" stroke="#0000003a" stroke-width="0.8"/>'
+  +'</g>'
+  +'<rect x="300" y="48" width="13" height="11" rx="2" fill="'+cRim+'" stroke="#00000022"/>'
+  +'<rect x="300" y="64" width="13" height="11" rx="2" fill="'+cPk+'" stroke="#00000022"/>'
+  +'<rect x="300" y="80" width="13" height="11" rx="2" fill="'+cDeep+'" stroke="#00000022"/>'
+  +'<circle cx="108" cy="'+gy+'" r="5" fill="'+cBright+'" stroke="#fff" stroke-width="1.2"/>'
+  +T(108,gy+2.5,'★',7,'#fff',700,'middle')
+  +T(100,50,'light',9,'#B23A5A',700,'middle')+'<line x1="100" y1="53" x2="104" y2="72" stroke="#B23A5A" stroke-width="0.7"/>'+T(56,54,'highlight',9,'#B23A5A',700,'middle')+'<line x1="68" y1="56" x2="88" y2="72" stroke="#B23A5A" stroke-width="0.7"/>'+T(34,104,'halftone',9,'#B23A5A',700,'middle')+'<line x1="58" y1="104" x2="86" y2="110" stroke="#B23A5A" stroke-width="0.7"/>'+T(196,72,'core shadow',9,'#B23A5A',700,'middle')+'<line x1="162" y1="74" x2="130" y2="98" stroke="#B23A5A" stroke-width="0.7"/>'+T(190,118,'reflex',9,'#B23A5A',700,'middle')+'<line x1="166" y1="118" x2="140" y2="133" stroke="#B23A5A" stroke-width="0.7"/>'+T(150,192,'edge contrast',9,'#B23A5A',700,'middle')+'<line x1="122" y1="188" x2="108" y2="150" stroke="#B23A5A" stroke-width="0.7"/>'+T(244,113,'lit-B',9,'#22796b',700,'middle')+'<line x1="222" y1="114" x2="146" y2="129" stroke="#22796b" stroke-width="0.7"/>'+T(242,151,'touch',9,'#22796b',700,'middle')+'<line x1="214" y1="150" x2="140" y2="139" stroke="#22796b" stroke-width="0.7"/>'+T(54,180,'lit-A',9,'#22796b',700,'middle')+'<line x1="54" y1="176" x2="54" y2="166" stroke="#22796b" stroke-width="0.7"/>'
+  +T(150,44,'burn',9,'#B5730E',700,'start')+'<line x1="168" y1="46" x2="130" y2="85" stroke="#B5730E" stroke-width="0.7"/>'
+  +T(396,32,'leaf · backlit',9,'#B5730E',700,'middle')
+  +T(317,57,'rim',8.5,'#B5730E',600,'start')+T(317,73,'peak',8.5,'#B5730E',600,'start')+T(317,89,'depth',8.5,'#B5730E',600,'start')
+  +T(230,20,'object A · '+A.base.c,9,'#8A817B',400,'start')
+  +'</svg>';
+ document.getElementById(mode==='true'?'truescene':'castscene').innerHTML=svg;
+}
+function castCell(box,t,star,tag){
+ const m=bestMix(t),A=m.A,B=m.B,wA=Math.round(m.w*20)*5,wB=100-wA;
+ const mixc=mixPredictHex(A,B,m.w), pre=star?'★ ':(tag?tag+' ':'');
+ const d=document.createElement('div');d.className='oc'+(star?' anchor':'');d.style.background=mixc;d.style.color=txt(mixc);if(star)d.title='bright contact · peak of mutual bounce';
+ if(wA>=95||wB>=95){const one=wA>=95?A:B;d.innerHTML='<div class="ocodes"><span>'+pre+one.c+'</span></div><div class="obar"><span style="width:100%;background:'+one.h+'"></span></div>';}
+ else{d.innerHTML='<div class="ocodes"><span>'+pre+A.c+'</span><span>'+B.c+'</span></div><div class="obar"><span style="width:'+wA+'%;background:'+A.h+'"></span><span style="width:'+wB+'%;background:'+B.h+'"></span></div>';}
+ box.appendChild(d);
+}
+function drawCastReflStrip(c){   // ① рефлекс — тёмный бок объекта A
+ const box=document.getElementById('castrefl');box.innerHTML='';
+ castCell(box,c.bright,true);        // ★ общий яркий контакт
+ castCell(box,c.reflexA,false,'④'); // рефлекс = зона ④ шара (лит-B в тень A)
+ castCell(box,c.jadroA,false,'③');  // ядро = зона ③ шара (собственная тень)
+}
+function drawCastLegend(A,c){
+ const zA=sixZones(A.base,computeGeom(A.base));
+ const hx=x=>lab2rgb(x[0],x[1],x[2]);
+ const codeStr=t=>{const m=bestMix(t),wA=Math.round(m.w*20)*5;return wA>=95?m.A.c:(wA<=5?m.B.c:m.A.c+'+'+m.B.c);};
+ const items=[
+  ['','highlight',zA.blik.mk.h,zA.blik.mk.c],
+  ['①','light',zA.svet.mk.h,zA.svet.mk.c],
+  ['②','halftone',zA.polu.mk.h,zA.polu.mk.c],
+  ['③','core',zA.jadro.mk.h,zA.jadro.mk.c],
+  ['④','reflex',hx(c.reflexA),codeStr(c.reflexA)],
+  ['★','contact',hx(c.bright),codeStr(c.bright)],
+ ];
+ document.getElementById('castlegend').innerHTML=items.map(z=>
+  '<span style="display:inline-flex;align-items:center;gap:3px">'
+  +(z[0]?'<b style="color:#221D1D">'+z[0]+'</b> ':'')+z[1]
+  +' <i style="width:11px;height:11px;border-radius:2px;display:inline-block;background:'+z[2]+';box-shadow:0 0 0 1px #0002"></i> '
+  +'<span style="color:#221D1D;font-weight:600">'+z[3]+'</span></span>').join('');
+}
+function drawCastShadowStrip(c){ // ② тень — поверхность B под тенью A
+ const box=document.getElementById('caststrip');box.innerHTML='';
+ castCell(box,c.bright,true);    // ★ тот же яркий контакт
+ castCell(box,c.litA,false);     // физ. контакт — лит-A на B (тёплый отскок)
+ c.ramp.forEach(t=>castCell(box,t,false));   // тело → край → полутень
+}
+function drawCastBlock(){
+ const objs=S.objects;
+ let ai=Math.min(S.castA||0,objs.length-1), bi=Math.min(S.castB||0,objs.length-1);
+ const A=objs[ai],B=objs[bi];   // A=B разрешено: объект отбрасывает тень на поверхность своего же цвета
+ const row=(label,sel,w)=>{let h='<div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-bottom:4px"><span style="font-size:10.5px;color:var(--mut);min-width:104px">'+label+'</span>';
+  objs.forEach((o,i)=>{h+='<span class="cpk'+(i===sel?' on':'')+'" data-w="'+w+'" data-i="'+i+'" style="background:'+o.base.h+';color:'+txt(o.base.h)+'">'+o.base.c+'</span>';});return h+'</div>';};
+ const pick=document.getElementById('castpick');
+ pick.innerHTML=row('caster A',ai,'A')+row('what B falls on',bi,'B');
+ pick.querySelectorAll('.cpk').forEach(sp=>sp.onclick=()=>{if(sp.dataset.w==='A')S.castA=+sp.dataset.i;else S.castB=+sp.dataset.i;render();});
+ const c=castNeighborCells(A,B,7);
+ drawCastScene(A,B,c);
+ drawCastScene(A,B,c,'true');
+ drawSceneLines(A,B,c);
+ drawCastDE(A,c);
+ drawV4aLadders(A,B,c);
+}
+// ---------- v4: растяжка ПО ФОРМЕ (шар + падающая тень, шаги по геометрии) ----------
+// один проход по геометрии сцены: меридиан шара (блик→…→рефлекс, шаг по углу Ламберта) → шов контакта → земля (тело→край→поверхность, шаг по длине).
+// шаги ставятся по ФОРМЕ, а не по Lab-дистанции: терминатор сам сжимается (быстрая смена цвета на узком пояске), свет — широкая спокойная шапка.
+function computeFormWalk(A,B,c){
+ const zA=sixZones(A.base,computeGeom(A.base));
+ const Bb=[B.base.L,B.base.ax,B.base.bx];
+ const mid=Math.floor(c.ramp.length/2), last=c.ramp.length-1;
+ // контрольные точки по параметру p∈[0,1]. шар 0..0.58 (меридиан по углу), земля 0.62..1 (по длине). те же Lab-цели, что у карточек/шара — всё сходится.
+ const ctl=[
+  {p:0.00, tab:zA.blik.tab, zone:'Highlight',        pin:'①', part:'s'},
+  {p:0.13, tab:zA.svet.tab, zone:'Light',        pin:'②', part:'s'},
+  {p:0.25, tab:zA.polu.tab, zone:'Halftone',    pin:'③', part:'s'},
+  {p:0.44, tab:zA.jadro.tab,zone:'Core shadow',pin:'④', part:'s'},
+  {p:0.57, tab:c.reflexA,   zone:'Reflex',     pin:'⑤', part:'s'},
+  {p:0.61, tab:c.occl,      zone:'Touch',     pin:'',  part:'g'},   // окклюзия — тёмная бороздка касания (самое тёмное), смягчает прыжок рефлекс→яркий отскок
+  {p:0.64, tab:c.bright,    zone:'Contact',     pin:'★', part:'g'},
+  {p:0.68, tab:c.litA,      zone:'',            pin:'',  part:'g'},
+  {p:0.75, tab:c.ramp[0],   zone:'Body',        pin:'',  part:'g'},
+  {p:0.85, tab:c.ramp[mid], zone:'Edge',        pin:'',  part:'g'},
+  {p:0.94, tab:c.ramp[last],zone:'Shadow halftone',pin:'', part:'g'},
+  {p:1.00, tab:Bb,          zone:'Surface B',pin:'', part:'g'},
+ ];
+ const N=clamp(S.steps+8,16,26);
+ const samples=[];
+ for(let i=0;i<N;i++){const p=i/(N-1);
+  let a=ctl[0],b=ctl[ctl.length-1];
+  for(let k=0;k<ctl.length-1;k++){if(p>=ctl[k].p&&p<=ctl[k+1].p){a=ctl[k];b=ctl[k+1];break;}}
+  const u=b.p>a.p?(p-a.p)/(b.p-a.p):0;
+  samples.push({tab:[lerp(a.tab[0],b.tab[0],u),lerp(a.tab[1],b.tab[1],u),lerp(a.tab[2],b.tab[2],u)],p,part:p<0.6?'s':'g',zone:'',pin:'',anchor:false});
+ }
+ // пришпилить каждый якорь к ближайшему СВОБОДНОМУ сэмплу (у шва рефлекс/касание/контакт стоят вплотную — не дать им затереть друг друга)
+ const usedIdx=new Set();
+ ctl.forEach(cc=>{if(!cc.zone)return;
+  let bi=0,bd=1e9;samples.forEach((s,i)=>{const d=Math.abs(s.p-cc.p);if(d<bd){bd=d;bi=i;}});
+  if(usedIdx.has(bi)){for(let d=1;d<samples.length;d++){if(bi+d<samples.length&&!usedIdx.has(bi+d)){bi+=d;break;}if(bi-d>=0&&!usedIdx.has(bi-d)){bi-=d;break;}}}
+  usedIdx.add(bi);
+  samples[bi]={...samples[bi],tab:cc.tab,zone:cc.zone,pin:cc.pin,part:cc.part,anchor:true};});
+ return {samples,zA,reflexA:c.reflexA,bright:c.bright,occl:c.occl};
+}
+function drawFormRibbon(walk){
+ const box=document.getElementById('formribbon');box.innerHTML='';
+ const labs=document.getElementById('formlabels');labs.innerHTML='';
+ let prevPair=null;
+ walk.samples.forEach(s=>{const m=bestMix(s.tab, s.anchor?null:prevPair);const A=m.A,B=m.B;let wA=Math.round(m.w*20)*5,wB=100-wA;prevPair=[A.c,B.c];
+  const mixc=mixPredictHex(A,B,m.w), pre=s.pin?s.pin+' ':'';
+  const d=document.createElement('div');d.className='oc'+(s.anchor?' anchor':'');d.style.background=mixc;d.style.color=txt(mixc);
+  if(wA>=95||wB>=95){const one=wA>=95?A:B;d.innerHTML='<div class="ocodes"><span>'+pre+one.c+'</span></div><div class="obar"><span style="width:100%;background:'+one.h+'"></span></div>';d.title=(s.zone||'')+' · '+one.c+' 100%';}
+  else{d.innerHTML='<div class="ocodes"><span>'+pre+A.c+'</span><span>'+B.c+'</span></div><div class="obar"><span style="width:'+wA+'%;background:'+A.h+'"></span><span style="width:'+wB+'%;background:'+B.h+'"></span></div>';d.title=(s.zone||'')+' · '+A.c+' '+wA+'% + '+B.c+' '+wB+'%';}
+  box.appendChild(d);
+  const lab=document.createElement('div');lab.className='tlab';lab.innerHTML=s.zone?s.zone.replace(' ','<br>'):'';labs.appendChild(lab);});
+}
+function drawFormSilhouette(A,B,c,walk){
+ const W=440,H=150,gy=104,sh=20,sx0=100,sx1=410;
+ const rhex=lab=>{const m=bestMix(lab);return mixPredictHex(m.A,m.B,m.w);};
+ const sph=walk.samples.filter(s=>s.part==='s'), grd=walk.samples.filter(s=>s.part==='g');
+ const smax=sph[sph.length-1].p, gmin=grd[0].p;
+ const ballStops=sph.map(s=>'<stop offset="'+(s.p/smax).toFixed(3)+'" stop-color="'+rhex(s.tab)+'"/>').join('');
+ const grStops=grd.map(s=>'<stop offset="'+((s.p-gmin)/(1-gmin)).toFixed(3)+'" stop-color="'+rhex(s.tab)+'"/>').join('');
+ const sun=lightColor(),ground=B.base.h,sky=fillSkyHex();
+ const bcx=100,br=28,bcy=gy-br,rr=br-2,cs=a=>Math.cos(a*Math.PI/180),sn=a=>Math.sin(a*Math.PI/180);
+ const cRefl=rhex(walk.reflexA),cBright=rhex(walk.bright),cOccl=rhex(walk.occl);
+ const T=(x,y,t,fs,fill,fw,ta)=>'<text x="'+x+'" y="'+y+'" font-family="-apple-system,Segoe UI,sans-serif" font-size="'+(fs||10)+'" fill="'+(fill||'#221D1D')+'" font-weight="'+(fw||400)+'" text-anchor="'+(ta||'start')+'">'+t+'</text>';
+ const pin=(x,y,nn)=>'<circle cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="6.5" fill="#fff" opacity="0.92" stroke="#00000033"/>'+T(x,y+3,nn,8.5,'#221D1D',700,'middle');
+ // пины ①..⑤ по меридиану от блика к нижнему краю
+ const hx0=bcx-br*0.42,hy0=bcy-br*0.5,x1=bcx+br*0.12,y1=bcy+br*0.9;
+ let pins='';sph.forEach(s=>{if(s.pin){const fr=s.p/smax;pins+=pin(lerp(hx0,x1,fr),lerp(hy0,y1,fr),s.pin);}});
+ // тики зон земли
+ const gt=grd.filter(s=>s.zone&&s.zone!=='Touch').map(s=>{const x=sx0+(sx1-sx0)*((s.p-gmin)/(1-gmin));return '<line x1="'+x.toFixed(1)+'" y1="'+(gy-5)+'" x2="'+x.toFixed(1)+'" y2="'+gy+'" stroke="#8A817B" stroke-width="1"/>'+T(x,gy-8,s.zone.split(' ')[0],8,'#666',700,'middle');}).join('');
+ const svg='<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;height:auto;display:block">'
+  +'<rect x="0" y="0" width="'+W+'" height="'+gy+'" fill="'+sky+'" opacity="0.5"/>'
+  +'<defs><radialGradient id="formball" cx="37%" cy="30%" r="72%">'+ballStops+'</radialGradient>'
+  +'<linearGradient id="formgr" x1="0" x2="1">'+grStops+'</linearGradient></defs>'
+  +'<circle cx="42" cy="30" r="12" fill="'+sun+'"/>'
+  +[-30,0,30,60].map(a=>{const r=a*Math.PI/180;return '<line x1="'+(42+15*Math.cos(r))+'" y1="'+(30+15*Math.sin(r))+'" x2="'+(42+23*Math.cos(r))+'" y2="'+(30+23*Math.sin(r))+'" stroke="'+sun+'" stroke-width="2" stroke-linecap="round"/>';}).join('')
+  +T(60,22,'sun · from light',9,'#8A817B')
+  +'<rect x="20" y="'+gy+'" width="'+(W-40)+'" height="'+sh+'" fill="'+ground+'" rx="3"/>'
+  +T(W-6,gy+sh+13,'surface B · '+B.base.c,9,'#8A817B',400,'end')
+  +'<rect x="'+sx0+'" y="'+gy+'" width="'+(sx1-sx0)+'" height="'+sh+'" fill="url(#formgr)" rx="2"/>'
+  +gt
+  +'<circle cx="'+bcx+'" cy="'+bcy+'" r="'+br+'" fill="url(#formball)"/>'
+  +'<path d="M '+(bcx+rr*cs(32)).toFixed(1)+' '+(bcy+rr*sn(32)).toFixed(1)+' A '+rr+' '+rr+' 0 0 1 '+(bcx+rr*cs(150)).toFixed(1)+' '+(bcy+rr*sn(150)).toFixed(1)+'" fill="none" stroke="'+cRefl+'" stroke-width="5.5" stroke-linecap="round" opacity="0.82"/>'
+  +'<ellipse cx="'+(bcx-br*0.38).toFixed(1)+'" cy="'+(bcy-br*0.42).toFixed(1)+'" rx="5.5" ry="4" fill="#fff" opacity="0.4"/>'
+  +'<ellipse cx="'+bcx+'" cy="'+(gy+1)+'" rx="13" ry="3" fill="'+cOccl+'" opacity="0.9"/>'
+  +'<circle cx="'+bcx+'" cy="'+gy+'" r="5.5" fill="'+cBright+'" stroke="#fff" stroke-width="1.2"/>'
+  +T(bcx,gy+3.5,'★',7,'#fff',700,'middle')
+  +pins
+  +T(bcx,bcy-br-6,'object A · '+A.base.c,9,'#8A817B',400,'middle')
+  +'</svg>';
+ document.getElementById('formsil').innerHTML=svg;
+}
+function drawCastDE(A,c){   // ΔE истинная цель → bestMix, по 5 зонам объекта — «искажение набора»
+ const zA=sixZones(A.base,computeGeom(A.base));
+ const dist=(P,Q)=>Math.hypot(P[0]-Q[0],P[1]-Q[1],P[2]-Q[2]);
+ const zones=[['highlight',zA.blik.tab],['light',zA.svet.tab],['halftone',zA.polu.tab],['core',zA.jadro.tab],['reflex',c.reflexA]];
+ const ds=zones.map(z=>{const m=bestMix(z[1]);return {n:z[0], d:dist(mixPredictLab(m.A,m.B,m.w),z[1])};});
+ const mean=ds.reduce((a,x)=>a+x.d,0)/ds.length, worst=ds.reduce((a,x)=>x.d>a.d?x:a);
+ const col=v=>v<8?'#2E8E86':v<18?'#C68A50':'#B23A5A';
+ const per=ds.map(x=>x.n+' <b style="color:'+col(x.d)+'">'+x.d.toFixed(0)+'</b>').join(' · ');
+ document.getElementById('castdE').innerHTML='<b>Set distortion</b> (true → marker, by object zone): mean ΔE <b style="color:'+col(mean)+'">'+mean.toFixed(0)+'</b> · max <b style="color:'+col(worst.d)+'">'+worst.d.toFixed(0)+'</b> ('+worst.n+'). By zone: '+per+'. <span style="color:#B8AFA9">ΔE&lt;3 invisible to the eye · &gt;10 noticeable</span>';
+}
+// ---------- v4: три линейки · карточки как «Деталь объекта», плашка = рецепт ----------
+function splateCard(lab,badge,name){
+ if(S.v4amode){                                       // плоский режим: одна ближайшая плашка, без замеса (тот же снап, что у якорей лесенок)
+  const m=nearestFlat(lab);
+  const card=document.createElement('div');card.className='rc';card.style.flex='1';card.style.minWidth='0';
+  card.innerHTML='<div class="sw" style="background:'+m.h+'"><span class="code" style="color:'+txt(m.h)+'">'+m.c+'</span></div>'
+   +'<div class="cbody"><div class="step">'+(badge?badge+' ':'')+name+'</div><div class="drift">'+m.row+'</div></div>';
+  return {card,mixc:m.h,single:true,A:m,B:m,wA:100,wB:0,one:m};
+ }
+ const m=bestMix(lab),A=m.A,B=m.B,wA=Math.round(m.w*20)*5,wB=100-wA;
+ const single=(wA>=95||wB>=95), mixc=mixPredictHex(A,B,m.w), white=(A.c==='1'||B.c==='1');
+ const one=wA>=95?A:B;
+ let code,drift;
+ if(single){code=one.c;drift=one.row;}
+ else{code=A.c+'·'+B.c;drift=wA+' / '+wB;}
+ const pip=white?'<span class="pip">+white</span>':'';
+ const card=document.createElement('div');card.className='rc';card.style.flex='1';card.style.minWidth='0';
+ card.innerHTML='<div class="sw" style="background:'+mixc+'"><span class="code" style="color:'+txt(mixc)+'">'+code+'</span>'+pip+'</div>'
+  +'<div class="cbody"><div class="step">'+(badge?badge+' ':'')+name+'</div><div class="drift">'+drift+'</div></div>';
+ return {card,mixc,single,A,B,wA,wB,one};
+}
+// уплотнение линейки: между основными точками вставить d промежуточных квадратов (линейно в Lab — тот же метод, что в растяжке по форме). d=0 → ровно основные точки.
+function drawLine(id,items){                    // линейки показывают только зоны-якоря; детализация переехала в лесенку маршрута
+ const box=document.getElementById(id);box.innerHTML='';
+ const strip=document.getElementById(id+'Strip');strip.innerHTML='';
+ let lab=document.getElementById(id+'Lab');   // строчка кодов под замесом
+ if(!lab){lab=document.createElement('div');lab.id=id+'Lab';lab.style.cssText='display:flex;margin-top:3px;font-size:8.5px;font-weight:800;color:var(--mut)';strip.parentNode.insertBefore(lab,strip.nextSibling);}
+ lab.innerHTML='';
+ items.forEach(z=>{const r=splateCard(z.t,z.b,z.n);box.appendChild(r.card);
+  const seg=document.createElement('div');   // strip = схема замеса: ячейка делится на маркеры по долям
+  if(r.single)seg.style.background=r.one.h;
+  else{seg.style.display='flex';seg.innerHTML='<span style="width:'+r.wA+'%;background:'+r.A.h+'"></span><span style="width:'+r.wB+'%;background:'+r.B.h+'"></span>';}
+  strip.appendChild(seg);
+  const lc=document.createElement('div');lc.style.flex='1';lc.style.minWidth='0';lc.style.overflow='hidden';   // коды маркеров под ячейкой
+  if(r.single){lc.style.textAlign='center';lc.textContent=r.one.c;}
+  else{lc.style.display='flex';lc.style.justifyContent='space-between';lc.style.padding='0 4px';lc.innerHTML='<span>'+r.A.c+'</span><span>'+r.B.c+'</span>';}
+  lab.appendChild(lc);});
+}
+function drawSceneLines(A,B,c){
+ const zA=sixZones(A.base,computeGeom(A.base)), zB=sixZones(B.base,computeGeom(B.base));
+ const Bb=[B.base.L,B.base.ax,B.base.bx];
+ const G=glowZones(A);
+ drawLine('lineGlow',[
+  {b:'✦',n:'Burn',t:G.gor},
+  {b:'',n:'Rim',t:G.rim},
+  {b:'',n:'Peak',t:G.peak},
+  {b:'',n:'Depth',t:G.deep}]);
+ drawLine('lineLight',[
+  {b:'①',n:'Highlight',t:zA.blik.tab},
+  {b:'②',n:'Light',t:zA.svet.tab},
+  {b:'③',n:'Halftone',t:zA.polu.tab},
+  {b:'④',n:'Core shadow',t:zA.jadro.tab},
+  {b:'⑤',n:'Reflex',t:c.reflexA}]);
+ drawLine('lineContact',[
+  {b:'',n:'Lit-A',t:zA.svet.tab},
+  {b:'',n:'Touch',t:c.occl},
+  {b:'★',n:'Contact',t:c.bright},
+  {b:'',n:'Lit-B',t:zB.svet.tab}]);
+ drawLine('lineShadow',[
+  {b:'',n:'Body',t:c.ramp[0]},
+  {b:'',n:'Edge',t:c.ramp[3]},
+  {b:'',n:'Halftone',t:c.ramp[6]},
+  {b:'',n:'Surface B',t:Bb}]);
+}
+function inScene(c){return S.objects.findIndex(o=>o.base.c===c);}
+function toggleObj(p){const i=inScene(p.c);
+ if(i>=0){if(S.objects.length>1){S.objects.splice(i,1);if(S.active>=S.objects.length)S.active=S.objects.length-1;}}
+ else{S.objects.push({base:p,role:'half'});S.active=S.objects.length-1;}
+ render();}
+// сортировка палитры по температуре: тёплые → холодные (пик тепла у оранжевого ~50° Lab); нейтрали в конец, светлые выше
+const WARMH=50;
+function warmScore(p){return Math.cos((atan2d(p.bx,p.ax)-WARMH)*Math.PI/180);}
+function palSort(a,b){const na=a.C<8,nb=b.C<8;if(na!==nb)return na?1:-1;if(na)return b.L-a.L;return warmScore(b)-warmScore(a);}
+function mpick(){const box=document.getElementById('mpick');box.innerHTML='';
+ const list=PAL.slice().sort(palSort);
+ list.forEach(p=>{const i=inScene(p.c);const s=document.createElement('div');s.className='msw'+(i>=0?' on':'')+(i===S.active?' act':'');s.style.background=p.h;s.style.color=txt(p.h);s.textContent=p.c;s.title=p.c+' · '+p.row;s.onclick=()=>toggleObj(p);box.appendChild(s);});}
+// ---------- свет/заполняющий из натуральных маркеров ----------
+// свет — ОСВЕТИТЕЛЬ, не краска: от маркера берём оттенок (реальный Lab-угол) и силу подкраски (из хромы), но рисуем вымытым к светлому (lightColor). Темнота/полная хрома пигмента в свет не идут.
+function labHueOf(M){return norm360(atan2d(M.bx,M.ax));}
+function markerToLight(M){
+ if(M.C<8) return {ha:M.ha??S.light.ha, sat:clamp(M.C/CMAX,0,1)};   // нейтраль → белый свет (пол 0: чистый белый = насыщ. 0%)
+ const tgt=labHueOf(M);let bh=M.ha??0,bd=1e9;
+ for(let a=0;a<360;a+=1){const d=Math.abs(((wheelToLab(a)-tgt+540)%360)-180);if(d<bd){bd=d;bh=a;}}   // ha в колесе, чей wheelToLab ≈ реальный оттенок маркера
+ return {ha:bh, sat:clamp(M.C/CMAX,0.05,1)};
+}
+function setLightFromMarker(kind,M){const l=markerToLight(M);if(kind==='light')S.light={ha:l.ha,sat:l.sat,mk:M.c};else S.fillLight={ha:l.ha,sat:l.sat,mk:M.c};render();}
+function drawPickRow(boxId,cur,kind){
+ const box=document.getElementById(boxId);if(!box)return;box.innerHTML='';
+ const list=PAL.slice().sort(palSort);
+ list.forEach(p=>{const s=document.createElement('div');s.className='msw'+(cur===p.c?' on act':'');s.style.background=p.h;s.style.color=txt(p.h);s.textContent=p.c;s.title=p.c+' · '+p.row;s.onclick=()=>setLightFromMarker(kind,p);box.appendChild(s);});}
+
+// ---------- light drag ----------
+(function(){const wheel=document.getElementById('wheel');let dragging=false;
+ function pt(ev){const r=wheel.getBoundingClientRect();const cxp=(ev.touches?ev.touches[0].clientX:ev.clientX)-r.left;const cyp=(ev.touches?ev.touches[0].clientY:ev.clientY)-r.top;return {x:cxp,y:cyp};}
+ function down(ev){const p=pt(ev);const L=polar2xy(S.light.ha,S.light.sat);const F=polar2xy(S.fillLight.ha,S.fillLight.sat);const dL=Math.hypot(p.x-L.x,p.y-L.y),dF=Math.hypot(p.x-F.x,p.y-F.y);if(dL<16||dF<16){dragging=(dF<dL)?'fill':'light';ev.preventDefault();}}
+ function move(ev){if(!dragging)return;const p=pt(ev);const pol=xy2polar(p.x,p.y);const tgt=dragging==='fill'?S.fillLight:S.light;tgt.ha=pol.ha;tgt.sat=clamp(pol.sat,0,1);tgt.mk=null;render();ev.preventDefault();}
+ function up(){dragging=false;}
+ wheel.addEventListener('mousedown',down);window.addEventListener('mousemove',move);window.addEventListener('mouseup',up);
+ wheel.addEventListener('touchstart',down,{passive:false});window.addEventListener('touchmove',move,{passive:false});window.addEventListener('touchend',up);
+})();
+
+// ---------- controls ----------
+document.querySelectorAll('#angleSeg span').forEach(s=>s.onclick=()=>{S.angle=s.dataset.a;document.querySelectorAll('#angleSeg span').forEach(x=>x.classList.toggle('on',x===s));render();});
+document.querySelectorAll('#pathSeg span').forEach(s=>s.onclick=()=>{S.path=s.dataset.p;document.querySelectorAll('#pathSeg span').forEach(x=>x.classList.toggle('on',x===s));render();});
+document.querySelectorAll('#profSeg span').forEach(s=>s.onclick=()=>{S.chromaProfile=s.dataset.pr;document.querySelectorAll('#profSeg span').forEach(x=>x.classList.toggle('on',x===s));render();});
+function slV(){document.getElementById('keyV').textContent=(S.key>0?'+':'')+S.key.toFixed(1);document.getElementById('contrastV').textContent=S.contrast.toFixed(1);document.getElementById('forceV').textContent=S.force.toFixed(1);document.getElementById('schromaV').textContent=S.shadowChroma===0?'0':(S.shadowChroma>0?'+':'')+S.shadowChroma.toFixed(1);document.getElementById('fillV').textContent=S.fill.toFixed(1);document.getElementById('tsculptV').textContent=S.tempSculpt.toFixed(2);document.getElementById('csculptV').textContent=S.chromaSculpt.toFixed(2);}
+document.getElementById('key').addEventListener('input',e=>{S.key=+e.target.value/100;slV();render();});
+document.getElementById('contrast').addEventListener('input',e=>{S.contrast=+e.target.value/100;slV();render();});
+document.getElementById('force').addEventListener('input',e=>{S.force=+e.target.value/100;slV();render();});
+document.getElementById('tsculpt').addEventListener('input',e=>{S.tempSculpt=+e.target.value/100;slV();render();});
+document.getElementById('csculpt').addEventListener('input',e=>{S.chromaSculpt=+e.target.value/100;slV();render();});
+document.getElementById('localhold').addEventListener('change',e=>{LOCALHOLD=e.target.checked;render();});
+document.getElementById('nowash').addEventListener('change',e=>{NOWASH=e.target.checked;render();});
+document.getElementById('schroma').addEventListener('input',e=>{S.shadowChroma=+e.target.value/100;slV();render();});
+document.getElementById('fill').addEventListener('input',e=>{S.fill=+e.target.value/100;slV();render();});
+document.getElementById('seam').addEventListener('input',e=>{SEAM=+e.target.value/100;document.getElementById('seamV').textContent=SEAM.toFixed(2);render();});
+document.getElementById('mud').addEventListener('input',e=>{MUDW=+e.target.value/100;document.getElementById('mudV').textContent=MUDW.toFixed(2);render();});
+document.getElementById('rate').addEventListener('input',e=>{RATEW=+e.target.value/100;document.getElementById('rateV').textContent=RATEW.toFixed(2);render();});
+function updateRateN(){document.getElementById('rateN').textContent='('+Object.keys(MIXRATE).length+' pairs)';}
+document.getElementById('rateFile').onchange=e=>{const f=e.target.files[0];if(!f)return;const rd=new FileReader();rd.onload=()=>{try{const cfg=JSON.parse(rd.result);let n=0;if(cfg.ratings)for(const k in cfg.ratings){const v=cfg.ratings[k];if(v&&v.src==='override'&&v.r!=null){MIXRATE[k]=v.r;n++;}}updateRateN();render();}catch(err){alert('Cannot read the ratings config: '+err.message);}};rd.readAsText(f);};
+updateRateN();
+document.getElementById('v4aL').addEventListener('input',e=>{V4A_L=+e.target.value/100;document.getElementById('v4aLV').textContent=V4A_L.toFixed(2);render();});
+document.getElementById('v4aTemp').addEventListener('input',e=>{V4A_TEMP=+e.target.value/100;document.getElementById('v4aTempV').textContent=V4A_TEMP.toFixed(2);render();});
+document.getElementById('v4aKeep').addEventListener('change',e=>{V4A_KEEP=e.target.checked;render();});
+document.getElementById('v4aHue').addEventListener('change',e=>{V4A_HUE=e.target.checked;render();});
+const setV4aMode=v=>{S.v4amode=v;document.getElementById('v4aCtl').style.display=v?'block':'none';document.getElementById('mixCtl').style.display=v?'none':'block';render();};
+document.getElementById('modeMix').addEventListener('change',()=>setV4aMode(false));
+document.getElementById('modeFlat').addEventListener('change',()=>setV4aMode(true));
+
+// ---------- presets ----------
+const SCENES=[
+ {n:'Summer morning',key:0.12,ct:1.05,force:0.6,sc:0.1,fill:0.2,light:{ha:44,sat:0.5},path:'straight'},
+ {n:'July noon',key:0.15,ct:1.55,force:0.55,sc:0.1,fill:0.06,light:{ha:60,sat:0.42},path:'straight'},
+ {n:'Warm evening',key:0.05,ct:1.05,force:0.78,sc:0.3,fill:0.12,light:{ha:28,sat:0.82},path:'warmTurn'},
+ {n:'Ghibli sunny',key:0.15,ct:1.15,force:0.55,sc:0.5,fill:0.1,light:{ha:60,sat:0.6},path:'warmTurn',filllight:{ha:228,sat:0.28}},
+ {n:'Ghibli haze',key:0.15,ct:0.9,force:0.5,sc:0.25,fill:0.4,light:{ha:54,sat:0.42},path:'warmTurn',filllight:{ha:222,sat:0.2}},
+ {n:'Whimsical',key:0.18,ct:0.95,force:0.68,sc:0.55,fill:0.2,light:{ha:50,sat:0.68},path:'warmTurn'},
+ {n:'Impressionists',key:0.1,ct:0.85,force:0.85,sc:0.45,fill:0.15,light:{ha:62,sat:0.6},path:'sTurn',steps:16,filllight:{ha:252,sat:0.25}},
+ {n:'Cézanne',key:0.05,ct:0.62,force:0.88,sc:0.38,fill:0.12,light:{ha:55,sat:0.5},path:'warmTurn',steps:9,profile:'flat'},
+ {n:'Sunset silhouette',key:-0.05,ct:1.45,force:0.92,sc:0.4,fill:0.2,light:{ha:22,sat:0.92},path:'warmTurn',steps:12,filllight:{ha:20,sat:0.45}},
+ {n:'Blue dream',key:0.15,ct:0.8,force:0.6,sc:0.28,fill:0.12,light:{ha:235,sat:0.65},path:'warmTurn',angle:'analog',steps:12,scene:['B6','BG3','E2','VR5'],filllight:{ha:235,sat:0.3}},
+ {n:'Pastel beach',key:0.2,ct:0.7,force:0.7,sc:0.25,fill:0.3,light:{ha:55,sat:0.4},path:'warmTurn',steps:16,scene:['R4','Y6','B6','R5']},
+ {n:'Noon',key:0.1,ct:1.4,force:0.55,sc:0,fill:0,light:{ha:60,sat:0.6},path:'straight'},
+ {n:'Golden hour',key:0.05,ct:1.0,force:0.75,sc:0.35,fill:0.1,light:{ha:30,sat:0.85},path:'warmTurn'},
+ {n:'Overcast',key:0,ct:0.6,force:0.15,sc:-0.3,fill:0.35,light:{ha:60,sat:0.2},path:'straight',filllight:{ha:225,sat:0.1}},
+ {n:'Fog',key:-0.1,ct:0.5,force:0.15,sc:-0.5,fill:0.6,light:{ha:60,sat:0.15},path:'straight',filllight:{ha:225,sat:0.08}},
+ {n:'Studio',key:0,ct:1.0,force:0.15,sc:0,fill:0.15,light:{ha:60,sat:0.0},path:'straight'},
+ {n:'Noir',key:-0.3,ct:1.6,force:0.3,sc:-0.2,fill:0,light:{ha:60,sat:0.4},path:'straight'},
+ {n:'Stylized',key:0,ct:1.3,force:0.9,sc:0.4,fill:0,light:{ha:30,sat:0.9},path:'warmTurn'},
+ {n:'Front focus',key:0.05,ct:1.4,force:0.8,sc:0.1,fill:0,light:{ha:60,sat:0.7},path:'straight'},
+ {n:'Monochrome',key:0,ct:1.2,force:0.0,sc:0,fill:0,path:'straight'},
+ {n:'Sunny gorge (test)',key:0.15,ct:1.15,force:0.5,sc:0.05,fill:0.3,path:'sTurn',tsculpt:0.3,profile:'glow',lightMk:'Y3',fillMk:'B6',seam:0.1,scene:['G3','G8','G9','G11','BR1','B9']},
+ {n:'Violet V4 · halftone (test)',key:0,ct:0.62,force:0.5,sc:0,fill:0,path:'straight',profile:'flat',tsculpt:0,csculpt:1.0,angle:'analog',light:{ha:305,sat:0.35},localhold:true,seam:0.1,scene:['V4']},
+ {n:'White light · monochrome',key:0,ct:0.4,force:0,sc:0,fill:0,path:'straight',profile:'flat',tsculpt:0,csculpt:1.0,angle:'analog',lightMk:'1',fillMk:'1',localhold:false,nowash:true,seam:0.1,scene:['G8']},
+ {n:'G4 ladder · all (v4a)',key:-0.5,ct:0.8,force:0,sc:0,fill:0,path:'straight',profile:'flat',tsculpt:0,csculpt:1.0,angle:'analog',lightMk:'1',fillMk:'1',nowash:true,keep:true,keepHue:true,v4amode:true,localhold:false,seam:0.1,scene:['G4']},
+ {n:'G8 ladder · all (v4a)',key:-0.3,ct:0.9,force:0,sc:0,fill:0,path:'straight',profile:'flat',tsculpt:0,csculpt:1.0,angle:'analog',light:{ha:145,sat:0.2},nowash:false,keep:true,keepHue:true,v4amode:true,localhold:false,seam:0.1,scene:['G8']},
+ {n:'Lantsev · sun',key:0.18,ct:1.1,force:0.8,sc:0.35,fill:0.15,path:'warmTurn',angle:'complement',steps:9,tsculpt:0.3,seam:0.1,lightMk:'Y3',fillMk:'B6',scene:['RY2','R7','G5','B1','RY1','V5']},
+ {n:'Lantsev · haze',key:0.15,ct:0.65,force:0.4,sc:0.1,fill:0.45,path:'warmTurn',angle:'complement',steps:9,tsculpt:0.15,seam:0.1,lightMk:'E3',fillMk:'B2',scene:['E2','GY1','B6','V2','RY1','BG6']},
+];
+function applyScene(s){S.key=s.key;S.contrast=s.ct;S.tempSculpt=s.tsculpt||0;S.chromaSculpt=s.csculpt!=null?s.csculpt:1.0;S.force=s.force;S.shadowChroma=s.sc;S.fill=s.fill||0;if(s.light)S.light={...s.light};S.fillLight=s.filllight?{...s.filllight}:{ha:norm360((s.light?s.light.ha:S.light.ha)+180),sat:0.12};
+ if(s.lightMk){const M=PAL.find(p=>p.c===s.lightMk);if(M){const l=markerToLight(M);S.light={ha:l.ha,sat:l.sat,mk:M.c};}}
+ if(s.fillMk){const M=PAL.find(p=>p.c===s.fillMk);if(M){const l=markerToLight(M);S.fillLight={ha:l.ha,sat:l.sat,mk:M.c};}}
+ if(s.seam!=null){SEAM=s.seam;document.getElementById('seam').value=Math.round(s.seam*100);document.getElementById('seamV').textContent=(+s.seam).toFixed(2);}
+ MUDW=s.mud!=null?s.mud:2.0;document.getElementById('mud').value=Math.round(MUDW*100);document.getElementById('mudV').textContent=MUDW.toFixed(2);
+ if(s.path)S.path=s.path;S.chromaProfile=s.profile||(S.path==='straight'?'dip':'glow');document.querySelectorAll('#profSeg span').forEach(x=>x.classList.toggle('on',x.dataset.pr===S.chromaProfile));S.angle=s.angle||'complement';document.querySelectorAll('#angleSeg span').forEach(x=>x.classList.toggle('on',x.dataset.a===S.angle));if(s.steps)S.steps=s.steps;if(s.scene){S.objects=s.scene.map(c=>({base:PAL.find(p=>p.c===c),role:'half'}));S.active=0;}
+ document.getElementById('key').value=s.key*100;document.getElementById('contrast').value=s.ct*100;document.getElementById('force').value=s.force*100;document.getElementById('schroma').value=s.sc*100;document.getElementById('fill').value=S.fill*100;document.getElementById('tsculpt').value=S.tempSculpt*100;document.getElementById('csculpt').value=S.chromaSculpt*100;
+ document.querySelectorAll('#pathSeg span').forEach(x=>x.classList.toggle('on',x.dataset.p===S.path));
+ LOCALHOLD=!!s.localhold;document.getElementById('localhold').checked=LOCALHOLD;
+ NOWASH=!!s.nowash;document.getElementById('nowash').checked=NOWASH;
+ if(s.keep!=null){V4A_KEEP=s.keep;const _kp=document.getElementById('v4aKeep');if(_kp)_kp.checked=s.keep;}
+ V4A_HUE=!!s.keepHue;{const _kh=document.getElementById('v4aHue');if(_kh)_kh.checked=V4A_HUE;}
+ if(s.v4amode!=null){const _mf=document.getElementById(s.v4amode?'modeFlat':'modeMix');if(_mf)_mf.checked=true;setV4aMode(s.v4amode);}
+ slV();render();}
+(function(){const box=document.getElementById('scenes');SCENES.forEach(s=>{const b=document.createElement('button');b.className='btn sm';b.textContent=s.n;b.onclick=()=>applyScene(s);box.appendChild(b);});})();
+document.getElementById('reset').onclick=()=>{S.objects=SCENE0.map(c=>({base:PAL.find(p=>p.c===c),role:'half'}));S.active=0;S.light={ha:60,sat:0.85};S.angle='complement';S.path='straight';S.key=0;S.contrast=1.0;S.force=0.5;S.shadowChroma=0;S.fill=0;S.fillLight={ha:240,sat:0.12};S.chromaProfile='flat';S.tempSculpt=0;S.chromaSculpt=1.0;S.steps=12;SEAM=0.10;MUDW=2.0;RATEW=3.0;
+ document.getElementById('key').value=0;document.getElementById('contrast').value=100;document.getElementById('force').value=50;document.getElementById('schroma').value=0;document.getElementById('fill').value=0;document.getElementById('tsculpt').value=0;document.getElementById('csculpt').value=100;document.getElementById('seam').value=10;document.getElementById('seamV').textContent='0.10';document.getElementById('mud').value=200;document.getElementById('mudV').textContent='2.00';document.getElementById('rate').value=300;document.getElementById('rateV').textContent='3.00';
+ document.querySelectorAll('#angleSeg span').forEach(x=>x.classList.toggle('on',x.dataset.a==='complement'));
+ document.querySelectorAll('#pathSeg span').forEach(x=>x.classList.toggle('on',x.dataset.p==='straight'));
+ document.querySelectorAll('#profSeg span').forEach(x=>x.classList.toggle('on',x.dataset.pr==='flat'));
+ slV();mpick();render();};
+
+slV();mpick();render();
+</script></body></html>

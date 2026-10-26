@@ -1,0 +1,85 @@
+---
+export const prerender = true;
+import InternalLayout from "@/layouts/InternalLayout.astro";
+import { SEOBase } from "@/content/template/seo/seo";
+import type { SEOConfig } from "@/lib/seo/types";
+
+import { getCollection, render } from "astro:content";
+
+import {
+  mainNav,
+  footerNav,
+  footerMeta,
+} from "@/content/template/navigation/navigation";
+
+import BrandLogo from "@/components/products/open-sketchbooks/logo/BrandLogo.astro";
+
+export async function getStaticPaths() {
+  const tools = await getCollection("tools");
+  return tools
+    .filter((t) => t.data.published)
+    .map((tool) => ({ params: { slug: tool.id }, props: { tool } }));
+}
+
+const { tool } = Astro.props;
+const { Content } = await render(tool);
+
+const pageSEO: Partial<SEOConfig> = {
+  title: `${tool.data.title} — Open Sketchbooks`,
+  description: tool.data.summary,
+  canonical: `https://open-sketchbook.place/tools/${tool.id}`,
+  og: tool.data.cover
+    ? { type: "website", image: tool.data.cover, imageAlt: tool.data.title }
+    : undefined,
+};
+---
+
+<InternalLayout
+  baseSEO={SEOBase}
+  pageSEO={pageSEO}
+  navItems={mainNav}
+  footerSections={footerNav}
+  footerMeta={footerMeta}
+  logo={BrandLogo}
+>
+  <section class="section">
+    <div class="container flow">
+      <h1>{tool.data.title}</h1>
+
+      <div class="toolIntro">
+        <Content />
+      </div>
+
+      {tool.data.credit && <p class="toolCredit">{tool.data.credit}</p>}
+
+      <p class="toolActions">
+        <a class="btn-secondary" href={tool.data.src} target="_blank" rel="noopener">
+          Open full screen ↗
+        </a>
+      </p>
+
+      <iframe
+        class="toolFrame"
+        src={tool.data.src}
+        title={tool.data.title}
+        loading="lazy"
+        allow="clipboard-write"
+      ></iframe>
+    </div>
+  </section>
+</InternalLayout>
+
+<style>
+  .toolIntro { max-width: 70ch; }
+  .toolCredit { color: var(--mut, #8A817B); font-size: 0.9rem; }
+  .toolActions { margin: 0.75rem 0 1rem; }
+  .toolFrame {
+    display: block;
+    width: 100%;
+    height: calc(100vh - 160px);
+    min-height: 900px;
+    border: 1px solid var(--line, #e7e2dc);
+    border-radius: 12px;
+    background: #fff;
+  }
+</style>
