@@ -172,30 +172,31 @@
    </div>
   </div>
   <div class="card">
-   <h2>Scene map <span style="font-size:11px;font-weight:400;color:var(--mut)">· object A on surface B · one pass through the contact · the pair palette reads off the three ramps</span></h2>
+   <h2>Scene map <span id="sceneSub" style="font-size:11px;font-weight:400;color:var(--mut)">· object A on surface B · one pass through the contact · the pair palette reads off the three ramps</span></h2>
+   <div style="margin-bottom:8px"><span class="seg" id="sceneSeg"><span class="on" data-scene="cube">Cube</span><span data-scene="face">Face</span><span data-scene="sea">Sea</span></span></div>
    <div id="castpick" style="margin-bottom:8px"></div>
-   <div class="lbl" style="margin-bottom:3px">True colors <span style="font-weight:400;color:var(--mut)">· lab→RGB, before markers · reference (full monitor gamut)</span></div>
+   <div class="lbl" id="lblTrue" style="margin-bottom:3px">True colors <span style="font-weight:400;color:var(--mut)">· lab→RGB, before markers · reference (full monitor gamut)</span></div>
    <div id="truescene"></div>
-   <div class="lbl" style="margin-top:8px;margin-bottom:3px">Markers <span style="font-weight:400;color:var(--mut)">· bestMix — what you will actually lay down with the set</span></div>
+   <div class="lbl" id="lblMk" style="margin-top:8px;margin-bottom:3px">Markers <span style="font-weight:400;color:var(--mut)">· bestMix — what you will actually lay down with the set</span></div>
    <div id="castscene"></div>
    <div id="castdE" style="margin-top:6px;font-size:11px;color:var(--mut)"></div>
-   <div class="schint" style="margin-top:4px">Compare the scenes: if the true one is right but the marker one lies, blame the set / quantization (bestMix, SEAM, gamut); if even the true one is off, the target model lies (sixZones, levers, terminator).</div>
-   <div class="lbl" style="margin-top:10px;margin-bottom:3px">Glow ramp <span style="font-weight:400;color:var(--mut)">· over-light: burn (reflection, peak on the terminator) · backlight rim · peak · depth (emission, tone = average of object and light); bright and saturated, which the light does not have</span></div>
+   <div class="schint" id="sceneHint" style="margin-top:4px">Compare the scenes: if the true one is right but the marker one lies, blame the set / quantization (bestMix, SEAM, gamut); if even the true one is off, the target model lies (sixZones, levers, terminator).</div>
+   <div class="lbl" id="lblGlow" style="margin-top:10px;margin-bottom:3px">Glow ramp <span style="font-weight:400;color:var(--mut)">· over-light: burn (reflection, peak on the terminator) · backlight rim · peak · depth (emission, tone = average of object and light); bright and saturated, which the light does not have</span></div>
    <div id="lineGlow" style="display:flex;gap:6px;align-items:stretch"></div>
    <div class="strip" id="lineGlowStrip"></div>
-   <div class="lbl" style="margin-top:10px;margin-bottom:3px">Light ramp <span style="font-weight:400;color:var(--mut)">· object A: highlight · light · halftone · core shadow · reflex (contextual, lit-B) · anchor zones; detail is in the route ladder</span></div>
+   <div class="lbl" id="lblLight" style="margin-top:10px;margin-bottom:3px">Light ramp <span style="font-weight:400;color:var(--mut)">· object A: highlight · light · halftone · core shadow · reflex (contextual, lit-B) · anchor zones; detail is in the route ladder</span></div>
    <div id="lineLight" style="display:flex;gap:6px;align-items:stretch"></div>
    <div class="strip" id="lineLightStrip"></div>
-   <div class="lbl" style="margin-top:10px;margin-bottom:3px">Contact ramp <span style="font-weight:400;color:var(--mut)">· seam: lit-A · touch (occlusion, darkest) · ★ bright contact · lit-B</span></div>
+   <div class="lbl" id="lblContact" style="margin-top:10px;margin-bottom:3px">Contact ramp <span style="font-weight:400;color:var(--mut)">· seam: lit-A · touch (occlusion, darkest) · ★ bright contact · lit-B</span></div>
    <div id="lineContact" style="display:flex;gap:6px;align-items:stretch"></div>
    <div class="strip" id="lineContactStrip"></div>
-   <div class="lbl" style="margin-top:10px;margin-bottom:3px">Shadow ramp <span style="font-weight:400;color:var(--mut)">· onto surface B: body · edge · halftone · surface B</span></div>
+   <div class="lbl" id="lblShadow" style="margin-top:10px;margin-bottom:3px">Shadow ramp <span style="font-weight:400;color:var(--mut)">· onto surface B: body · edge · halftone · surface B</span></div>
    <div id="lineShadow" style="display:flex;gap:6px;align-items:stretch"></div>
    <div class="strip" id="lineShadowStrip"></div>
-   <div class="schint"><b>Wireframe v4.</b> Three ramps in one pass through the contact: light (object) → contact (seam) → shadow (on B). Flat chips, no blends (added back later). Reflex is contextual (lit-B into the A shadow). The pair palette reads straight off the ramp cards (code · zone · family/ratio); the separate palette block is removed. Object detail below is a backup for the blended stretch.</div>
+   <div class="schint" id="wfHint"><b>Wireframe v4.</b> Three ramps in one pass through the contact: light (object) → contact (seam) → shadow (on B). Flat chips, no blends (added back later). Reflex is contextual (lit-B into the A shadow). The pair palette reads straight off the ramp cards (code · zone · family/ratio); the separate palette block is removed. Object detail below is a backup for the blended stretch.</div>
   </div>
   <div class="card">
-   <h2>Route <span style="font-size:11px;font-weight:400;color:var(--mut)">· ladders over zone gaps · mirrors the mode: flat = stations, mix = strokes · rows = granularity</span></h2>
+   <h2>Route<span style="font-size:11px;font-weight:400;color:var(--mut)">· ladders over zone gaps · mirrors the mode: flat = stations, mix = strokes · rows = granularity</span></h2>
    <div id="v4aramp"></div>
    <div class="schint">Each gap between neighboring zones is its own ladder. Rows (straight / 2 / 3 / 4) set granularity: how many in-between colors sit between zones (formerly ramp detail, now one axis with hops). In <b>flat</b> mode a cell is a flat station (seam bottleneck badge on the left), in <b>the mix</b> — <b>pair strokes</b> by its ratio (markers do not blend into one patch — optical mixing is alternating strokes). <b>Gradient 1</b> — object, <b>gradient 2</b> — cast shadow. Mode and knobs are in the Scene map.</div>
   </div>
@@ -422,15 +423,33 @@ function drawV4aLadders(A,B,c){
    }
    h+='<div style="margin:0 0 7px">'+hdr+body+'</div>';}
   return h;};
- const oz=flat?snapZones(objectZones(A,c)):objectZones(A,c), sz=flat?snapZones(shadowZones(A,B,c)):shadowZones(A,B,c);
  const G=glowZones(A), pz=flat?snapZones(glowProsvetZones(A)):glowProsvetZones(A);
- box.innerHTML=grad(oz,'Gradient 1 · object')
-  +'<div style="border-top:1px dashed var(--line);margin:6px 0 8px"></div>'
-  +grad(sz,'Gradient 2 · cast shadow')
-  +'<div style="border-top:1px dashed var(--line);margin:6px 0 8px"></div>'
-  +'<div style="font-weight:700;font-size:11px;margin:2px 0 5px">Gradient 3 · glow</div>'
-  +glowCellHTML(G.gor,'✦ burn <span style="color:#B8AFA9">(reflection, separate)</span>')
-  +grad(pz,'backlight · rim · peak · depth');
+ const sep='<div style="border-top:1px dashed var(--line);margin:6px 0 8px"></div>';
+ const scene=S.scene||'cube';
+ const glowHdr='<div style="font-weight:700;font-size:11px;margin:2px 0 5px">';
+ let html='';
+ if(scene==='sea'){
+  const Zw=seaZones(B), surf0=[{n:'Sky mirror',t:Zw.far},{n:'Mid water',t:Zw.mid},{n:'Body color',t:Zw.deep}];
+  const surf=flat?snapZones(surf0):surf0;
+  const oz=flat?snapZones(objectZones(A,c)):objectZones(A,c);
+  const pzw=flat?snapZones(glowProsvetZones(B)):glowProsvetZones(B);
+  html=grad(oz,'Gradient 1 · object on water')+sep
+   +grad(surf,'Gradient 2 · water surface')+sep
+   +glowHdr+'Gradient 3 · backlit crest</div>'+grad(pzw,'rim · peak · depth');
+ } else if(scene==='face'){
+  const oz=flat?snapZones(objectZones(A,c)):objectZones(A,c);
+  html=grad(oz,'Gradient 1 · object')+sep
+   +glowHdr+'Gradient 2 · glow</div>'
+   +glowCellHTML(G.gor,'✦ burn <span style="color:#B8AFA9">(reflection, separate)</span>')
+   +grad(pz,'backlight · rim · peak · depth');
+ } else {
+  const oz=flat?snapZones(objectZones(A,c)):objectZones(A,c), sz=flat?snapZones(shadowZones(A,B,c)):shadowZones(A,B,c);
+  html=grad(oz,'Gradient 1 · object')+sep+grad(sz,'Gradient 2 · cast shadow')+sep
+   +glowHdr+'Gradient 3 · glow</div>'
+   +glowCellHTML(G.gor,'✦ burn <span style="color:#B8AFA9">(reflection, separate)</span>')
+   +grad(pz,'backlight · rim · peak · depth');
+ }
+ box.innerHTML=html;
 }
 // trig in degrees
 const cosd=a=>Math.cos(a*Math.PI/180), sind=a=>Math.sin(a*Math.PI/180), atan2d=(y,x)=>Math.atan2(y,x)*180/Math.PI;
@@ -462,7 +481,7 @@ for(let r=0;r<12;r++)if(ROWLABHUE[r]==null){for(let d=1;d<12;d++){const a=ROWLAB
 
 // ---------- state (v3: сцена — много объектов под общим светом) ----------
 const SCENE0=['BR5','G12','B6'];   // дефолт: охра / зелень / даль
-const S={objects:SCENE0.map(c=>({base:PAL.find(p=>p.c===c),role:'half'})),active:0,light:{ha:60,sat:0.85},angle:'complement',path:'straight',key:0,contrast:1.0,force:0.5,shadowChroma:0,fill:0,fillLight:{ha:240,sat:0.12},chromaProfile:'flat',tempSculpt:0,chromaSculpt:1.0,castA:0,castB:1,steps:12,v4amode:false};
+const S={objects:SCENE0.map(c=>({base:PAL.find(p=>p.c===c),role:'half'})),active:0,light:{ha:60,sat:0.85},angle:'complement',path:'straight',key:0,contrast:1.0,force:0.5,shadowChroma:0,fill:0,fillLight:{ha:240,sat:0.12},chromaProfile:'flat',tempSculpt:0,chromaSculpt:1.0,castA:0,castB:1,steps:12,v4amode:false,scene:'cube'};
 const activeBase=()=>S.objects[S.active].base;
 
 // ---------- geometry ----------
@@ -766,20 +785,167 @@ function drawCastShadowStrip(c){ // ② тень — поверхность B п
  castCell(box,c.litA,false);     // физ. контакт — лит-A на B (тёплый отскок)
  c.ramp.forEach(t=>castCell(box,t,false));   // тело → край → полутень
 }
+// ---------- МОРСКАЯ СЦЕНА: отражающая поверхность ----------
+// У кубика свет = цвет источника. У воды светлая зона = отражённое небо (fill), тёмная = собственный
+// цвет воды (тело, видно вглубь). Сверху вниз Френель: горизонт ≈ небо, под ногами ≈ цвет воды.
+// Солнечная дорожка — блик, растянутый гранями волн (длина ∝ насыщенности света). Гребень на просвет —
+// та же линейка свечения (рим/пик/глубина), что лист. Цвет воды = активный объект.
+function seaZones(A){
+ const sun=lightColor(), sky=fillSkyHex();
+ const skyLab=_lab(sky), lightLab=_lab(sun);
+ const zA=sixZones(A.base,computeGeom(A.base));
+ const far=[clamp(skyLab[0]-8,18,92), skyLab[1]*0.85, skyLab[2]*0.85];        // зеркало неба, чуть темнее
+ const deep=zA.jadro.tab;                                                     // собственный цвет в тени (вглубь)
+ const mid=[lerp(far[0],deep[0],0.5),lerp(far[1],deep[1],0.5),lerp(far[2],deep[2],0.5)];
+ const lit=[clamp(skyLab[0]+5,18,95), skyLab[1], skyLab[2]];                  // грань ловит небо
+ const trough=zA.polu.tab;                                                    // теневая грань — тело в полутени
+ const glitter=[clamp(lightLab[0]+22,78,98), lightLab[1]*0.5, lightLab[2]*0.5]; // дорожка — солнце, растянутое
+ const foam=[96, lightLab[1]*0.2, lightLab[2]*0.2];                           // пена — засветка в тон света
+ return {far,mid,deep,lit,trough,glitter,foam};
+}
+function drawSeaScene(A,B,c){
+ const box=document.getElementById('castscene'); if(!box) return;
+ const sun=lightColor(), sky=fillSkyHex(), sat=S.light.sat;
+ const Z=seaZones(B), G=glowZones(B);   // вода = B
+ const paint = S.v4amode?flatHex:(lab=>{const m=bestMix(lab);return mixPredictHex(m.A,m.B,m.w);});
+ const cFar=paint(Z.far),cMid=paint(Z.mid),cDeep=paint(Z.deep),cLit=paint(Z.lit),cTr=paint(Z.trough),cGlit=paint(Z.glitter),cFoam=paint(Z.foam),cRim=paint(G.rim),cPk=paint(G.peak),cDp=paint(G.deep);
+ // объект на воде = A: своя светотень + водный рефлекс снизу (отскок от воды B) + отражение в воде
+ const zO=sixZones(A.base,computeGeom(A.base));
+ const oBlik=paint(zO.blik.tab),oSvet=paint(zO.svet.tab),oJad=paint(zO.jadro.tab),oRefl=paint(c.reflexA);
+ const rLit=mixHex(oSvet,cDeep,0.5), rShad=mixHex(oJad,cDeep,0.58);   // отражение подкрашено водой
+ const W=480,H=210,hz=92,sx=250;
+ const T=(x,y,t,fs,fill,fw,ta)=>'<text x="'+x+'" y="'+y+'" font-family="-apple-system,Segoe UI,sans-serif" font-size="'+(fs||10)+'" fill="'+(fill||'#221D1D')+'" font-weight="'+(fw||400)+'" text-anchor="'+(ta||'start')+'">'+t+'</text>';
+ const skyHi=mixHex(sky,'#ffffff',0.34);
+ const w0=3+5*sat, w1=14+42*sat;
+ const pathPoly='<polygon points="'+(sx-w0)+','+hz+' '+(sx+w0)+','+hz+' '+(sx+w1)+','+H+' '+(sx-w1)+','+H+'" fill="'+cGlit+'" opacity="'+(0.45+0.4*sat).toFixed(2)+'"/>';
+ let glints='';for(let i=0;i<5;i++){const yy=hz+18+i*22,hw=(w0+(w1-w0)*((yy-hz)/(H-hz)))*0.8;glints+='<line x1="'+(sx-hw).toFixed(1)+'" y1="'+yy+'" x2="'+(sx+hw).toFixed(1)+'" y2="'+yy+'" stroke="'+cFoam+'" stroke-width="'+(1+i*0.4).toFixed(1)+'" opacity="0.55" stroke-linecap="round"/>';}
+ let facets='';const fx=[64,150,410],fy=[120,112,126];
+ for(let i=0;i<fx.length;i++){const lit=i%2===0;facets+='<line x1="'+fx[i]+'" y1="'+fy[i]+'" x2="'+(fx[i]+16)+'" y2="'+fy[i]+'" stroke="'+(lit?cLit:cTr)+'" stroke-width="2.6" opacity="0.85" stroke-linecap="round"/>';}
+ const crest='<g transform="translate(78,150)">'
+   +'<ellipse cx="0" cy="0" rx="44" ry="26" fill="url(#seaHalo)"/>'
+   +'<path d="M-40,9 C-26,-12 -6,-17 5,-10 C19,-2 34,-3 42,7 C26,12 -20,14 -40,9 Z" fill="url(#seaCrest)" stroke="#00000022" stroke-width="0.8"/>'
+   +'<path d="M5,-10 C19,-2 34,-3 42,7 C30,5 17,0 5,-10 Z" fill="'+cFoam+'" opacity="0.9"/>'
+   +'</g>';
+ // объект (3/4-коробка) на ватерлинии y=150, cx≈314
+ const obj='<polygon points="290,118 322,110 342,118 310,126" fill="'+oBlik+'" stroke="#00000022" stroke-width="0.6"/>'
+   +'<polygon points="290,118 310,126 310,150 290,142" fill="'+oSvet+'" stroke="#00000022" stroke-width="0.6"/>'
+   +'<polygon points="310,126 342,118 342,142 310,150" fill="'+oJad+'" stroke="#00000022" stroke-width="0.6"/>'
+   +'<polygon points="290,142 310,150 342,142 342,147 310,155 290,147" fill="'+oRefl+'" opacity="0.92"/>';   // водный рефлекс снизу
+ // отражение в воде: зеркально вниз от y=150, подкрашено водой, с рябью и затуханием
+ const refl='<g opacity="0.6"><polygon points="290,182 310,174 310,150 290,158" fill="'+rLit+'"/><polygon points="310,174 342,182 342,158 310,150" fill="'+rShad+'"/></g>'
+   +'<rect x="286" y="150" width="60" height="42" fill="url(#seaReflFade)"/>'
+   +[159,167,175,183].map(yy=>'<line x1="288" y1="'+yy+'" x2="344" y2="'+yy+'" stroke="'+cDeep+'" stroke-width="1.6" opacity="0.5"/>').join('');
+ const svg='<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;height:auto;display:block">'
+  +'<defs>'
+  +'<linearGradient id="seaSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="'+sky+'"/><stop offset="1" stop-color="'+skyHi+'"/></linearGradient>'
+  +'<linearGradient id="seaWater" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="'+cFar+'"/><stop offset="0.5" stop-color="'+cMid+'"/><stop offset="1" stop-color="'+cDeep+'"/></linearGradient>'
+  +'<linearGradient id="seaCrest" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="'+cRim+'"/><stop offset="0.3" stop-color="'+cPk+'"/><stop offset="0.5" stop-color="'+cDp+'"/><stop offset="0.72" stop-color="'+cPk+'"/><stop offset="1" stop-color="'+cRim+'"/></linearGradient>'
+  +'<radialGradient id="seaHalo" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#fff" stop-opacity="'+(0.3+0.5*sat).toFixed(2)+'"/><stop offset="0.6" stop-color="#fff" stop-opacity="'+(0.12+0.2*sat).toFixed(2)+'"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>'
+  +'<radialGradient id="seaSun" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#fff" stop-opacity="0.85"/><stop offset="0.5" stop-color="'+sun+'" stop-opacity="0.5"/><stop offset="1" stop-color="'+sun+'" stop-opacity="0"/></radialGradient>'
+  +'<linearGradient id="seaReflFade" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="'+cDeep+'" stop-opacity="0"/><stop offset="1" stop-color="'+cDeep+'" stop-opacity="0.85"/></linearGradient>'
+  +'</defs>'
+  +'<rect x="0" y="0" width="'+W+'" height="'+hz+'" fill="url(#seaSky)"/>'
+  +'<rect x="0" y="'+hz+'" width="'+W+'" height="'+(H-hz)+'" fill="url(#seaWater)"/>'
+  +'<circle cx="'+sx+'" cy="44" r="30" fill="url(#seaSun)"/><circle cx="'+sx+'" cy="44" r="13" fill="'+sun+'"/>'
+  +pathPoly+glints+facets
+  +'<line x1="0" y1="'+hz+'" x2="'+W+'" y2="'+hz+'" stroke="#00000022" stroke-width="1"/>'
+  +'<rect x="0" y="'+(H-7)+'" width="'+W+'" height="7" fill="'+cFoam+'" opacity="0.7"/>'
+  +crest+refl+obj
+  +'<rect x="150" y="150" width="13" height="11" rx="2" fill="'+cRim+'" stroke="#00000022"/><rect x="150" y="166" width="13" height="11" rx="2" fill="'+cPk+'" stroke="#00000022"/><rect x="150" y="182" width="13" height="11" rx="2" fill="'+cDp+'" stroke="#00000022"/>'
+  +T(167,159,'rim',8.5,'#B5730E',600,'start')+T(167,175,'peak',8.5,'#B5730E',600,'start')+T(167,191,'depth',8.5,'#B5730E',600,'start')
+  +T(sx,70,'sun path',9,'#B5730E',700,'middle')
+  +T(276,40,'light source',9,'#8A817B',400,'start')
+  +T(W-6,86,'sky mirror (horizon)',9,'#22796b',700,'end')
+  +T(W-6,200,'water body color (depth)',9,'#B23A5A',700,'end')
+  +T(96,126,'backlit crest',9,'#B5730E',700,'middle')
+  +T(6,H-12,'foam',9,'#8A817B',700,'start')
+  +T(6,16,'sky · from fill',9,'#8A817B',400,'start')
+  +T(316,102,'object on water',9,'#B23A5A',700,'middle')+'<line x1="316" y1="106" x2="314" y2="114" stroke="#B23A5A" stroke-width="0.6"/>'
+  +T(W-6,140,'water reflex',9,'#22796b',700,'end')+'<line x1="408" y1="142" x2="340" y2="148" stroke="#22796b" stroke-width="0.6"/>'
+  +T(W-6,172,'reflection in water',9,'#22796b',700,'end')+'<line x1="380" y1="170" x2="342" y2="166" stroke="#22796b" stroke-width="0.6"/>'
+  +'</svg>';
+ box.innerHTML=svg;
+}
+// ---------- СЦЕНА ЛИЦО: органическая форма, мягкий терминатор ----------
+function drawFaceScene(A){
+ const box=document.getElementById('castscene'); if(!box) return;
+ const sky=fillSkyHex();
+ const paint=S.v4amode?flatHex:(lab=>{const m=bestMix(lab);return mixPredictHex(m.A,m.B,m.w);});
+ const zA=sixZones(A.base,computeGeom(A.base)), G=glowZones(A);
+ const cBlik=paint(zA.blik.tab),cSvet=paint(zA.svet.tab),cPolu=paint(zA.polu.tab),cJad=paint(zA.jadro.tab),cRefl=paint(zA.reflex.tab),cGor=paint(G.gor);
+ const hair='#39344a', W=480,H=210;
+ const T=(x,y,t,fs,fill,fw,ta)=>'<text x="'+x+'" y="'+y+'" font-family="-apple-system,Segoe UI,sans-serif" font-size="'+(fs||10)+'" fill="'+(fill||'#221D1D')+'" font-weight="'+(fw||400)+'" text-anchor="'+(ta||'start')+'">'+t+'</text>';
+ const facePath='M175,26 C140,26 116,55 116,92 C116,136 148,170 175,170 C202,170 234,136 234,92 C234,55 210,26 175,26 Z';
+ const svg='<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;height:auto;display:block">'
+  +'<defs>'
+  +'<linearGradient id="faceG" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="'+cSvet+'"/><stop offset="0.44" stop-color="'+cSvet+'"/><stop offset="0.56" stop-color="'+cPolu+'"/><stop offset="0.66" stop-color="'+cJad+'"/><stop offset="1" stop-color="'+cJad+'"/></linearGradient>'
+  +'<radialGradient id="faceBlik" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="'+cBlik+'"/><stop offset="1" stop-color="'+cBlik+'" stop-opacity="0"/></radialGradient>'
+  +'</defs>'
+  +'<rect x="0" y="0" width="'+W+'" height="'+H+'" fill="'+sky+'" opacity="0.4"/>'
+  +'<path d="M112,96 C104,44 140,16 175,16 C210,16 246,44 238,96 C236,70 214,40 175,40 C136,40 114,70 112,96 Z" fill="'+hair+'"/>'
+  +'<path d="M156,160 L156,196 L194,196 L194,160 Z" fill="'+cJad+'"/><rect x="156" y="160" width="10" height="36" fill="'+cPolu+'" opacity="0.85"/>'
+  +'<path d="'+facePath+'" fill="url(#faceG)" stroke="#00000022" stroke-width="0.8"/>'
+  +'<ellipse cx="150" cy="70" rx="16" ry="20" fill="url(#faceBlik)"/>'
+  +'<path d="M190,40 C188,80 184,120 178,158" fill="none" stroke="'+cGor+'" stroke-width="5" opacity="0.28" stroke-linecap="round"/>'
+  +'<path d="M190,40 C188,80 184,120 178,158" fill="none" stroke="'+cGor+'" stroke-width="2.2" stroke-linecap="round"/>'
+  +'<path d="M232,118 C226,140 210,158 190,166" fill="none" stroke="'+cRefl+'" stroke-width="3" opacity="0.8" stroke-linecap="round"/>'
+  +'<ellipse cx="152" cy="92" rx="9" ry="5" fill="#ffffff" opacity="0.5"/><circle cx="153" cy="92" r="3.2" fill="#2a2430"/>'
+  +'<ellipse cx="198" cy="92" rx="8" ry="4.5" fill="#000000" opacity="0.18"/><circle cx="198" cy="92" r="3" fill="#2a2430"/>'
+  +'<path d="M142,82 C148,79 158,79 163,81" fill="none" stroke="#2a2430" stroke-width="1.6"/>'
+  +'<path d="M190,82 C196,80 205,80 210,83" fill="none" stroke="#2a2430" stroke-width="1.6" opacity="0.7"/>'
+  +'<path d="M176,96 C174,106 172,114 180,120 C176,122 172,122 170,120" fill="none" stroke="#00000055" stroke-width="1.4"/>'
+  +'<path d="M160,140 C172,146 188,146 198,139" fill="none" stroke="#7a2f33" stroke-width="2.4" stroke-linecap="round"/>'
+  +'<path d="M160,140 C172,136 188,136 198,139" fill="none" stroke="#00000033" stroke-width="1.4"/>'
+  +T(66,60,'highlight',9,'#B23A5A',700,'start')+'<line x1="82" y1="62" x2="140" y2="70" stroke="#B23A5A" stroke-width="0.7"/>'
+  +T(66,96,'light',9,'#B23A5A',700,'start')+'<line x1="84" y1="94" x2="126" y2="90" stroke="#B23A5A" stroke-width="0.7"/>'
+  +T(58,132,'halftone',9,'#B23A5A',700,'start')+'<line x1="96" y1="130" x2="150" y2="120" stroke="#B23A5A" stroke-width="0.7"/>'
+  +T(252,66,'core shadow',9,'#B23A5A',700,'start')+'<line x1="250" y1="68" x2="214" y2="84" stroke="#B23A5A" stroke-width="0.7"/>'
+  +T(252,150,'reflex',9,'#22796b',700,'start')+'<line x1="250" y1="148" x2="214" y2="150" stroke="#22796b" stroke-width="0.7"/>'
+  +T(300,112,'touch line · terminator',9,'#B5730E',700,'start')+'<line x1="298" y1="110" x2="186" y2="100" stroke="#B5730E" stroke-width="0.7"/>'
+  +T(300,40,'warm burn at the break',8.5,'#B5730E',600,'start')+'<line x1="300" y1="42" x2="190" y2="56" stroke="#B5730E" stroke-width="0.6"/>'
+  +T(300,188,'soft terminator — color moves smoothly',8.5,'#8A817B',400,'start')
+  +T(6,16,'scene · face · '+A.base.c+' (skin tone)',9,'#8A817B',400,'start')
+  +'</svg>';
+ box.innerHTML=svg;
+}
 function drawCastBlock(){
- const objs=S.objects;
+ const objs=S.objects, scene=S.scene||'cube';
  let ai=Math.min(S.castA||0,objs.length-1), bi=Math.min(S.castB||0,objs.length-1);
- const A=objs[ai],B=objs[bi];   // A=B разрешено: объект отбрасывает тень на поверхность своего же цвета
- const row=(label,sel,w)=>{let h='<div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-bottom:4px"><span style="font-size:10.5px;color:var(--mut);min-width:104px">'+label+'</span>';
-  objs.forEach((o,i)=>{h+='<span class="cpk'+(i===sel?' on':'')+'" data-w="'+w+'" data-i="'+i+'" style="background:'+o.base.h+';color:'+txt(o.base.h)+'">'+o.base.c+'</span>';});return h+'</div>';};
- const pick=document.getElementById('castpick');
- pick.innerHTML=row('caster A',ai,'A')+row('what B falls on',bi,'B');
- pick.querySelectorAll('.cpk').forEach(sp=>sp.onclick=()=>{if(sp.dataset.w==='A')S.castA=+sp.dataset.i;else S.castB=+sp.dataset.i;render();});
+ if(scene==='face'){ ai=Math.min(S.active,objs.length-1); bi=ai; }   // лицо — одиночный объект (активный)
+ const A=objs[ai],B=objs[bi];
+ const cp=document.getElementById('castpick');
+ if(scene==='face'){ cp.style.display='none'; }
+ else {
+  cp.style.display='';
+  const row=(label,sel,w)=>{let h='<div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-bottom:4px"><span style="font-size:10.5px;color:var(--mut);min-width:104px">'+label+'</span>';
+   objs.forEach((o,i)=>{h+='<span class="cpk'+(i===sel?' on':'')+'" data-w="'+w+'" data-i="'+i+'" style="background:'+o.base.h+';color:'+txt(o.base.h)+'">'+o.base.c+'</span>';});return h+'</div>';};
+  const la=scene==='sea'?'object on water A':'caster A', lb=scene==='sea'?'water color B':'what B falls on';
+  cp.innerHTML=row(la,ai,'A')+row(lb,bi,'B');
+  cp.querySelectorAll('.cpk').forEach(sp=>sp.onclick=()=>{if(sp.dataset.w==='A')S.castA=+sp.dataset.i;else S.castB=+sp.dataset.i;render();});
+ }
  const c=castNeighborCells(A,B,7);
- drawCastScene(A,B,c);
- drawCastScene(A,B,c,'true');
+ const lblTrue=document.getElementById('lblTrue'),tsc=document.getElementById('truescene'),lblMk=document.getElementById('lblMk'),sub=document.getElementById('sceneSub'),hint=document.getElementById('sceneHint'),wf=document.getElementById('wfHint'),dE=document.getElementById('castdE');
+ const mut='<span style="font-weight:400;color:var(--mut)">';
+ if(scene==='cube'){
+  lblTrue.style.display=''; tsc.style.display=''; wf.style.display=''; dE.style.display='';
+  lblMk.innerHTML='Markers '+mut+'· bestMix — what you will actually lay down with the set</span>';
+  sub.innerHTML='· object A on surface B · one pass through the contact · the pair palette reads off the three ramps';
+  hint.style.display=''; hint.innerHTML='Compare the scenes: if the true one is right but the marker one lies, blame the set / quantization (bestMix, SEAM, gamut); if even the true one is off, the target model lies (sixZones, levers, terminator).';
+  drawCastScene(A,B,c); drawCastScene(A,B,c,'true'); drawCastDE(A,c);
+ } else if(scene==='face'){
+  lblTrue.style.display='none'; tsc.style.display='none'; tsc.innerHTML=''; wf.style.display='none'; dE.style.display='none';
+  lblMk.innerHTML='Scene · face '+mut+'· organic form: soft terminator (terminator line), reflex on the jaw, warm burn at the break</span>';
+  sub.innerHTML='· organic form under the same light · active object = skin tone';
+  hint.style.display='none';
+  drawFaceScene(A);
+ } else {
+  lblTrue.style.display='none'; tsc.style.display='none'; tsc.innerHTML=''; wf.style.display='none'; dE.style.display='none';
+  lblMk.innerHTML='Scene · sea '+mut+'· reflective surface: light = sky, dark = water color; backlit crest = glow ramp</span>';
+  sub.innerHTML='· object A on water B · the object reflects the water and is reflected in it';
+  hint.style.display='none';
+  drawSeaScene(A,B,c);
+ }
  drawSceneLines(A,B,c);
- drawCastDE(A,c);
  drawV4aLadders(A,B,c);
 }
 // ---------- v4: растяжка ПО ФОРМЕ (шар + падающая тень, шаги по геометрии) ----------
@@ -921,30 +1087,43 @@ function drawLine(id,items){                    // линейки показыв
   lab.appendChild(lc);});
 }
 function drawSceneLines(A,B,c){
- const zA=sixZones(A.base,computeGeom(A.base)), zB=sixZones(B.base,computeGeom(B.base));
- const Bb=[B.base.L,B.base.ax,B.base.bx];
- const G=glowZones(A);
- drawLine('lineGlow',[
-  {b:'✦',n:'Burn',t:G.gor},
-  {b:'',n:'Rim',t:G.rim},
-  {b:'',n:'Peak',t:G.peak},
-  {b:'',n:'Depth',t:G.deep}]);
- drawLine('lineLight',[
-  {b:'①',n:'Highlight',t:zA.blik.tab},
-  {b:'②',n:'Light',t:zA.svet.tab},
-  {b:'③',n:'Halftone',t:zA.polu.tab},
-  {b:'④',n:'Core shadow',t:zA.jadro.tab},
-  {b:'⑤',n:'Reflex',t:c.reflexA}]);
- drawLine('lineContact',[
-  {b:'',n:'Lit-A',t:zA.svet.tab},
-  {b:'',n:'Touch',t:c.occl},
-  {b:'★',n:'Contact',t:c.bright},
-  {b:'',n:'Lit-B',t:zB.svet.tab}]);
- drawLine('lineShadow',[
-  {b:'',n:'Body',t:c.ramp[0]},
-  {b:'',n:'Edge',t:c.ramp[3]},
-  {b:'',n:'Halftone',t:c.ramp[6]},
-  {b:'',n:'Surface B',t:Bb}]);
+ const scene=S.scene||'cube';
+ const zA=sixZones(A.base,computeGeom(A.base)), G=glowZones(A);
+ const mut='<span style="font-weight:400;color:var(--mut)">';
+ const sub=(id,html)=>{const el=document.getElementById(id);if(el)el.innerHTML=html;};
+ const showLine=(name,on)=>{const set=(id,d)=>{const el=document.getElementById(id);if(el)el.style.display=on?d:'none';};
+  set('lbl'+name,''); set('line'+name,'flex'); set('line'+name+'Strip','flex'); set('line'+name+'Lab','flex');};
+ if(scene==='sea'){
+  const Zw=seaZones(B), Gw=glowZones(B), wd=Zw.deep;
+  const avg=(p,q)=>[(p[0]+q[0])/2,(p[1]+q[1])/2,(p[2]+q[2])/2];
+  const rLit=avg(zA.svet.tab,wd), rShad=avg(zA.jadro.tab,wd);
+  showLine('Glow',true); showLine('Light',true); showLine('Contact',true); showLine('Shadow',true);
+  sub('lblGlow','Backlit crest '+mut+'· rim · peak · depth — light through water B from behind</span>');
+  drawLine('lineGlow',[{b:'',n:'Rim',t:Gw.rim},{b:'',n:'Peak',t:Gw.peak},{b:'',n:'Depth',t:Gw.deep}]);
+  sub('lblLight','Object on water '+mut+'· highlight · light · halftone · core shadow · water reflex (bounce from water B)</span>');
+  drawLine('lineLight',[{b:'①',n:'Highlight',t:zA.blik.tab},{b:'②',n:'Light',t:zA.svet.tab},{b:'③',n:'Halftone',t:zA.polu.tab},{b:'④',n:'Core shadow',t:zA.jadro.tab},{b:'◐',n:'Water reflex',t:c.reflexA}]);
+  sub('lblContact','Water surface '+mut+'· sky mirror (horizon) → body color (into the depth) · Fresnel</span>');
+  drawLine('lineContact',[{b:'',n:'Sky mirror',t:Zw.far},{b:'',n:'Mid water',t:Zw.mid},{b:'',n:'Body color',t:Zw.deep}]);
+  sub('lblShadow','Reflection and highlights '+mut+'· object reflection in the water (tinted) · glitter · foam</span>');
+  drawLine('lineShadow',[{b:'',n:'Refl·light',t:rLit},{b:'',n:'Refl·shadow',t:rShad},{b:'',n:'Glitter',t:Zw.glitter},{b:'',n:'Foam',t:Zw.foam}]);
+ } else if(scene==='face'){
+  showLine('Glow',true); showLine('Light',true); showLine('Contact',false); showLine('Shadow',false);
+  sub('lblGlow','Glow ramp '+mut+'· burn at the break (terminator) · backlight rim · peak · depth (nose, ear backlit)</span>');
+  drawLine('lineGlow',[{b:'✦',n:'Burn',t:G.gor},{b:'',n:'Rim',t:G.rim},{b:'',n:'Peak',t:G.peak},{b:'',n:'Depth',t:G.deep}]);
+  sub('lblLight','Light ramp '+mut+'· highlight · light · halftone · core shadow · reflex</span>');
+  drawLine('lineLight',[{b:'①',n:'Highlight',t:zA.blik.tab},{b:'②',n:'Light',t:zA.svet.tab},{b:'③',n:'Halftone',t:zA.polu.tab},{b:'④',n:'Core shadow',t:zA.jadro.tab},{b:'⑤',n:'Reflex',t:c.reflexA}]);
+ } else {
+  const zB=sixZones(B.base,computeGeom(B.base)), Bb=[B.base.L,B.base.ax,B.base.bx];
+  showLine('Glow',true); showLine('Light',true); showLine('Contact',true); showLine('Shadow',true);
+  sub('lblGlow','Glow ramp '+mut+'· over-light: burn (reflection, peak on the terminator) · backlight rim · peak · depth (emission, tone = average of object and light)</span>');
+  drawLine('lineGlow',[{b:'✦',n:'Burn',t:G.gor},{b:'',n:'Rim',t:G.rim},{b:'',n:'Peak',t:G.peak},{b:'',n:'Depth',t:G.deep}]);
+  sub('lblLight','Light ramp '+mut+'· object A: highlight · light · halftone · core shadow · reflex (contextual, lit-B)</span>');
+  drawLine('lineLight',[{b:'①',n:'Highlight',t:zA.blik.tab},{b:'②',n:'Light',t:zA.svet.tab},{b:'③',n:'Halftone',t:zA.polu.tab},{b:'④',n:'Core shadow',t:zA.jadro.tab},{b:'⑤',n:'Reflex',t:c.reflexA}]);
+  sub('lblContact','Contact ramp '+mut+'· seam: lit-A · touch (occlusion, darkest) · ★ bright contact · lit-B</span>');
+  drawLine('lineContact',[{b:'',n:'Lit-A',t:zA.svet.tab},{b:'',n:'Touch',t:c.occl},{b:'★',n:'Contact',t:c.bright},{b:'',n:'Lit-B',t:zB.svet.tab}]);
+  sub('lblShadow','Shadow ramp '+mut+'· onto surface B: body · edge · halftone · surface B</span>');
+  drawLine('lineShadow',[{b:'',n:'Body',t:c.ramp[0]},{b:'',n:'Edge',t:c.ramp[3]},{b:'',n:'Halftone',t:c.ramp[6]},{b:'',n:'Surface B',t:Bb}]);
+ }
 }
 function inScene(c){return S.objects.findIndex(o=>o.base.c===c);}
 function toggleObj(p){const i=inScene(p.c);
@@ -1040,6 +1219,8 @@ const SCENES=[
  {n:'G8 ladder · all (v4a)',key:-0.3,ct:0.9,force:0,sc:0,fill:0,path:'straight',profile:'flat',tsculpt:0,csculpt:1.0,angle:'analog',light:{ha:145,sat:0.2},nowash:false,keep:true,keepHue:true,v4amode:true,localhold:false,seam:0.1,scene:['G8']},
  {n:'Lantsev · sun',key:0.18,ct:1.1,force:0.8,sc:0.35,fill:0.15,path:'warmTurn',angle:'complement',steps:9,tsculpt:0.3,seam:0.1,lightMk:'Y3',fillMk:'B6',scene:['RY2','R7','G5','B1','RY1','V5']},
  {n:'Lantsev · haze',key:0.15,ct:0.65,force:0.4,sc:0.1,fill:0.45,path:'warmTurn',angle:'complement',steps:9,tsculpt:0.15,seam:0.1,lightMk:'E3',fillMk:'B2',scene:['E2','GY1','B6','V2','RY1','BG6']},
+  {n:'☀ Sunny sea',view:'sea',scene:['R1','B6'],castA:0,castB:1,key:0.12,ct:1.4,force:0.6,sc:0.1,fill:0.12,path:'straight',profile:'glow',angle:'complement',light:{ha:52,sat:0.9},filllight:{ha:228,sat:0.26},seam:0.1},
+  {n:'☀ Bright blue sea',view:'sea',scene:['R1','B1'],castA:0,castB:1,key:0.14,ct:1.1,force:0.55,sc:0.1,fill:0.1,path:'straight',profile:'glow',angle:'complement',light:{ha:206,sat:0.4},filllight:{ha:228,sat:0.55},nowash:true,seam:0.1},
 ];
 function applyScene(s){S.key=s.key;S.contrast=s.ct;S.tempSculpt=s.tsculpt||0;S.chromaSculpt=s.csculpt!=null?s.csculpt:1.0;S.force=s.force;S.shadowChroma=s.sc;S.fill=s.fill||0;if(s.light)S.light={...s.light};S.fillLight=s.filllight?{...s.filllight}:{ha:norm360((s.light?s.light.ha:S.light.ha)+180),sat:0.12};
  if(s.lightMk){const M=PAL.find(p=>p.c===s.lightMk);if(M){const l=markerToLight(M);S.light={ha:l.ha,sat:l.sat,mk:M.c};}}
@@ -1047,6 +1228,9 @@ function applyScene(s){S.key=s.key;S.contrast=s.ct;S.tempSculpt=s.tsculpt||0;S.c
  if(s.seam!=null){SEAM=s.seam;document.getElementById('seam').value=Math.round(s.seam*100);document.getElementById('seamV').textContent=(+s.seam).toFixed(2);}
  MUDW=s.mud!=null?s.mud:2.0;document.getElementById('mud').value=Math.round(MUDW*100);document.getElementById('mudV').textContent=MUDW.toFixed(2);
  if(s.path)S.path=s.path;S.chromaProfile=s.profile||(S.path==='straight'?'dip':'glow');document.querySelectorAll('#profSeg span').forEach(x=>x.classList.toggle('on',x.dataset.pr===S.chromaProfile));S.angle=s.angle||'complement';document.querySelectorAll('#angleSeg span').forEach(x=>x.classList.toggle('on',x.dataset.a===S.angle));if(s.steps)S.steps=s.steps;if(s.scene){S.objects=s.scene.map(c=>({base:PAL.find(p=>p.c===c),role:'half'}));S.active=0;}
+ if(s.view){S.scene=s.view;document.querySelectorAll('#sceneSeg span').forEach(x=>x.classList.toggle('on',x.dataset.scene===s.view));}
+ if(s.castA!=null)S.castA=Math.min(s.castA,S.objects.length-1);
+ if(s.castB!=null)S.castB=Math.min(s.castB,S.objects.length-1);
  document.getElementById('key').value=s.key*100;document.getElementById('contrast').value=s.ct*100;document.getElementById('force').value=s.force*100;document.getElementById('schroma').value=s.sc*100;document.getElementById('fill').value=S.fill*100;document.getElementById('tsculpt').value=S.tempSculpt*100;document.getElementById('csculpt').value=S.chromaSculpt*100;
  document.querySelectorAll('#pathSeg span').forEach(x=>x.classList.toggle('on',x.dataset.p===S.path));
  LOCALHOLD=!!s.localhold;document.getElementById('localhold').checked=LOCALHOLD;
@@ -1063,5 +1247,6 @@ document.getElementById('reset').onclick=()=>{S.objects=SCENE0.map(c=>({base:PAL
  document.querySelectorAll('#profSeg span').forEach(x=>x.classList.toggle('on',x.dataset.pr==='flat'));
  slV();mpick();render();};
 
+document.getElementById('sceneSeg').addEventListener('click',e=>{const sp=e.target.closest('span[data-scene]');if(!sp)return;S.scene=sp.dataset.scene;document.querySelectorAll('#sceneSeg span').forEach(x=>x.classList.toggle('on',x===sp));render();});
 slV();mpick();render();
 </script></body></html>
