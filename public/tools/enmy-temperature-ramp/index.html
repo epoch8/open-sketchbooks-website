@@ -173,7 +173,7 @@
   </div>
   <div class="card">
    <h2>Scene map <span id="sceneSub" style="font-size:11px;font-weight:400;color:var(--mut)">· object A on surface B · one pass through the contact · the pair palette reads off the three ramps</span></h2>
-   <div style="margin-bottom:8px"><span class="seg" id="sceneSeg"><span class="on" data-scene="cube">Cube</span><span data-scene="face">Face</span><span data-scene="sea">Sea</span></span></div>
+   <div style="margin-bottom:8px"><span class="seg" id="sceneSeg"><span class="on" data-scene="cube">Cube</span><span data-scene="face">Face</span><span data-scene="sea">Sea</span><span data-scene="beach">Shore</span></span></div>
    <div id="castpick" style="margin-bottom:8px"></div>
    <div class="lbl" id="lblTrue" style="margin-bottom:3px">True colors <span style="font-weight:400;color:var(--mut)">· lab→RGB, before markers · reference (full monitor gamut)</span></div>
    <div id="truescene"></div>
@@ -436,6 +436,15 @@ function drawV4aLadders(A,B,c){
   html=grad(oz,'Gradient 1 · object on water')+sep
    +grad(surf,'Gradient 2 · water surface')+sep
    +glowHdr+'Gradient 3 · backlit crest</div>'+grad(pzw,'rim · peak · depth');
+ } else if(scene==='beach'){
+  const Z=beachZones(A,B);
+  const sky=[{n:'Zenith',t:Z.zenith},{n:'Horizon',t:Z.horizonWarm},{n:'Turquoise',t:Z.turq}];
+  const deep=[{n:'Far',t:Z.farWater},{n:'Mid',t:Z.midWater},{n:'Near',t:Z.nearWater}];
+  const wave=[{n:'Foam',t:Z.foam},{n:'Wave light',t:Z.waveLit},{n:'Wave shadow',t:Z.waveShadow}];
+  const sk=flat?snapZones(sky):sky, dp=flat?snapZones(deep):deep, wv=flat?snapZones(wave):wave;
+  html=grad(sk,'Gradient 1 · sky and horizon')+sep
+   +grad(dp,'Gradient 2 · sea by depth')+sep
+   +glowHdr+'Gradient 3 · wave</div>'+grad(wv,'foam · light · shadow');
  } else if(scene==='face'){
   const oz=flat?snapZones(objectZones(A,c)):objectZones(A,c);
   html=grad(oz,'Gradient 1 · object')+sep
@@ -908,18 +917,82 @@ function drawFaceScene(A){
   +'</svg>';
  box.innerHTML=svg;
 }
+// ---------- СЦЕНА БЕРЕГ: пляжный морской пейзаж (волны → пена → песок) ----------
+function beachZones(A,B){
+ const skyLab=_lab(fillSkyHex()), warmLab=_lab(lightColor());
+ const zw=sixZones(B.base,computeGeom(B.base));
+ const sand=[A.base.L,A.base.ax,A.base.bx];
+ const avg=(p,q,t)=>[p[0]+(q[0]-p[0])*t,p[1]+(q[1]-p[1])*t,p[2]+(q[2]-p[2])*t];
+ const zenith=[clamp(skyLab[0]-3,25,92),skyLab[1],skyLab[2]];
+ const horizonWarm=[clamp(warmLab[0]+12,72,96),warmLab[1]*0.45,warmLab[2]*0.45];
+ const wb=[B.base.L,B.base.ax,B.base.bx];                        // бирюза = мелководье: базовый цвет воды + немного неба, сильно светлее
+ const turq=[clamp(wb[0]+30,60,92), clamp(wb[1]*0.7+skyLab[1]*0.3-4,-35,2), clamp(wb[2]*0.7+skyLab[2]*0.3,-45,6)];  // оттенок зажат в бирюзу (не жёлтый, не розовый)
+ const farWater=avg(skyLab,zw.svet.tab,0.5);
+ const nearWater=zw.jadro.tab;
+ const midWater=avg(farWater,nearWater,0.5);
+ const foam=[96,warmLab[1]*0.12,warmLab[2]*0.12];
+ const waveLit=zw.svet.tab, waveShadow=zw.jadro.tab, waveBody=zw.polu.tab;
+ const sandDry=sand;
+ const sandWet=[clamp(sand[0]-18,18,78),sand[1]*0.82,sand[2]*0.82];
+ return {zenith,horizonWarm,turq,farWater,midWater,nearWater,foam,waveLit,waveShadow,waveBody,sandDry,sandWet};
+}
+function drawBeachScene(A,B){
+ const box=document.getElementById('castscene'); if(!box) return;
+ const Z=beachZones(A,B);
+ const paint=S.v4amode?flatHex:(lab=>{const m=bestMix(lab);return mixPredictHex(m.A,m.B,m.w);});
+ const cZen=paint(Z.zenith),cHor=paint(Z.horizonWarm),cTurq=paint(Z.turq),cFar=paint(Z.farWater),cNear=paint(Z.nearWater),cFoam=paint(Z.foam),cShad=paint(Z.waveShadow),cSandW=paint(Z.sandWet);
+ const W=480,H=210,hz=60,seaTop=68,shoreY=150;
+ const T=(x,y,t,fs,fill,fw,ta)=>'<text x="'+x+'" y="'+y+'" font-family="-apple-system,Segoe UI,sans-serif" font-size="'+(fs||10)+'" fill="'+(fill||'#221D1D')+'" font-weight="'+(fw||400)+'" text-anchor="'+(ta||'start')+'">'+t+'</text>';
+ let waves='';
+ const rows=8;
+ for(let i=0;i<rows;i++){const t=i/(rows-1), y=seaTop+(shoreY-seaTop)*Math.pow(t,1.55), sw=(1+2.4*t), nseg=3+Math.round(5*t);
+  for(let s=0;s<nseg;s++){const cx=W*((s+0.5)/nseg)+9*Math.sin(i*1.3+s*1.7), half=(W/nseg)*(0.22+0.11*((s+i)%3));
+   waves+='<line x1="'+(cx-half).toFixed(1)+'" y1="'+y.toFixed(1)+'" x2="'+(cx+half).toFixed(1)+'" y2="'+y.toFixed(1)+'" stroke="'+cFoam+'" stroke-width="'+sw.toFixed(1)+'" stroke-linecap="round" opacity="0.95"/>';
+   waves+='<line x1="'+(cx-half).toFixed(1)+'" y1="'+(y+sw+0.6).toFixed(1)+'" x2="'+(cx+half).toFixed(1)+'" y2="'+(y+sw+0.6).toFixed(1)+'" stroke="'+cShad+'" stroke-width="'+(sw*0.7).toFixed(1)+'" stroke-linecap="round" opacity="0.5"/>';
+  }
+ }
+ let scal='M0,'+shoreY; const n=9; for(let k=1;k<=n;k++){const x=(k/n)*W; scal+=' Q'+(x-W/n/2).toFixed(1)+','+(shoreY-7+5*(k%2))+' '+x.toFixed(1)+','+shoreY;}
+ const lace='<path d="'+scal+' L'+W+','+(shoreY+19)+' L0,'+(shoreY+19)+' Z" fill="'+cFoam+'" opacity="0.93"/>';
+ let holes=''; const hy=[shoreY+7,shoreY+13]; for(let k=0;k<7;k++){holes+='<ellipse cx="'+(22+k*64)+'" cy="'+hy[k%2]+'" rx="10" ry="4.3" fill="'+cSandW+'" opacity="0.82"/>';}
+ let rem=''; for(let k=0;k<5;k++){const x=52+k*95,y=shoreY+28+(k%2)*9; rem+='<path d="M'+(x-18)+','+y+' Q'+x+','+(y-5)+' '+(x+18)+','+y+'" fill="none" stroke="'+cFoam+'" stroke-width="2" opacity="0.55" stroke-linecap="round"/>';}
+ const svg='<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;height:auto;display:block">'
+  +'<defs>'
+  +'<linearGradient id="bchSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="'+cZen+'"/><stop offset="1" stop-color="'+cHor+'"/></linearGradient>'
+  +'<linearGradient id="bchSea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="'+cFar+'"/><stop offset="1" stop-color="'+cNear+'"/></linearGradient>'
+  +'</defs>'
+  +'<rect x="0" y="0" width="'+W+'" height="'+hz+'" fill="url(#bchSky)"/>'
+  +'<rect x="0" y="'+hz+'" width="'+W+'" height="'+(seaTop-hz)+'" fill="'+cTurq+'"/>'
+  +'<rect x="0" y="'+seaTop+'" width="'+W+'" height="'+(shoreY-seaTop)+'" fill="url(#bchSea)"/>'
+  +waves
+  +'<rect x="0" y="'+shoreY+'" width="'+W+'" height="'+(H-shoreY)+'" fill="'+cSandW+'"/>'
+  +lace+holes+rem
+  +'<line x1="0" y1="'+hz+'" x2="'+W+'" y2="'+hz+'" stroke="#00000018" stroke-width="1"/>'
+  +T(6,14,'sky · zenith (blue)',9,'#22796b',700,'start')
+  +T(W-6,hz-4,'warm horizon',9,'#B5730E',700,'end')
+  +T(W-6,seaTop+6,'horizon turquoise',8.5,'#1d8e86',700,'end')
+  +T(6,104,'wave caps · foam',9,'#8A817B',700,'start')+'<line x1="6" y1="107" x2="40" y2="116" stroke="#8A817B" stroke-width="0.6"/>'
+  +T(W-6,120,'wave body',9,'#B23A5A',700,'end')
+  +T(W-6,138,'wave shadow',9,'#22796b',700,'end')
+  +T(6,shoreY+13,'foam lace',9,'#8A817B',700,'start')
+  +T(W-6,H-8,'wet sand',9,'#B23A5A',700,'end')
+  +T(6,H-8,'shore · sand A · water B',8.5,'#8A817B',400,'start')
+  +'</svg>';
+ box.innerHTML=svg;
+}
 function drawCastBlock(){
  const objs=S.objects, scene=S.scene||'cube';
  let ai=Math.min(S.castA||0,objs.length-1), bi=Math.min(S.castB||0,objs.length-1);
  if(scene==='face'){ ai=Math.min(S.active,objs.length-1); bi=ai; }   // лицо — одиночный объект (активный)
  const A=objs[ai],B=objs[bi];
  const cp=document.getElementById('castpick');
- if(scene==='face'){ cp.style.display='none'; }
- else {
-  cp.style.display='';
-  const row=(label,sel,w)=>{let h='<div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-bottom:4px"><span style="font-size:10.5px;color:var(--mut);min-width:104px">'+label+'</span>';
-   objs.forEach((o,i)=>{h+='<span class="cpk'+(i===sel?' on':'')+'" data-w="'+w+'" data-i="'+i+'" style="background:'+o.base.h+';color:'+txt(o.base.h)+'">'+o.base.c+'</span>';});return h+'</div>';};
-  const la=scene==='sea'?'object on water A':'caster A', lb=scene==='sea'?'water color B':'what B falls on';
+ cp.style.display='';
+ const row=(label,sel,w)=>{let h='<div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-bottom:4px"><span style="font-size:10.5px;color:var(--mut);min-width:104px">'+label+'</span>';
+  objs.forEach((o,i)=>{h+='<span class="cpk'+(i===sel?' on':'')+'" data-w="'+w+'" data-i="'+i+'" style="background:'+o.base.h+';color:'+txt(o.base.h)+'">'+o.base.c+'</span>';});return h+'</div>';};
+ if(scene==='face'){
+  cp.innerHTML=row('skin tone',S.active,'A');
+  cp.querySelectorAll('.cpk').forEach(sp=>sp.onclick=()=>{S.active=+sp.dataset.i;render();});
+ } else {
+  const la=scene==='beach'?'sand A':scene==='sea'?'object on water A':'caster A', lb=scene==='beach'?'water B':scene==='sea'?'water color B':'what B falls on';
   cp.innerHTML=row(la,ai,'A')+row(lb,bi,'B');
   cp.querySelectorAll('.cpk').forEach(sp=>sp.onclick=()=>{if(sp.dataset.w==='A')S.castA=+sp.dataset.i;else S.castB=+sp.dataset.i;render();});
  }
@@ -938,12 +1011,18 @@ function drawCastBlock(){
   sub.innerHTML='· organic form under the same light · active object = skin tone';
   hint.style.display='none';
   drawFaceScene(A);
- } else {
+ } else if(scene==='sea'){
   lblTrue.style.display='none'; tsc.style.display='none'; tsc.innerHTML=''; wf.style.display='none'; dE.style.display='none';
   lblMk.innerHTML='Scene · sea '+mut+'· reflective surface: light = sky, dark = water color; backlit crest = glow ramp</span>';
   sub.innerHTML='· object A on water B · the object reflects the water and is reflected in it';
   hint.style.display='none';
   drawSeaScene(A,B,c);
+ } else {
+  lblTrue.style.display='none'; tsc.style.display='none'; tsc.innerHTML=''; wf.style.display='none'; dE.style.display='none';
+  lblMk.innerHTML='Scene · shore '+mut+'· beach: sky gradient → horizon turquoise → wave caps → foam lace → wet sand</span>';
+  sub.innerHTML='· sand A, water B · foamy waves roll onto the shore';
+  hint.style.display='none';
+  drawBeachScene(A,B);
  }
  drawSceneLines(A,B,c);
  drawV4aLadders(A,B,c);
@@ -1106,6 +1185,17 @@ function drawSceneLines(A,B,c){
   drawLine('lineContact',[{b:'',n:'Sky mirror',t:Zw.far},{b:'',n:'Mid water',t:Zw.mid},{b:'',n:'Body color',t:Zw.deep}]);
   sub('lblShadow','Reflection and highlights '+mut+'· object reflection in the water (tinted) · glitter · foam</span>');
   drawLine('lineShadow',[{b:'',n:'Refl·light',t:rLit},{b:'',n:'Refl·shadow',t:rShad},{b:'',n:'Glitter',t:Zw.glitter},{b:'',n:'Foam',t:Zw.foam}]);
+ } else if(scene==='beach'){
+  const Z=beachZones(A,B);
+  showLine('Glow',true); showLine('Light',true); showLine('Contact',true); showLine('Shadow',true);
+  sub('lblLight','Sky and horizon '+mut+'· zenith (blue) → warm horizon → shallows turquoise</span>');
+  drawLine('lineLight',[{b:'',n:'Zenith',t:Z.zenith},{b:'',n:'Warm horizon',t:Z.horizonWarm},{b:'',n:'Turquoise',t:Z.turq}]);
+  sub('lblGlow','Wave '+mut+'· cap (foam) · wave light · body · wave shadow</span>');
+  drawLine('lineGlow',[{b:'',n:'Foam',t:Z.foam},{b:'',n:'Wave light',t:Z.waveLit},{b:'',n:'Body',t:Z.waveBody},{b:'',n:'Shadow',t:Z.waveShadow}]);
+  sub('lblContact','Sea by depth '+mut+'· far (sky mirror) → near (water body)</span>');
+  drawLine('lineContact',[{b:'',n:'Far',t:Z.farWater},{b:'',n:'Mid',t:Z.midWater},{b:'',n:'Near',t:Z.nearWater}]);
+  sub('lblShadow','Shore '+mut+'· foam lace · wet sand · dry sand</span>');
+  drawLine('lineShadow',[{b:'',n:'Foam lace',t:Z.foam},{b:'',n:'Wet sand',t:Z.sandWet},{b:'',n:'Dry sand',t:Z.sandDry}]);
  } else if(scene==='face'){
   showLine('Glow',true); showLine('Light',true); showLine('Contact',false); showLine('Shadow',false);
   sub('lblGlow','Glow ramp '+mut+'· burn at the break (terminator) · backlight rim · peak · depth (nose, ear backlit)</span>');
@@ -1221,6 +1311,7 @@ const SCENES=[
  {n:'Lantsev · haze',key:0.15,ct:0.65,force:0.4,sc:0.1,fill:0.45,path:'warmTurn',angle:'complement',steps:9,tsculpt:0.15,seam:0.1,lightMk:'E3',fillMk:'B2',scene:['E2','GY1','B6','V2','RY1','BG6']},
   {n:'☀ Sunny sea',view:'sea',scene:['R1','B6'],castA:0,castB:1,key:0.12,ct:1.4,force:0.6,sc:0.1,fill:0.12,path:'straight',profile:'glow',angle:'complement',light:{ha:52,sat:0.9},filllight:{ha:228,sat:0.26},seam:0.1},
   {n:'☀ Bright blue sea',view:'sea',scene:['R1','B1'],castA:0,castB:1,key:0.14,ct:1.1,force:0.55,sc:0.1,fill:0.1,path:'straight',profile:'glow',angle:'complement',light:{ha:206,sat:0.4},filllight:{ha:228,sat:0.55},nowash:true,seam:0.1},
+  {n:'🏖 Shore · day',view:'beach',scene:['BR2','B1'],castA:0,castB:1,key:0.12,ct:1.2,force:0.5,sc:0.1,fill:0.1,path:'straight',profile:'glow',angle:'complement',light:{ha:78,sat:0.5},filllight:{ha:228,sat:0.5},nowash:true,seam:0.1},
 ];
 function applyScene(s){S.key=s.key;S.contrast=s.ct;S.tempSculpt=s.tsculpt||0;S.chromaSculpt=s.csculpt!=null?s.csculpt:1.0;S.force=s.force;S.shadowChroma=s.sc;S.fill=s.fill||0;if(s.light)S.light={...s.light};S.fillLight=s.filllight?{...s.filllight}:{ha:norm360((s.light?s.light.ha:S.light.ha)+180),sat:0.12};
  if(s.lightMk){const M=PAL.find(p=>p.c===s.lightMk);if(M){const l=markerToLight(M);S.light={ha:l.ha,sat:l.sat,mk:M.c};}}
